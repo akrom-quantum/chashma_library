@@ -100,7 +100,7 @@ a{color:var(--pri);text-decoration:none;}
 .login-note{font-size:0.68rem;color:#6ee7b7;margin-top:14px;opacity:.7;}
 
 /* ═══ REQUEST ACCESS ═══ */
-#requestScreen{position:fixed;inset:0;background:var(--bg);z-index:8000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+#requestScreen{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:8000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
 #requestScreen.open{display:flex;}
 .req-card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-xl);padding:40px;text-align:center;max-width:420px;width:90%;box-shadow:var(--sh-md);}
 .req-icon{font-size:3rem;margin-bottom:16px;}
@@ -546,7 +546,7 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
           <div class="user-role-sm" id="sidebarRole">Reader</div>
         </div>
       </div>
-      <button class="btn-create owner-only" id="btnCreateEntry">
+      <button class="btn-create editable-only" id="btnCreateEntry" style="display:none;">
         <span class="icon" style="font-size:16px;">add</span> Create New Entry
       </button>
       <button class="sidebar-action" id="btnHelp">
@@ -597,7 +597,7 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
             <h1 class="page-title">Essays</h1>
             <p class="page-desc">Deep thoughts, curated for the modern archive.</p>
           </div>
-          <button class="btn-sm btn-sm-pri owner-only" id="btnAddEssay" style="height:fit-content;">+ Add Essay</button>
+          <button class="btn-sm btn-sm-pri editable-only" id="btnAddEssay" style="height:fit-content;display:none;">+ Add Essay</button>
         </div>
       </div>
       <div class="bento-row">
@@ -636,7 +636,7 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
             <h1 class="page-title">Curated Posts</h1>
             <p class="page-desc">Refined insights from across the digital landscape.</p>
           </div>
-          <button class="btn-sm btn-sm-pri owner-only" id="btnAddPost" style="height:fit-content;">+ Add Post</button>
+          <button class="btn-sm btn-sm-pri editable-only" id="btnAddPost" style="height:fit-content;display:none;">+ Add Post</button>
         </div>
       </div>
       <div class="controls-panel">
@@ -671,7 +671,7 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
             <h1 class="page-title">Readings Archive</h1>
             <p class="page-desc">Your intellectual laboratory for processing external wisdom.</p>
           </div>
-          <button class="btn-sm btn-sm-pri owner-only" id="btnAddReading" style="height:fit-content;">+ Add Reading</button>
+          <button class="btn-sm btn-sm-pri editable-only" id="btnAddReading" style="height:fit-content;display:none;">+ Add Reading</button>
         </div>
       </div>
       <div class="controls-panel">
@@ -706,7 +706,7 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
             <h1 class="page-title">Memories</h1>
             <p class="page-desc">A visual dialogue with your past self.</p>
           </div>
-          <button class="btn-sm btn-sm-pri owner-only" id="btnAddMemory" style="height:fit-content;background:var(--amber);border-color:var(--amber);">+ New Memory</button>
+          <button class="btn-sm btn-sm-pri editable-only" id="btnAddMemory" style="height:fit-content;background:var(--amber);border-color:var(--amber);display:none;">+ New Memory</button>
         </div>
       </div>
       <div class="controls-panel">
@@ -985,14 +985,16 @@ auth.onAuthStateChanged(async user=>{
     role:userRole,
     lastSeen:new Date().toISOString()
   },{merge:true});
-  if(userRole==='reader'){
-    const reqSnap=await db.collection('accessRequests').where('email','==',user.email).where('status','==','pending').get();
-    showRequestScreen(user, reqSnap.empty?'none':'pending');
-    return;
-  }
+  // Always show app and load data for all roles
   showApp(user);
   setupListeners();
   if(userRole==='owner'&&hasLocal())document.getElementById('migrateBanner').style.display='flex';
+  // For readers: show the request prompt as an overlay on first visit
+  // They can dismiss it and still browse the app
+  if(userRole==='reader'){
+    const reqSnap=await db.collection('accessRequests').where('email','==',user.email).where('status','==','pending').get();
+    showRequestScreen(user, reqSnap.empty?'none':'pending');
+  }
 });
 
 async function determineRole(user){
@@ -1006,13 +1008,14 @@ function showLogin(){
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('requestScreen').classList.remove('open');
   document.getElementById('appShell').classList.remove('visible');
+  currentUser=null;userRole='reader';
 }
 
 function showRequestScreen(user,status){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('requestScreen').classList.add('open');
-  document.getElementById('appShell').classList.remove('visible');
+  // Do NOT hide appShell — app loads in background, requestScreen is overlay
   const note=document.getElementById('reqNote');
   const reqBtn=document.getElementById('btnRequestAccess');
   if(status==='pending'){
@@ -1028,10 +1031,9 @@ function showRequestScreen(user,status){
   }
 }
 
-// Wire Continue as Reader — persistent, not once
+// Wire Continue as Reader — just close the overlay, app already loaded
 document.getElementById('btnContinueAsReader')?.addEventListener('click',()=>{
   document.getElementById('requestScreen').classList.remove('open');
-  if(currentUser){showApp(currentUser);setupListeners();}
 });
 
 // Wire Request Access button — persistent
@@ -1081,12 +1083,12 @@ function showApp(user){
   document.getElementById('sidebarRole').textContent=roleLabels[userRole];
   document.getElementById('topRoleChip').textContent=roleLabels[userRole];
 
-  // Owner-only elements
+  // Owner-only elements (visibility toggle, settings management)
   document.querySelectorAll('.owner-only').forEach(el=>{
     el.style.display=userRole==='owner'?'':'none';
   });
-  // Editable actions (owner + admin)
-  document.querySelectorAll('.edit-only').forEach(el=>{
+  // Editable-only elements (owner + admin): add/edit/delete buttons
+  document.querySelectorAll('.editable-only').forEach(el=>{
     el.style.display=isEditable()?'':'none';
   });
 
@@ -1252,8 +1254,8 @@ function buildTagStrip(stripId,rowId,items,activeTag,setTag,render,amber=false){
 function renderEssays(){
   const q=(document.getElementById('essaySearch')?.value||'').toLowerCase();
   let data=essays.slice();
-  // Hide hidden essays from non-owners
-  if(userRole!=='owner')data=data.filter(e=>!e.hidden);
+  // Hide hidden essays from readers only — owner and admin see all
+  if(userRole==='reader')data=data.filter(e=>!e.hidden);
   if(q)data=data.filter(e=>String(e.num).includes(q)||e.title.toLowerCase().includes(q)||(e.tags||[]).some(t=>t.toLowerCase().includes(q)));
   if(eFilter==='read')data=data.filter(e=>e.read);
   if(eFilter==='unread')data=data.filter(e=>!e.read);
