@@ -775,6 +775,16 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
           <button class="btn-sm" id="settingsThemeBtn">Toggle Dark / Light</button>
         </div>
       </div>
+
+      <!-- READINGS RESET — owner only, hidden after use -->
+      <div class="settings-section owner-only" id="readingsResetSection">
+        <h3 style="color:var(--err);">Reset Readings Data</h3>
+        <p style="font-size:0.82rem;color:var(--ink-3);line-height:1.65;margin-bottom:16px;">This will reset <strong>all read counts and ratings</strong> on every Reading entry to zero. The readings themselves (title, author, notes, etc.) will not be affected. This action cannot be undone.</p>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button class="btn-sm" id="btnResetReadings" style="border-color:var(--err);color:var(--err);font-weight:700;">Reset All Readings Counts &amp; Ratings</button>
+          <span id="resetReadingsStatus" style="font-size:0.75rem;color:var(--ink-3);font-style:italic;"></span>
+        </div>
+      </div>
     </div>
 
   </div><!-- end main-wrap -->
@@ -1016,6 +1026,36 @@ function applyTheme(t){
 }
 document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 document.getElementById('settingsThemeBtn')?.addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// Readings reset button — owner only
+document.getElementById('btnResetReadings')?.addEventListener('click',async function(){
+  if(userRole!=='owner')return;
+  if(!confirm('Reset ALL read counts and ratings on every Reading to zero?\n\nThis cannot be undone.'))return;
+  const btn=this;
+  const status=document.getElementById('resetReadingsStatus');
+  btn.disabled=true;btn.textContent='Resetting...';status.textContent='';
+  try{
+    const snap=await db.collection('readings').get();
+    const batch=db.batch();
+    snap.docs.forEach(doc=>{
+      batch.update(doc.ref,{readCounts:{},ratings:{}});
+    });
+    await batch.commit();
+    btn.textContent='Done — all readings reset';
+    btn.style.color='var(--pri)';btn.style.borderColor='var(--pri)';
+    status.textContent='Reset completed on '+new Date().toLocaleDateString();
+    // Hide the section after 4 seconds so it cannot be clicked again by accident
+    setTimeout(()=>{
+      const section=document.getElementById('readingsResetSection');
+      if(section)section.style.display='none';
+    },4000);
+    showToast('All readings reset successfully');
+  }catch(err){
+    btn.disabled=false;btn.textContent='Reset All Readings Counts & Ratings';
+    status.textContent='Error: '+err.message;
+    showToast('Reset failed: '+err.message,'err');
+  }
+});
 applyTheme(lsG('ch_theme')||'light');
 
 /* ═══ AUTH ═══ */
@@ -1763,20 +1803,21 @@ function renderMemories(){
     card.style.animationDelay=(i*0.025)+'s';
     const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${t}</span>`).join('');
     const preview=m.content.length>300?m.content.slice(0,300)+'&hellip;':m.content;
+    // Declare counts FIRST before any use
+    const mMyCount=myReadCount(m);
+    const mTotalReads=totalReadCount(m);
+
     let h=`<div class="mem-num">Memory #${String(m.num||0).padStart(2,'0')}</div>`;
     if(m.title)h+=`<div class="mem-title">${m.title}</div>`;
     h+=`<div class="mem-meta">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' &middot; edited '+m.updatedAt:''}</div>`;
     if(tagsHtml)h+=`<div class="mem-tags">${tagsHtml}</div>`;
     h+=`<div class="mem-preview">${preview}</div>`;
-    const mTotalReads=totalReadCount(m);
-    // mMyCount already calculated above
     h+=`<div class="mem-stats">`;
-    h+=`<span>&#128214; <strong>${mTotalReads}&times;</strong> total</span>`;
-    if(mMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${mMyCount}&times;</strong> you</span>`;
+    h+=`<span>&#128214; <strong>${mTotalReads}&times;</strong></span>`;
+    if(mMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${mMyCount}&times;</strong></span>`;
     h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong>${avgStr(m.ratings)}</strong>`;
     h+=`</div>`;
     h+=`<div class="mem-actions">`;
-    const mMyCount=myReadCount(m);
     if(mMyCount>0){
       h+=`<button class="btn-sm" data-id="${m.id}" data-action="read" style="font-size:0.65rem;background:var(--pri);color:#fff;border-color:var(--pri);">&#10003; ${mMyCount}&times; Read</button>`;
     } else {
