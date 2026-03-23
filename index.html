@@ -908,6 +908,22 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
 
 <div class="toast" id="toast"></div>
 
+<!-- MODAL: READ AGAIN CONFIRMATION -->
+<div class="overlay-modal" id="ov-readagain">
+  <div class="modal" style="max-width:380px;">
+    <div class="mhead"><h2 id="readAgainTitle">Read Again?</h2><button class="mclose" id="closeReadAgain">&#x2715;</button></div>
+    <div class="mbody" style="text-align:center;padding:24px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">&#128214;</div>
+      <p id="readAgainMsg" style="font-size:0.9rem;color:var(--ink-2);line-height:1.65;margin-bottom:8px;"></p>
+      <p style="font-size:0.78rem;color:var(--ink-3);font-style:italic;">Only count if you have read it fully this time.</p>
+    </div>
+    <div class="mfoot" style="justify-content:center;gap:12px;">
+      <button class="btn-modal-cancel" id="readAgainNo" style="padding:9px 22px;">Not fully</button>
+      <button class="btn-modal-save" id="readAgainYes" style="padding:9px 24px;">Yes, I have read it</button>
+    </div>
+  </div>
+</div>
+
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -945,6 +961,7 @@ let eDir=1, pDir=1, rDir=1, mDir=1;
 let activeETag=null, activePTag=null, activeRTag=null, activeMTag=null;
 let editEssayId=null, editPostId=null, editReadingId=null, editMemId=null;
 let pendingRateId=null, pendingRateType=null, pickedStar=0, ratingConfirmed=false;
+let pendingReadId=null, pendingReadCol=null;
 let mdHtmlCache='', mdTitleCache='';
 
 /* ═══ HELPERS ═══ */
@@ -965,6 +982,21 @@ function starsHtml(ratingsObj){const a=avg(ratingsObj);return [1,2,3,4,5].map(n=
 function userRating(ratingsObj){
   if(!currentUser||!ratingsObj||typeof ratingsObj!=='object'||Array.isArray(ratingsObj))return 0;
   return ratingsObj[currentUser.email.replace(/\./g,'_')]||0;
+}
+function myReadCount(item){
+  if(!currentUser||!item)return 0;
+  const counts=item.readCounts;
+  if(!counts||typeof counts!=='object')return 0;
+  return counts[currentUser.email.replace(/\./g,'_')]||0;
+}
+function totalReadCount(item){
+  if(!item)return 0;
+  // Support both old readCount field and new readCounts map
+  const counts=item.readCounts;
+  if(counts&&typeof counts==='object'){
+    return Object.values(counts).reduce((s,v)=>s+Number(v||0),0);
+  }
+  return item.readCount||0;
 }
 function isEditable(){return userRole==='owner'||userRole==='admin';}
 const PLBL={twitter:'Twitter / X',telegram:'Telegram',substack:'Substack',youtube:'YouTube',other:'Other'};
@@ -1210,7 +1242,7 @@ function sortItems(data,by,dir){
     let va,vb;
     if(by==='num'){va=a.num||0;vb=b.num||0;}
     else if(by==='rating'){va=avg(a.ratings)||0;vb=avg(b.ratings)||0;}
-    else if(by==='reads'){va=a.readCount||0;vb=b.readCount||0;}
+    else if(by==='reads'){va=totalReadCount(a);vb=totalReadCount(b);}
     else if(by==='author'){va=a.author||'';vb=b.author||'';}
     else if(by==='source'){va=a.source||'';vb=b.source||'';}
     else{va=a.date||a.createdAt||'';vb=b.date||b.createdAt||'';}
@@ -1305,7 +1337,13 @@ function renderEssays(){
     h+=`<div class="essay-eye"><span class="essay-date">${e.date}</span>${badgeHtml}${hiddenBadge}</div>`;
     h+=`<div class="essay-title">${e.title}</div>`;
     if(tagsHtml)h+=`<div class="essay-tags">${tagsHtml}</div>`;
-    h+=`<div class="essay-stats"><span>&#128065; <strong>${e.readCount||0}&times;</strong></span><div class="stars">${starsHtml(e.ratings)}</div><strong style="color:var(--pri)">${avgStr(e.ratings)}</strong></div>`;
+    const eTotalReads=totalReadCount(e);
+    const eMyReads=myReadCount(e);
+    h+=`<div class="essay-stats">`;
+    h+=`<span>&#128214; Total <strong>${eTotalReads}&times;</strong></span>`;
+    if(eMyReads>0)h+=`<span style="color:var(--amber);">You <strong style="color:var(--amber);">${eMyReads}&times;</strong></span>`;
+    h+=`<div class="stars">${starsHtml(e.ratings)}</div><strong style="color:var(--pri)">${avgStr(e.ratings)}</strong>`;
+    h+=`</div>`;
     h+=`</div>`;
     h+=`<div class="essay-actions">`;
     h+=`<div class="act-row">`;
@@ -1361,12 +1399,40 @@ function openMd(id,type){
 }
 async function toggleRead(id){
   const e=essays.find(x=>x.id===id);if(!e)return;
-  const nowRead=!e.read;
-  const update={read:nowRead};
-  // Increment read count only when marking as read, not when unmarking
-  if(nowRead)update.readCount=firebase.firestore.FieldValue.increment(1);
-  await db.collection('essays').doc(id).update(update);
-  showToast(nowRead?'Marked as read':'Marked as unread');
+  if(e.read){
+    // Unmarking — just toggle, no count change
+    await db.collection('essays').doc(id).update({read:false});
+    showToast('Marked as unread');
+    return;
+  }
+  // Marking as read — check personal read count
+  await handleMarkRead(id,'essays',e);
+}
+
+async function handleMarkRead(id, col, item){
+  const myCount=myReadCount(item);
+  if(myCount===0){
+    // First time — auto-count, no dialog
+    await incrementReadCount(id, col);
+    if(col==='essays') await db.collection(col).doc(id).update({read:true});
+    showToast('Marked as read — reading #1');
+  } else {
+    // Repeat read — show confirmation dialog
+    pendingReadId=id;
+    pendingReadCol=col;
+    const typeLabels={essays:'essay',posts:'post',readings:'reading',memories:'memory'};
+    const typeName=typeLabels[col]||'item';
+    document.getElementById('readAgainTitle').textContent='Read Again?';
+    document.getElementById('readAgainMsg').innerHTML=
+      'You have read this <strong>'+typeName+'</strong> <strong>'+myCount+' time'+(myCount===1?'':'s')+'</strong> before.<br>Have you read it again in full this time?';
+    openModal('ov-readagain');
+  }
+}
+
+async function incrementReadCount(id, col){
+  if(!currentUser)return;
+  const key='readCounts.'+currentUser.email.replace(/\./g,'_');
+  await db.collection(col).doc(id).update({[key]:firebase.firestore.FieldValue.increment(1)});
 }
 async function toggleVisibility(id){
   const e=essays.find(x=>x.id===id);if(!e||userRole!=='owner')return;
@@ -1463,9 +1529,16 @@ function renderPosts(){
     h+=`</div>`;
     if(tagsHtml)h+=`<div class="post-tags">${tagsHtml}</div>`;
     h+=`<div class="post-content">${p.content}</div>`;
-    h+=`<div class="post-stats"><div class="stars">${starsHtml(p.ratings)}</div><strong>${avgStr(p.ratings)}</strong></div>`;
+    const pTotalReads=totalReadCount(p);
+    const pMyReads=myReadCount(p);
+    h+=`<div class="post-stats">`;
+    h+=`<span>&#128214; <strong>${pTotalReads}&times;</strong></span>`;
+    if(pMyReads>0)h+=`<span style="color:var(--amber);">You <strong style="color:var(--amber);">${pMyReads}&times;</strong></span>`;
+    h+=`<div class="stars">${starsHtml(p.ratings)}</div><strong>${avgStr(p.ratings)}</strong>`;
+    h+=`</div>`;
     h+=`<div class="post-actions">`;
     if(p.url)h+=`<a class="act-src" href="${p.url}" target="_blank" rel="noopener"><span class="icon" style="font-size:15px;">north_east</span> Source</a>`;
+    h+=`<button class="act-icon" data-id="${p.id}" data-action="read" title="Mark Read" style="width:30px;height:30px;"><span class="icon fill" style="font-size:15px;">check_circle</span></button>`;
     h+=`</div>`;
     card.innerHTML=h;
     grid.appendChild(card);
@@ -1477,6 +1550,10 @@ function renderPosts(){
       if(act==='edit')openEditPost(id);
       else if(act==='del')delItem('posts',id);
       else if(act==='rate')openRateModal(id,'post');
+      else if(act==='read'){
+        const item=posts.find(x=>x.id===id);
+        if(item)handleMarkRead(id,'posts',item);
+      }
     });
   });
 }
@@ -1558,11 +1635,18 @@ function renderReadings(){
     if(r.title)h+=`<div class="reading-title">${r.title}</div>`;
     if(tagsHtml)h+=`<div class="reading-tags">${tagsHtml}</div>`;
     h+=`<div class="reading-notes">${r.content}</div>`;
-    h+=`<div class="reading-stats"><div class="stars">${starsHtml(r.ratings)}</div><strong>${avgStr(r.ratings)}</strong></div>`;
+    const rTotalReads=totalReadCount(r);
+    const rMyReads=myReadCount(r);
+    h+=`<div class="reading-stats">`;
+    h+=`<span>&#128214; <strong>${rTotalReads}&times;</strong></span>`;
+    if(rMyReads>0)h+=`<span style="color:var(--amber);">You <strong style="color:var(--amber);">${rMyReads}&times;</strong></span>`;
+    h+=`<div class="stars">${starsHtml(r.ratings)}</div><strong>${avgStr(r.ratings)}</strong>`;
+    h+=`</div>`;
     h+=`</div>`;
     h+=`<div class="reading-actions">`;
     if(r.url)h+=`<a class="act-rsrc" href="${r.url}" target="_blank" rel="noopener"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;
     h+=`<div class="act-row" style="margin-top:4px;">`;
+    h+=`<button class="act-icon" data-id="${r.id}" data-action="read" title="Mark Read" style="width:30px;height:30px;"><span class="icon fill" style="font-size:15px;">check_circle</span></button>`;
     h+=`<button class="act-icon" data-id="${r.id}" data-action="rate" title="Rate" style="width:30px;height:30px;"><span class="icon" style="font-size:15px;">grade</span></button>`;
     if(isEditable()){
       h+=`<button class="act-icon" data-id="${r.id}" data-action="edit" title="Edit" style="width:30px;height:30px;"><span class="icon" style="font-size:15px;">edit</span></button>`;
@@ -1579,6 +1663,10 @@ function renderReadings(){
       if(act==='edit')openEditReading(id);
       else if(act==='del')delItem('readings',id);
       else if(act==='rate')openRateModal(id,'reading');
+      else if(act==='read'){
+        const item=readings.find(x=>x.id===id);
+        if(item)handleMarkRead(id,'readings',item);
+      }
     });
   });
 }
@@ -1658,8 +1746,15 @@ function renderMemories(){
     h+=`<div class="mem-meta">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' &middot; edited '+m.updatedAt:''}</div>`;
     if(tagsHtml)h+=`<div class="mem-tags">${tagsHtml}</div>`;
     h+=`<div class="mem-preview">${preview}</div>`;
-    h+=`<div class="mem-stats"><div class="stars">${starsHtml(m.ratings)}</div><strong>${avgStr(m.ratings)}</strong></div>`;
+    const mTotalReads=totalReadCount(m);
+    const mMyReads=myReadCount(m);
+    h+=`<div class="mem-stats">`;
+    h+=`<span>&#128214; <strong>${mTotalReads}&times;</strong></span>`;
+    if(mMyReads>0)h+=`<span style="color:var(--amber);">You <strong style="color:var(--amber);">${mMyReads}&times;</strong></span>`;
+    h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong>${avgStr(m.ratings)}</strong>`;
+    h+=`</div>`;
     h+=`<div class="mem-actions">`;
+    h+=`<button class="btn-sm" data-id="${m.id}" data-action="read" style="font-size:0.65rem;">&#10003; Mark Read</button>`;
     h+=`<button class="btn-sm" data-id="${m.id}" data-action="rate" style="font-size:0.65rem;">&#9733; Rate</button>`;
     if(isEditable()){
       h+=`<button class="btn-sm" data-id="${m.id}" data-action="edit" style="font-size:0.65rem;">&#9998; Edit</button>`;
@@ -1676,6 +1771,10 @@ function renderMemories(){
       if(act==='edit')openWriter(id);
       else if(act==='del')delItem('memories',id);
       else if(act==='rate')openRateModal(id,'memory');
+      else if(act==='read'){
+        const item=memories.find(x=>x.id===id);
+        if(item)handleMarkRead(id,'memories',item);
+      }
     });
   });
 }
@@ -1902,6 +2001,23 @@ document.querySelectorAll('.rstar').forEach(s=>{
 document.getElementById('closeRateModal')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;ratingConfirmed=false;});
 document.getElementById('skipRateBtn')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;ratingConfirmed=false;});
 document.getElementById('rateConfirmCheck')?.addEventListener('change',function(){ratingConfirmed=this.checked;});
+
+// Read again modal
+document.getElementById('closeReadAgain')?.addEventListener('click',()=>{closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;});
+document.getElementById('readAgainNo')?.addEventListener('click',()=>{
+  closeModal('ov-readagain');
+  pendingReadId=null;pendingReadCol=null;
+  showToast('Reading count unchanged');
+});
+document.getElementById('readAgainYes')?.addEventListener('click',async()=>{
+  if(!pendingReadId||!pendingReadCol)return;
+  const id=pendingReadId, col=pendingReadCol;
+  closeModal('ov-readagain');
+  pendingReadId=null;pendingReadCol=null;
+  await incrementReadCount(id, col);
+  if(col==='essays') await db.collection(col).doc(id).update({read:true});
+  showToast('Reading count updated');
+});
 document.getElementById('submitRateBtn')?.addEventListener('click',async()=>{
   if(!pickedStar){showToast('Select a rating first');return;}
   if(!ratingConfirmed){showToast('Please confirm you have read this fully','err');return;}
@@ -2002,7 +2118,7 @@ function fallback(text,lbl){const t=document.createElement('textarea');t.value=t
 
 document.getElementById('btnExportEssays')?.addEventListener('click',()=>{
   if(!essays.length){showToast('No essays');return;}
-  const rows=essays.slice().sort((a,b)=>(a.num||0)-(b.num||0)).map(e=>{const a=avg(e.ratings);return{'No.':e.num,'Title':e.title,'Date':e.date||'','Link':e.url,'Tags':(e.tags||[]).join(' '),'Read':e.read?'Yes':'No','Reads':e.readCount||0,'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
+  const rows=essays.slice().sort((a,b)=>(a.num||0)-(b.num||0)).map(e=>{const a=avg(e.ratings);return{'No.':e.num,'Title':e.title,'Date':e.date||'','Link':e.url,'Tags':(e.tags||[]).join(' '),'Read':e.read?'Yes':'No','Total Reads':totalReadCount(e),'My Reads':myReadCount(e),'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
   copyClip(toTsv(rows),'Essays');
 });
 document.getElementById('btnExportPosts')?.addEventListener('click',()=>{
