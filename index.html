@@ -376,19 +376,21 @@ sup.fn-ref{color:var(--em);font-size:.66em;font-weight:700;}
     <button class="btn-outline" id="btnExportP">&#128203; Copy</button>
     <button class="btn-primary owner-only" id="btnAddP">+ Post</button>
   </div>
-  <div class="sort-bar"><span class="sort-lbl">Sort</span><select class="sort-sel" id="postSortBy"><option value="date">Date</option><option value="rating">Rating</option></select><button class="sort-dir asc" id="postSortDir"></button></div>
+  <div class="sort-bar"><span class="sort-lbl">Sort</span><select class="sort-sel" id="postSortBy"><option value="date">Date</option><option value="rating">Rating</option><option value="author">Author</option></select><button class="sort-dir asc" id="postSortDir"></button></div>
+  <div class="tag-strip" id="postTagStrip"></div>
   <div class="content-list" id="postList"></div>
 </div>
 
 <!-- READINGS -->
 <div class="page" id="page-readings" style="display:none;">
   <div class="cmdbar">
-    <div class="search-wrap"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="readingSearch" placeholder="Search author or content&hellip;"></div>
+    <div class="search-wrap"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="readingSearch" placeholder="Search author, source or content&hellip;"></div>
     <div class="pill-grp"><button class="pill active" id="rf-all">All</button><button class="pill" id="rf-book">Book</button><button class="pill" id="rf-article">Article</button><button class="pill" id="rf-video">Video</button><button class="pill" id="rf-podcast">Podcast</button></div>
     <button class="btn-outline" id="btnExportR">&#128203; Copy</button>
     <button class="btn-primary owner-only" id="btnAddR">+ Reading</button>
   </div>
-  <div class="sort-bar"><span class="sort-lbl">Sort</span><select class="sort-sel" id="readingSortBy"><option value="date">Date</option><option value="rating">Rating</option></select><button class="sort-dir asc" id="readingSortDir"></button></div>
+  <div class="sort-bar"><span class="sort-lbl">Sort</span><select class="sort-sel" id="readingSortBy"><option value="date">Date</option><option value="rating">Rating</option><option value="author">Author</option><option value="source">Source</option></select><button class="sort-dir asc" id="readingSortDir"></button></div>
+  <div class="tag-strip" id="readingTagStrip"></div>
   <div class="content-list" id="readingList"></div>
 </div>
 
@@ -445,10 +447,12 @@ sup.fn-ref{color:var(--em);font-size:.66em;font-weight:700;}
   <div class="modal">
     <div class="mhead"><h2 id="mPostTitle">Add Post</h2><button class="mclose" id="closePost">&#x2715;</button></div>
     <div class="mbody">
+      <div class="fg"><label>Date <span class="req">*</span></label><input type="date" id="pDate"></div>
       <div class="fg"><label>Author <span class="req">*</span></label><input type="text" id="pAuthor" placeholder="Author name"></div>
       <div class="fg"><label>Platform <span class="req">*</span></label><select id="pPlat"><option value="twitter">Twitter / X</option><option value="telegram">Telegram</option><option value="substack">Substack</option><option value="youtube">YouTube</option><option value="other">Other</option></select></div>
       <div class="fg"><label>Content <span class="req">*</span></label><textarea id="pContent" placeholder="Paste post text&hellip;"></textarea></div>
       <div class="fg"><label>Source Link <span class="req">*</span></label><input type="url" id="pUrl" placeholder="https://&hellip;"></div>
+      <div class="fg"><label>Hashtags <span class="opt">(optional &middot; comma-separated)</span></label><input type="text" id="pTags" placeholder="#fikr, #ilm"></div>
     </div>
     <div class="mfoot"><button class="btn-outline" id="cancelPost">Cancel</button><button class="btn-primary" id="savePostBtn">Save Post</button></div>
   </div>
@@ -459,10 +463,16 @@ sup.fn-ref{color:var(--em);font-size:.66em;font-weight:700;}
   <div class="modal">
     <div class="mhead"><h2 id="mReadingTitle">Add Reading</h2><button class="mclose" id="closeReading">&#x2715;</button></div>
     <div class="mbody">
-      <div class="fg"><label>Author / Source <span class="req">*</span></label><input type="text" id="rAuthor" placeholder="Author or source name"></div>
+      <div class="fg"><label>Date <span class="req">*</span></label><input type="date" id="rDate"></div>
+      <div class="fg-row">
+        <div class="fg"><label>Author <span class="req">*</span></label><input type="text" id="rAuthor" placeholder="e.g. Naval Ravikant"></div>
+        <div class="fg"><label>Source <span class="opt">(optional)</span></label><input type="text" id="rSource" placeholder="e.g. Twitter, Blog"></div>
+      </div>
+      <div class="fg"><label>Title / Name <span class="req">*</span></label><input type="text" id="rTitle" placeholder="Title of the book, article, video&hellip;"></div>
       <div class="fg"><label>Type <span class="req">*</span></label><select id="rType"><option value="book">Book</option><option value="article">Article</option><option value="video">Video</option><option value="podcast">Podcast</option><option value="other">Other</option></select></div>
       <div class="fg"><label>Notes / Description <span class="req">*</span></label><textarea id="rContent" placeholder="Your notes or description&hellip;"></textarea></div>
-      <div class="fg"><label>Source Link <span class="req">*</span></label><input type="url" id="rUrl" placeholder="https://&hellip;"></div>
+      <div class="fg"><label>Source Link <span class="opt">(optional)</span></label><input type="url" id="rUrl" placeholder="https://&hellip;"></div>
+      <div class="fg"><label>Hashtags <span class="opt">(optional &middot; comma-separated)</span></label><input type="text" id="rTags" placeholder="#kitob, #ilm"></div>
     </div>
     <div class="mfoot"><button class="btn-outline" id="cancelReading">Cancel</button><button class="btn-primary" id="saveReadingBtn">Save Reading</button></div>
   </div>
@@ -677,7 +687,7 @@ function updateCounters(){
 ['all','twitter','telegram','substack','youtube'].forEach(function(f){document.getElementById('pf-'+f).addEventListener('click',function(){pFilter=f;document.querySelectorAll('#page-posts .pill').forEach(function(b){b.classList.remove('active');});this.classList.add('active');renderPosts();});});
 ['all','book','article','video','podcast'].forEach(function(f){document.getElementById('rf-'+f).addEventListener('click',function(){rFilter=f;document.querySelectorAll('#page-readings .pill').forEach(function(b){b.classList.remove('active');});this.classList.add('active');renderReadings();});});
 document.getElementById('essaySearch').addEventListener('input',renderEssays);
-document.getElementById('postSearch').addEventListener('input',renderPosts);
+document.getElementById('postSearch').addEventListener('input',renderPosts);document.getElementById('readingSearch').addEventListener('input',renderReadings);
 document.getElementById('readingSearch').addEventListener('input',renderReadings);
 document.getElementById('memSearch').addEventListener('input',renderMemories);
 
@@ -927,36 +937,57 @@ function renderPosts(){
   var list=document.getElementById('postList');
   var q=document.getElementById('postSearch').value.toLowerCase();
   var data=posts.slice();
-  if(q)data=data.filter(function(p){return p.author.toLowerCase().includes(q)||p.content.toLowerCase().includes(q);});
+  if(q)data=data.filter(function(p){return p.author.toLowerCase().includes(q)||p.content.toLowerCase().includes(q)||(p.tags||[]).some(function(t){return t.toLowerCase().includes(q);});});
   if(pFilter!=='all')data=data.filter(function(p){return p.platform===pFilter;});
-  data=sortData(data,pSort,pDir);
+  /* sort: default date asc = oldest first */
+  data.sort(function(a,b){
+    var va,vb;
+    if(pSort==='rating'){va=avgR(a.ratings)||0;vb=avgR(b.ratings)||0;}
+    else if(pSort==='author'){va=a.author||'';vb=b.author||'';}
+    else{va=a.date||a.createdAt||'';vb=b.date||b.createdAt||'';}
+    if(va<vb)return -1*pDir;if(va>vb)return 1*pDir;return 0;
+  });
+  /* tag strip */
+  var allTags=[];posts.forEach(function(p){(p.tags||[]).forEach(function(t){if(!allTags.includes(t))allTags.push(t);});});allTags.sort();
+  var strip=document.getElementById('postTagStrip');strip.innerHTML='';
+  if(allTags.length){var ab=document.createElement('button');ab.className='htag'+(activePostTag?'':' active');ab.textContent='All';ab.addEventListener('click',function(){activePostTag=null;renderPosts();});strip.appendChild(ab);allTags.forEach(function(t){var btn=document.createElement('button');btn.className='htag'+(activePostTag===t?' active':'');btn.textContent=t;btn.addEventListener('click',function(){activePostTag=activePostTag===t?null:t;renderPosts();});strip.appendChild(btn);});}
+  if(activePostTag)data=data.filter(function(p){return (p.tags||[]).includes(activePostTag);});
   list.innerHTML='';
   if(!data.length){list.innerHTML='<div class="empty"><div class="empty-rule"></div><p>No posts yet.</p></div>';return;}
   var PLBL={twitter:'Twitter / X',telegram:'Telegram',substack:'Substack',youtube:'YouTube',other:'Other'};
   data.forEach(function(p,i){
     var avg=avgR(p.ratings),avgStr=isNaN(avg)?'&mdash;':avg.toFixed(1);
+    var tagsH=(p.tags||[]).map(function(t){return '<span class="entry-tag">'+t+'</span>';}).join('');
     var el=document.createElement('div');el.className='post-entry';el.style.animationDelay=(i*0.025)+'s';
     var h='<div class="post-head"><span class="plat plat-'+p.platform+'">'+(PLBL[p.platform]||p.platform)+'</span><span class="post-author">'+p.author+'</span>';
-    h+='<div class="post-icons"><button class="act" style="padding:4px 9px;" data-id="'+p.id+'" data-action="rate">&#9733; Rate</button>';
+    if(p.date)h+='<span class="entry-date" style="margin-left:8px;">'+p.date+'</span>';
+    if(p.num)h+='<span class="ebadge eb-unread" style="margin-left:auto;">#'+String(p.num).padStart(2,'0')+'</span>';
+    h+='<div class="post-icons" style="margin-left:'+(p.num?'6px':'auto')+';"><button class="act" style="padding:4px 9px;" data-id="'+p.id+'" data-action="rate">&#9733; Rate</button>';
     if(isOwner)h+='<button class="act act-edit" style="padding:4px 9px;" data-id="'+p.id+'" data-action="edit">&#9998;</button><button class="act act-del" style="padding:4px 9px;" data-id="'+p.id+'" data-action="del">&#10005;</button>';
     h+='</div></div>';
+    if(tagsH)h+='<div class="entry-tags" style="margin-bottom:8px;">'+tagsH+'</div>';
     h+='<div class="post-content">'+p.content+'</div>';
     h+='<div class="post-stats"><div class="stars">'+starsHtml(avg)+'</div><strong style="color:var(--em)">'+avgStr+'</strong></div>';
-    h+='<div class="post-actions"><a class="act-source" href="'+p.url+'" target="_blank" rel="noopener">&#8599; View Source</a></div>';
+    h+='<div class="post-actions">';
+    if(p.url)h+='<a class="act-source" href="'+p.url+'" target="_blank" rel="noopener">&#8599; View Source</a>';
+    h+='</div>';
     el.innerHTML=h;list.appendChild(el);
   });
   list.querySelectorAll('[data-action]').forEach(function(btn){btn.addEventListener('click',function(){var id=this.getAttribute('data-id'),act=this.getAttribute('data-action');if(act==='edit')openEditPost(id);else if(act==='del')delItem('posts',id);else if(act==='rate')openRateModal(id,'post');});});
 }
-function openAddPost(){if(!isOwner)return;editPostId=null;document.getElementById('mPostTitle').textContent='Add Post';['pAuthor','pContent','pUrl'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pPlat').value='twitter';openOv('ov-post');}
-function openEditPost(id){if(!isOwner)return;var p=posts.find(function(x){return x.id===id;});if(!p)return;editPostId=id;document.getElementById('mPostTitle').textContent='Edit Post';document.getElementById('pAuthor').value=p.author;document.getElementById('pPlat').value=p.platform;document.getElementById('pContent').value=p.content;document.getElementById('pUrl').value=p.url;openOv('ov-post');}
+function openAddPost(){if(!isOwner)return;editPostId=null;document.getElementById('mPostTitle').textContent='Add Post';['pDate','pAuthor','pContent','pUrl','pTags'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('pPlat').value='twitter';openOv('ov-post');}
+function openEditPost(id){if(!isOwner)return;var p=posts.find(function(x){return x.id===id;});if(!p)return;editPostId=id;document.getElementById('mPostTitle').textContent='Edit Post';document.getElementById('pDate').value=p.date||'';document.getElementById('pAuthor').value=p.author;document.getElementById('pPlat').value=p.platform;document.getElementById('pContent').value=p.content;document.getElementById('pUrl').value=p.url||'';document.getElementById('pTags').value=(p.tags||[]).join(', ');openOv('ov-post');}
 async function savePost(){
   if(!isOwner)return;
-  var author=document.getElementById('pAuthor').value.trim(),platform=document.getElementById('pPlat').value,content=document.getElementById('pContent').value.trim(),url=document.getElementById('pUrl').value.trim();
-  if(!author||!content||!url){showToast('Fill all required fields');return;}
-  var now=new Date().toISOString().slice(0,10);
+  var date=document.getElementById('pDate').value.trim(),author=document.getElementById('pAuthor').value.trim(),platform=document.getElementById('pPlat').value,content=document.getElementById('pContent').value.trim(),url=document.getElementById('pUrl').value.trim();
+  var tags=document.getElementById('pTags').value.split(',').map(function(t){return t.trim();}).filter(Boolean).map(function(t){return t.startsWith('#')?t:'#'+t;});
+  if(!date||!author||!content||!url){showToast('Fill all required fields');return;}
   try{
-    if(editPostId){await db.collection('posts').doc(editPostId).update({author:author,platform:platform,content:content,url:url});showToast('Post updated');}
-    else{await db.collection('posts').add({author:author,platform:platform,content:content,url:url,createdAt:now,ratings:[]});showToast('Post added');}
+    if(editPostId){await db.collection('posts').doc(editPostId).update({date:date,author:author,platform:platform,content:content,url:url,tags:tags});showToast('Post updated');}
+    else{
+      var nextNum=posts.length?Math.max.apply(null,posts.map(function(x){return x.num||0;}))+1:1;
+      await db.collection('posts').add({num:nextNum,date:date,author:author,platform:platform,content:content,url:url,tags:tags,createdAt:date,ratings:[]});showToast('Post added');
+    }
     closeOv('ov-post');
   }catch(err){showToast('Error: '+err.message,'err');}
 }
@@ -966,36 +997,61 @@ function renderReadings(){
   var list=document.getElementById('readingList');
   var q=document.getElementById('readingSearch').value.toLowerCase();
   var data=readings.slice();
-  if(q)data=data.filter(function(r){return r.author.toLowerCase().includes(q)||r.content.toLowerCase().includes(q);});
+  if(q)data=data.filter(function(r){return r.author.toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||(r.title||'').toLowerCase().includes(q)||r.content.toLowerCase().includes(q)||(r.tags||[]).some(function(t){return t.toLowerCase().includes(q);});});
   if(rFilter!=='all')data=data.filter(function(r){return r.type===rFilter;});
-  data=sortData(data,rSort,rDir);
+  /* sort */
+  data.sort(function(a,b){
+    var va,vb;
+    if(rSort==='rating'){va=avgR(a.ratings)||0;vb=avgR(b.ratings)||0;}
+    else if(rSort==='author'){va=a.author||'';vb=b.author||'';}
+    else if(rSort==='source'){va=a.source||'';vb=b.source||'';}
+    else{va=a.date||a.createdAt||'';vb=b.date||b.createdAt||'';}
+    if(va<vb)return -1*rDir;if(va>vb)return 1*rDir;return 0;
+  });
+  /* tag strip */
+  var allTags=[];readings.forEach(function(r){(r.tags||[]).forEach(function(t){if(!allTags.includes(t))allTags.push(t);});});allTags.sort();
+  var strip=document.getElementById('readingTagStrip');strip.innerHTML='';
+  if(allTags.length){var ab=document.createElement('button');ab.className='htag'+(activeReadingTag?'':' active');ab.textContent='All';ab.addEventListener('click',function(){activeReadingTag=null;renderReadings();});strip.appendChild(ab);allTags.forEach(function(t){var btn=document.createElement('button');btn.className='htag'+(activeReadingTag===t?' active':'');btn.textContent=t;btn.addEventListener('click',function(){activeReadingTag=activeReadingTag===t?null:t;renderReadings();});strip.appendChild(btn);});}
+  if(activeReadingTag)data=data.filter(function(r){return (r.tags||[]).includes(activeReadingTag);});
   list.innerHTML='';
   if(!data.length){list.innerHTML='<div class="empty"><div class="empty-rule"></div><p>No readings yet.</p></div>';return;}
   var RLBL={book:'Book',article:'Article',video:'Video',podcast:'Podcast',other:'Other'};
   data.forEach(function(r,i){
     var avg=avgR(r.ratings),avgStr=isNaN(avg)?'&mdash;':avg.toFixed(1);
+    var tagsH=(r.tags||[]).map(function(t){return '<span class="entry-tag">'+t+'</span>';}).join('');
     var el=document.createElement('div');el.className='reading-entry';el.style.animationDelay=(i*0.025)+'s';
-    var h='<div class="reading-head"><span class="rtype rtype-'+r.type+'">'+(RLBL[r.type]||r.type)+'</span><span class="reading-author">'+r.author+'</span>';
-    h+='<div class="reading-icons"><button class="act" style="padding:4px 9px;" data-id="'+r.id+'" data-action="rate">&#9733; Rate</button>';
+    var h='<div class="reading-head"><span class="rtype rtype-'+r.type+'">'+(RLBL[r.type]||r.type)+'</span>';
+    h+='<span class="reading-author">'+r.author+'</span>';
+    if(r.source)h+='<span class="entry-date" style="margin-left:6px;font-style:italic;">via '+r.source+'</span>';
+    if(r.date)h+='<span class="entry-date" style="margin-left:8px;">'+r.date+'</span>';
+    if(r.num)h+='<span class="ebadge eb-unread" style="margin-left:auto;">#'+String(r.num).padStart(2,'0')+'</span>';
+    h+='<div class="reading-icons" style="margin-left:'+(r.num?'6px':'auto')+';"><button class="act" style="padding:4px 9px;" data-id="'+r.id+'" data-action="rate">&#9733; Rate</button>';
     if(isOwner)h+='<button class="act act-edit" style="padding:4px 9px;" data-id="'+r.id+'" data-action="edit">&#9998;</button><button class="act act-del" style="padding:4px 9px;" data-id="'+r.id+'" data-action="del">&#10005;</button>';
     h+='</div></div>';
+    if(r.title)h+='<div class="entry-title" style="font-size:1rem;margin-bottom:6px;">'+r.title+'</div>';
+    if(tagsH)h+='<div class="entry-tags" style="margin-bottom:8px;">'+tagsH+'</div>';
     h+='<div class="reading-content-text">'+r.content+'</div>';
     h+='<div class="reading-stats"><div class="stars">'+starsHtml(avg)+'</div><strong style="color:#7c3aed">'+avgStr+'</strong></div>';
-    h+='<div class="reading-actions"><a class="act-rsource" href="'+r.url+'" target="_blank" rel="noopener">&#8599; View Source</a></div>';
+    h+='<div class="reading-actions">';
+    if(r.url)h+='<a class="act-rsource" href="'+r.url+'" target="_blank" rel="noopener">&#8599; View Source</a>';
+    h+='</div>';
     el.innerHTML=h;list.appendChild(el);
   });
   list.querySelectorAll('[data-action]').forEach(function(btn){btn.addEventListener('click',function(){var id=this.getAttribute('data-id'),act=this.getAttribute('data-action');if(act==='edit')openEditReading(id);else if(act==='del')delItem('readings',id);else if(act==='rate')openRateModal(id,'reading');});});
 }
-function openAddReading(){if(!isOwner)return;editReadingId=null;document.getElementById('mReadingTitle').textContent='Add Reading';['rAuthor','rContent','rUrl'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('rType').value='book';openOv('ov-reading');}
-function openEditReading(id){if(!isOwner)return;var r=readings.find(function(x){return x.id===id;});if(!r)return;editReadingId=id;document.getElementById('mReadingTitle').textContent='Edit Reading';document.getElementById('rAuthor').value=r.author;document.getElementById('rType').value=r.type;document.getElementById('rContent').value=r.content;document.getElementById('rUrl').value=r.url;openOv('ov-reading');}
+function openAddReading(){if(!isOwner)return;editReadingId=null;document.getElementById('mReadingTitle').textContent='Add Reading';['rDate','rAuthor','rSource','rTitle','rContent','rUrl','rTags'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('rType').value='book';openOv('ov-reading');}
+function openEditReading(id){if(!isOwner)return;var r=readings.find(function(x){return x.id===id;});if(!r)return;editReadingId=id;document.getElementById('mReadingTitle').textContent='Edit Reading';document.getElementById('rDate').value=r.date||'';document.getElementById('rAuthor').value=r.author;document.getElementById('rSource').value=r.source||'';document.getElementById('rTitle').value=r.title||'';document.getElementById('rType').value=r.type;document.getElementById('rContent').value=r.content;document.getElementById('rUrl').value=r.url||'';document.getElementById('rTags').value=(r.tags||[]).join(', ');openOv('ov-reading');}
 async function saveReading(){
   if(!isOwner)return;
-  var author=document.getElementById('rAuthor').value.trim(),type=document.getElementById('rType').value,content=document.getElementById('rContent').value.trim(),url=document.getElementById('rUrl').value.trim();
-  if(!author||!content||!url){showToast('Fill all required fields');return;}
-  var now=new Date().toISOString().slice(0,10);
+  var date=document.getElementById('rDate').value.trim(),author=document.getElementById('rAuthor').value.trim(),source=document.getElementById('rSource').value.trim(),title=document.getElementById('rTitle').value.trim(),type=document.getElementById('rType').value,content=document.getElementById('rContent').value.trim(),url=document.getElementById('rUrl').value.trim();
+  var tags=document.getElementById('rTags').value.split(',').map(function(t){return t.trim();}).filter(Boolean).map(function(t){return t.startsWith('#')?t:'#'+t;});
+  if(!date||!author||!title||!content){showToast('Fill all required fields');return;}
   try{
-    if(editReadingId){await db.collection('readings').doc(editReadingId).update({author:author,type:type,content:content,url:url});showToast('Reading updated');}
-    else{await db.collection('readings').add({author:author,type:type,content:content,url:url,createdAt:now,ratings:[]});showToast('Reading added');}
+    if(editReadingId){await db.collection('readings').doc(editReadingId).update({date:date,author:author,source:source,title:title,type:type,content:content,url:url,tags:tags});showToast('Reading updated');}
+    else{
+      var nextNum=readings.length?Math.max.apply(null,readings.map(function(x){return x.num||0;}))+1:1;
+      await db.collection('readings').add({num:nextNum,date:date,author:author,source:source,title:title,type:type,content:content,url:url||'',tags:tags,createdAt:date,ratings:[]});showToast('Reading added');
+    }
     closeOv('ov-reading');
   }catch(err){showToast('Error: '+err.message,'err');}
 }
@@ -1040,8 +1096,8 @@ function copyToClip(text,label){
 }
 function fallbackCopy(text,label){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast(label+' copied \u2014 paste into Google Sheets');}catch(e){showToast('Copy failed','err');}document.body.removeChild(ta);}
 function exportEssays(){if(!essays.length){showToast('No essays');return;}var rows=essays.slice().sort(function(a,b){return(a.num||0)-(b.num||0);}).map(function(e){var avg=avgR(e.ratings);return{'No.':e.num,'Title':e.title,'Date':e.date||'','Link':e.url,'Tags':(e.tags||[]).join(' '),'Read':e.read?'Yes':'No','Read Count':e.readCount||0,'Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Essays');}
-function exportPosts(){if(!posts.length){showToast('No posts');return;}var rows=posts.map(function(p){var avg=avgR(p.ratings);return{'Author':p.author,'Platform':p.platform,'Content':p.content,'Link':p.url,'Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Posts');}
-function exportReadings(){if(!readings.length){showToast('No readings');return;}var rows=readings.map(function(r){var avg=avgR(r.ratings);return{'Author':r.author,'Type':r.type,'Notes':r.content,'Link':r.url,'Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Readings');}
+function exportPosts(){if(!posts.length){showToast('No posts');return;}var rows=posts.slice().sort(function(a,b){return(a.num||0)-(b.num||0);}).map(function(p){var avg=avgR(p.ratings);return{'#':p.num||'','Date':p.date||'','Author':p.author,'Platform':p.platform,'Tags':(p.tags||[]).join(' '),'Content':p.content,'Link':p.url||'','Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Posts');}
+function exportReadings(){if(!readings.length){showToast('No readings');return;}var rows=readings.slice().sort(function(a,b){return(a.num||0)-(b.num||0);}).map(function(r){var avg=avgR(r.ratings);return{'#':r.num||'','Date':r.date||'','Author':r.author,'Source':r.source||'','Title':r.title||'','Type':r.type,'Tags':(r.tags||[]).join(' '),'Notes':r.content,'Link':r.url||'','Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Readings');}
 function exportMemories(){if(!memories.length){showToast('No memories','amber');return;}var rows=memories.slice().sort(function(a,b){return(a.num||0)-(b.num||0);}).map(function(m){var avg=avgR(m.ratings);return{'#':m.num,'Title':m.title||'','Date':m.createdAt,'Tags':(m.tags||[]).join(' '),'Content':m.content,'Avg Rating':isNaN(avg)?'':avg.toFixed(1)};});copyToClip(toTsv(rows),'Memories');}
 
 /* ── TOAST ── */
