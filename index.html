@@ -451,6 +451,9 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
 .migrate-text{flex:1;font-size:0.78rem;color:var(--am-dark);font-style:italic;}
 .btn-migrate{padding:7px 16px;font-size:0.68rem;font-weight:700;background:var(--amber);color:#fff;border:none;border-radius:var(--r-full);cursor:pointer;}
 .btn-migrate-dismiss{padding:7px 14px;font-size:0.68rem;font-weight:700;background:transparent;color:var(--am-dark);border:1px solid var(--amber);border-radius:var(--r-full);cursor:pointer;}
+.reader-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule);}
+.reader-item:last-child{border-bottom:none;}
+.reader-role-badge{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:2px 8px;border-radius:var(--r-full);background:var(--bg-2);border:1px solid var(--rule);color:var(--ink-3);}
 
 @media(max-width:900px){
   .sidebar{display:none;}
@@ -737,14 +740,32 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
     <div class="page" id="page-settings">
       <div class="page-header"><h1 class="page-title">Settings</h1><p class="page-desc">Manage access and preferences.</p></div>
 
-      <div class="settings-section">
-        <h3>Pending Admin Requests <span id="pendingCount" style="font-size:0.8rem;color:var(--ink-3);font-weight:400;font-style:italic;"></span></h3>
-        <div id="pendingList"><div class="empty-state"><span class="icon">inbox</span><p>No pending requests</p></div></div>
+      <!-- OWNER SECTIONS -->
+      <div id="ownerSettingsSections" style="display:none;">
+        <div class="settings-section">
+          <h3>Pending Admin Requests <span id="pendingCount" style="font-size:0.8rem;color:var(--ink-3);font-weight:400;font-style:italic;"></span></h3>
+          <div id="pendingList"><div class="empty-state"><span class="icon">inbox</span><p>No pending requests</p></div></div>
+        </div>
+        <div class="settings-section">
+          <h3>Current Admins</h3>
+          <div id="adminList"><div class="empty-state"><span class="icon">group</span><p>No admins yet</p></div></div>
+        </div>
+        <div class="settings-section">
+          <h3>All Readers <span id="readerCount" style="font-size:0.8rem;color:var(--ink-3);font-weight:400;font-style:italic;"></span></h3>
+          <div id="readerList"><div class="empty-state"><span class="icon">people</span><p>No readers yet</p></div></div>
+        </div>
       </div>
 
-      <div class="settings-section">
-        <h3>Current Admins</h3>
-        <div id="adminList"><div class="empty-state"><span class="icon">group</span><p>No admins yet</p></div></div>
+      <!-- READER SECTION — visible to readers only -->
+      <div id="readerSettingsSection" style="display:none;">
+        <div class="settings-section">
+          <h3>Your Access</h3>
+          <div style="padding:8px 0 16px;">
+            <p style="font-size:0.85rem;color:var(--ink-2);margin-bottom:16px;line-height:1.65;">You currently have <strong>read-only access</strong>. Request admin access to add and edit content in the archive.</p>
+            <div id="readerRequestStatus" style="margin-bottom:12px;"></div>
+            <button class="btn-sm btn-sm-pri" id="btnSettingsRequestAccess" style="padding:10px 24px;">Request Admin Access</button>
+          </div>
+        </div>
       </div>
 
       <div class="settings-section">
@@ -910,7 +931,7 @@ const db   = firebase.firestore();
 /* ═══ STATE ═══ */
 let currentUser = null;
 let userRole    = 'reader'; // 'owner' | 'admin' | 'reader'
-let essays=[], posts=[], readings=[], memories=[], admins=[], requests=[];
+let essays=[], posts=[], readings=[], memories=[], admins=[], requests=[], allUsers=[];
 let unsubs = {};
 let eFilter='all', pFilter='all', rFilter='all';
 let eSort='num', pSort='date', rSort='date', mSort='num';
@@ -956,11 +977,16 @@ auth.onAuthStateChanged(async user=>{
   if(!user){showLogin();return;}
   currentUser=user;
   await determineRole(user);
+  // Record user to Firestore (all roles)
+  await db.collection('users').doc(user.email).set({
+    email:user.email,
+    name:user.displayName||user.email,
+    photoURL:user.photoURL||'',
+    role:userRole,
+    lastSeen:new Date().toISOString()
+  },{merge:true});
   if(userRole==='reader'){
-    // check if already requested
     const reqSnap=await db.collection('accessRequests').where('email','==',user.email).where('status','==','pending').get();
-    const approved=await db.collection('admins').doc(user.email).get();
-    if(approved.exists){userRole='admin';showApp(user);setupListeners();return;}
     showRequestScreen(user, reqSnap.empty?'none':'pending');
     return;
   }
@@ -988,34 +1014,45 @@ function showRequestScreen(user,status){
   document.getElementById('requestScreen').classList.add('open');
   document.getElementById('appShell').classList.remove('visible');
   const note=document.getElementById('reqNote');
-  const btn=document.getElementById('btnRequestAccess');
+  const reqBtn=document.getElementById('btnRequestAccess');
   if(status==='pending'){
     document.getElementById('reqStatus').textContent='Access request pending approval';
-    btn.textContent='Request Sent — Awaiting Approval';
-    btn.disabled=true;btn.style.opacity='0.6';
+    reqBtn.textContent='Request Sent — Awaiting Approval';
+    reqBtn.disabled=true;reqBtn.style.opacity='0.6';
     note.textContent='The owner will review your request. Come back later.';
   } else {
     document.getElementById('reqStatus').textContent='You have read-only access';
-    btn.textContent='Request Admin Access';
-    btn.disabled=false;btn.style.opacity='1';
+    reqBtn.textContent='Request Admin Access';
+    reqBtn.disabled=false;reqBtn.style.opacity='1';
     note.textContent='';
   }
-  // show app in reader mode
-  document.getElementById('btnContinueAsReader').addEventListener('click',()=>{
-    document.getElementById('requestScreen').classList.remove('open');
-    showApp(user);setupListeners();
-  },{once:true});
 }
 
+// Wire Continue as Reader — persistent, not once
+document.getElementById('btnContinueAsReader')?.addEventListener('click',()=>{
+  document.getElementById('requestScreen').classList.remove('open');
+  if(currentUser){showApp(currentUser);setupListeners();}
+});
+
+// Wire Request Access button — persistent
 document.getElementById('btnRequestAccess')?.addEventListener('click',async()=>{
   if(!currentUser)return;
-  await db.collection('accessRequests').add({
-    uid:currentUser.uid,email:currentUser.email,
-    name:currentUser.displayName||currentUser.email,
-    status:'pending',requestedAt:new Date().toISOString()
-  });
-  showRequestScreen(currentUser,'pending');
-  showToast('Access request sent');
+  const reqBtn=document.getElementById('btnRequestAccess');
+  reqBtn.disabled=true;reqBtn.style.opacity='0.6';reqBtn.textContent='Sending...';
+  try{
+    await db.collection('accessRequests').add({
+      uid:currentUser.uid,email:currentUser.email,
+      name:currentUser.displayName||currentUser.email,
+      status:'pending',requestedAt:new Date().toISOString()
+    });
+    showToast('Access request sent');
+    document.getElementById('reqStatus').textContent='Access request pending approval';
+    reqBtn.textContent='Request Sent — Awaiting Approval';
+    document.getElementById('reqNote').textContent='The owner will review your request. Come back later.';
+  }catch(err){
+    reqBtn.disabled=false;reqBtn.style.opacity='1';reqBtn.textContent='Request Admin Access';
+    showToast('Error sending request','err');
+  }
 });
 
 function showApp(user){
@@ -1054,8 +1091,21 @@ function showApp(user){
   });
 
   if(userRole==='reader')document.getElementById('readerBanner').style.display='block';
+  // Settings visibility per role
   if(userRole==='owner'){
     document.getElementById('sn-settings').style.display='flex';
+    document.getElementById('ownerSettingsSections').style.display='block';
+    document.getElementById('readerSettingsSection').style.display='none';
+  } else if(userRole==='admin'){
+    document.getElementById('sn-settings').style.display='flex';
+    document.getElementById('ownerSettingsSections').style.display='none';
+    document.getElementById('readerSettingsSection').style.display='none';
+  } else {
+    // reader — show settings tab for access requests
+    document.getElementById('sn-settings').style.display='flex';
+    document.getElementById('ownerSettingsSections').style.display='none';
+    document.getElementById('readerSettingsSection').style.display='block';
+    setupReaderSettings();
   }
 
   switchTab('essays');
@@ -1091,6 +1141,11 @@ function setupListeners(){
     // Listen to admins
     unsubs['admins']=db.collection('admins').onSnapshot(snap=>{
       admins=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderSettings();
+    });
+    // Listen to all users
+    unsubs['users']=db.collection('users').onSnapshot(snap=>{
+      allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));
       renderSettings();
     });
   }
@@ -1653,7 +1708,8 @@ async function saveMemory(){
 /* ═══ SETTINGS ═══ */
 function renderSettings(){
   if(userRole!=='owner')return;
-  // Pending requests
+
+  // ── Pending requests ──
   const pendingList=document.getElementById('pendingList');
   const countEl=document.getElementById('pendingCount');
   countEl.textContent=requests.length?`(${requests.length})`:'';
@@ -1675,6 +1731,8 @@ function renderSettings(){
           const name=btn.getAttribute('data-name');
           await db.collection('admins').doc(email).set({email,name,approvedAt:new Date().toISOString()});
           await db.collection('accessRequests').doc(reqId).update({status:'approved'});
+          // Update user role in users collection
+          await db.collection('users').doc(email).update({role:'admin'});
           showToast('Admin access granted');
         } else {
           await db.collection('accessRequests').doc(reqId).update({status:'rejected'});
@@ -1683,7 +1741,8 @@ function renderSettings(){
       });
     });
   }
-  // Current admins
+
+  // ── Current admins ──
   const adminList=document.getElementById('adminList');
   if(!admins.length){
     adminList.innerHTML='<div class="empty-state"><span class="icon">group</span><p>No admins yet</p></div>';
@@ -1697,11 +1756,80 @@ function renderSettings(){
     adminList.querySelectorAll('.btn-revoke').forEach(btn=>{
       btn.addEventListener('click',async()=>{
         if(!confirm('Revoke admin access for this user?'))return;
-        await db.collection('admins').doc(btn.getAttribute('data-email')).delete();
+        const email=btn.getAttribute('data-email');
+        await db.collection('admins').doc(email).delete();
+        await db.collection('users').doc(email).update({role:'reader'});
         showToast('Admin access revoked');
       });
     });
   }
+
+  // ── All Readers ──
+  const readerList=document.getElementById('readerList');
+  const readerCountEl=document.getElementById('readerCount');
+  const adminEmails=admins.map(a=>a.email);
+  // Readers = all users who are not owner and not admin
+  const readers=allUsers.filter(u=>u.email!==OWNER&&!adminEmails.includes(u.email));
+  readerCountEl.textContent=readers.length?`(${readers.length})`:'';
+  if(!readers.length){
+    readerList.innerHTML='<div class="empty-state"><span class="icon">people</span><p>No readers yet</p></div>';
+  } else {
+    readerList.innerHTML='';
+    // Sort by lastSeen descending
+    readers.sort((a,b)=>(b.lastSeen||'').localeCompare(a.lastSeen||''));
+    readers.forEach(u=>{
+      const hasPending=requests.some(r=>r.email===u.email);
+      const item=document.createElement('div');item.className='reader-item';
+      item.innerHTML=`
+        <div class="req-user-info" style="flex:1;">
+          <div class="req-user-name">${u.name||u.email}</div>
+          <div class="req-user-email">${u.email}</div>
+        </div>
+        ${hasPending?'<span class="badge badge-new" style="font-size:0.58rem;">Pending Request</span>':''}
+        <span class="reader-role-badge">Reader</span>
+        <span class="req-time">Last seen ${(u.lastSeen||'').slice(0,10)}</span>`;
+      readerList.appendChild(item);
+    });
+  }
+}
+
+// ── Reader settings — request access from settings page ──
+function setupReaderSettings(){
+  const statusEl=document.getElementById('readerRequestStatus');
+  const btn=document.getElementById('btnSettingsRequestAccess');
+  if(!statusEl||!btn)return;
+  // Check current request status
+  db.collection('accessRequests').where('email','==',currentUser.email).orderBy('requestedAt','desc').limit(1).get().then(snap=>{
+    if(!snap.empty){
+      const req=snap.docs[0].data();
+      if(req.status==='pending'){
+        statusEl.innerHTML='<span class="badge badge-unread" style="font-size:0.72rem;padding:4px 10px;">Request pending — awaiting owner approval</span>';
+        btn.textContent='Request Already Sent';btn.disabled=true;btn.style.opacity='0.6';
+        return;
+      } else if(req.status==='rejected'){
+        statusEl.innerHTML='<span class="badge badge-hidden" style="font-size:0.72rem;padding:4px 10px;">Previous request was not approved. You can request again.</span>';
+      }
+    }
+  }).catch(()=>{});
+  // Remove old listener if any
+  const newBtn=btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn,btn);
+  newBtn.addEventListener('click',async()=>{
+    newBtn.disabled=true;newBtn.style.opacity='0.6';newBtn.textContent='Sending...';
+    try{
+      await db.collection('accessRequests').add({
+        uid:currentUser.uid,email:currentUser.email,
+        name:currentUser.displayName||currentUser.email,
+        status:'pending',requestedAt:new Date().toISOString()
+      });
+      statusEl.innerHTML='<span class="badge badge-new" style="font-size:0.72rem;padding:4px 10px;">Request sent — awaiting approval</span>';
+      newBtn.textContent='Request Sent';
+      showToast('Access request sent');
+    }catch(err){
+      newBtn.disabled=false;newBtn.style.opacity='1';newBtn.textContent='Request Admin Access';
+      showToast('Error: '+err.message,'err');
+    }
+  });
 }
 
 /* ═══ RATE ═══ */
