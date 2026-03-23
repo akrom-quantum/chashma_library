@@ -776,12 +776,12 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
         </div>
       </div>
 
-      <!-- READINGS RESET — owner only, hidden after use -->
+      <!-- ALL READ COUNTS RESET — owner only, hidden after use -->
       <div class="settings-section owner-only" id="readingsResetSection">
-        <h3 style="color:var(--err);">Reset Readings Data</h3>
-        <p style="font-size:0.82rem;color:var(--ink-3);line-height:1.65;margin-bottom:16px;">This will reset <strong>all read counts and ratings</strong> on every Reading entry to zero. The readings themselves (title, author, notes, etc.) will not be affected. This action cannot be undone.</p>
+        <h3 style="color:var(--err);">Reset All Read Counts</h3>
+        <p style="font-size:0.82rem;color:var(--ink-3);line-height:1.65;margin-bottom:16px;">This will reset <strong>all personal and total read counts</strong> across every Essay, Post, Reading, and Memory to zero. All content, ratings, and other data stay untouched. This action cannot be undone.</p>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-          <button class="btn-sm" id="btnResetReadings" style="border-color:var(--err);color:var(--err);font-weight:700;">Reset All Readings Counts &amp; Ratings</button>
+          <button class="btn-sm" id="btnResetReadings" style="border-color:var(--err);color:var(--err);font-weight:700;">Reset All Read Counts Everywhere</button>
           <span id="resetReadingsStatus" style="font-size:0.75rem;color:var(--ink-3);font-style:italic;"></span>
         </div>
       </div>
@@ -1027,31 +1027,37 @@ function applyTheme(t){
 document.getElementById('themeBtn').addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 document.getElementById('settingsThemeBtn')?.addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 
-// Readings reset button — owner only
+// Reset ALL read counts across all collections — owner only
 document.getElementById('btnResetReadings')?.addEventListener('click',async function(){
   if(userRole!=='owner')return;
-  if(!confirm('Reset ALL read counts and ratings on every Reading to zero?\n\nThis cannot be undone.'))return;
+  if(!confirm('Reset ALL read counts across Essays, Posts, Readings and Memories to zero?\n\nRatings and all content stay untouched. This cannot be undone.'))return;
   const btn=this;
   const status=document.getElementById('resetReadingsStatus');
   btn.disabled=true;btn.textContent='Resetting...';status.textContent='';
   try{
-    const snap=await db.collection('readings').get();
-    const batch=db.batch();
-    snap.docs.forEach(doc=>{
-      batch.update(doc.ref,{readCounts:{},ratings:{}});
-    });
-    await batch.commit();
-    btn.textContent='Done — all readings reset';
+    const cols=['essays','posts','readings','memories'];
+    for(const col of cols){
+      const snap=await db.collection(col).get();
+      // Firestore batch limit is 500 — chunk if needed
+      const docs=snap.docs;
+      for(let i=0;i<docs.length;i+=400){
+        const batch=db.batch();
+        docs.slice(i,i+400).forEach(doc=>{
+          batch.update(doc.ref,{readCounts:{},readCount:0});
+        });
+        await batch.commit();
+      }
+    }
+    btn.textContent='Done — all read counts reset';
     btn.style.color='var(--pri)';btn.style.borderColor='var(--pri)';
     status.textContent='Reset completed on '+new Date().toLocaleDateString();
-    // Hide the section after 4 seconds so it cannot be clicked again by accident
     setTimeout(()=>{
       const section=document.getElementById('readingsResetSection');
       if(section)section.style.display='none';
-    },4000);
-    showToast('All readings reset successfully');
+    },5000);
+    showToast('All read counts reset to zero');
   }catch(err){
-    btn.disabled=false;btn.textContent='Reset All Readings Counts & Ratings';
+    btn.disabled=false;btn.textContent='Reset All Read Counts Everywhere';
     status.textContent='Error: '+err.message;
     showToast('Reset failed: '+err.message,'err');
   }
