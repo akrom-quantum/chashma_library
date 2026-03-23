@@ -883,12 +883,16 @@ sup.fn-ref{color:var(--pri);font-size:.68em;font-weight:700;}
 
 <!-- MODAL: RATE -->
 <div class="overlay-modal" id="ov-rate">
-  <div class="modal" style="max-width:340px;">
+  <div class="modal" style="max-width:380px;">
     <div class="mhead"><h2>Rate This</h2><button class="mclose" id="closeRateModal">&#x2715;</button></div>
     <div class="rate-body">
       <p id="ratePrompt">How would you rate this?</p>
       <div class="rate-row"><span class="rstar" data-n="1">&#9733;</span><span class="rstar" data-n="2">&#9733;</span><span class="rstar" data-n="3">&#9733;</span><span class="rstar" data-n="4">&#9733;</span><span class="rstar" data-n="5">&#9733;</span></div>
       <div class="rate-lbl" id="rateLbl"></div>
+      <label id="rateConfirmLabel" style="display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:12px 14px;background:var(--bg-2);border-radius:var(--r-md);cursor:pointer;text-align:left;">
+        <input type="checkbox" id="rateConfirmCheck" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:var(--pri);">
+        <span id="rateConfirmText" style="font-size:0.78rem;color:var(--ink-2);line-height:1.5;">I have honestly read this essay in full.</span>
+      </label>
     </div>
     <div class="mfoot"><button class="btn-modal-cancel" id="skipRateBtn">Skip</button><button class="btn-modal-save" id="submitRateBtn">Submit</button></div>
   </div>
@@ -927,6 +931,8 @@ firebase.initializeApp({
 });
 const auth = firebase.auth();
 const db   = firebase.firestore();
+// Keep user logged in across refreshes
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
 /* ═══ STATE ═══ */
 let currentUser = null;
@@ -938,16 +944,28 @@ let eSort='num', pSort='date', rSort='date', mSort='num';
 let eDir=1, pDir=1, rDir=1, mDir=1;
 let activeETag=null, activePTag=null, activeRTag=null, activeMTag=null;
 let editEssayId=null, editPostId=null, editReadingId=null, editMemId=null;
-let pendingRateId=null, pendingRateType=null, pickedStar=0;
+let pendingRateId=null, pendingRateType=null, pickedStar=0, ratingConfirmed=false;
 let mdHtmlCache='', mdTitleCache='';
 
 /* ═══ HELPERS ═══ */
 function lsG(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function lsS(k,v){localStorage.setItem(k,JSON.stringify(v));}
 function hasLocal(){return ['ch4_essays','ch4_posts','ch4_readings','ch4_memories'].some(k=>{const d=lsG(k);return d&&d.length>0;});}
-function avg(arr){if(!arr||!arr.length)return NaN;return arr.reduce((s,r)=>s+r,0)/arr.length;}
-function avgStr(arr){const a=avg(arr);return isNaN(a)?'&mdash;':a.toFixed(1);}
-function starsHtml(arr){const a=avg(arr);return [1,2,3,4,5].map(n=>`<span class="star${!isNaN(a)&&n<=Math.round(a)?' on':''}">&#9733;</span>`).join('');}
+function avg(ratingsObj){
+  // supports both old array format and new map {email:score} format
+  if(!ratingsObj)return NaN;
+  let vals=[];
+  if(Array.isArray(ratingsObj)){vals=ratingsObj;}
+  else if(typeof ratingsObj==='object'){vals=Object.values(ratingsObj);}
+  if(!vals.length)return NaN;
+  return vals.reduce((s,r)=>s+Number(r),0)/vals.length;
+}
+function avgStr(ratingsObj){const a=avg(ratingsObj);return isNaN(a)?'&mdash;':a.toFixed(1);}
+function starsHtml(ratingsObj){const a=avg(ratingsObj);return [1,2,3,4,5].map(n=>`<span class="star${!isNaN(a)&&n<=Math.round(a)?' on':''}">&#9733;</span>`).join('');}
+function userRating(ratingsObj){
+  if(!currentUser||!ratingsObj||typeof ratingsObj!=='object'||Array.isArray(ratingsObj))return 0;
+  return ratingsObj[currentUser.email.replace(/\./g,'_')]||0;
+}
 function isEditable(){return userRole==='owner'||userRole==='admin';}
 const PLBL={twitter:'Twitter / X',telegram:'Telegram',substack:'Substack',youtube:'YouTube',other:'Other'};
 const RLBL={book:'Book',article:'Article',video:'Video',podcast:'Podcast',other:'Other'};
@@ -1296,16 +1314,14 @@ function renderEssays(){
     h+=`<button class="act-icon${hasA?'':' dim'}" data-id="${e.id}" data-action="analysis" title="Analysis"><span class="icon">query_stats</span></button>`;
     h+=`<button class="act-icon${e.read?' green':''}" data-id="${e.id}" data-action="read" title="${e.read?'Mark Unread':'Mark Read'}"><span class="icon fill">${e.read?'undo':'check_circle'}</span></button>`;
     h+=`</div>`;
+    h+=`<div class="act-row">`;
+    h+=`<button class="act-icon" data-id="${e.id}" data-action="rate" title="Rate"><span class="icon">grade</span></button>`;
+    if(userRole==='owner')h+=`<button class="act-icon${e.hidden?' amber':''}" data-id="${e.id}" data-action="toggle-vis" title="${e.hidden?'Make Visible':'Hide'}"><span class="icon">${e.hidden?'visibility_off':'visibility'}</span></button>`;
     if(isEditable()){
-      h+=`<div class="act-row">`;
-      h+=`<button class="act-icon" data-id="${e.id}" data-action="rate" title="Rate"><span class="icon">grade</span></button>`;
-      if(userRole==='owner')h+=`<button class="act-icon${e.hidden?' amber':''}" data-id="${e.id}" data-action="toggle-vis" title="${e.hidden?'Make Visible':'Hide'}"><span class="icon">${e.hidden?'visibility_off':'visibility'}</span></button>`;
       h+=`<button class="act-icon" data-id="${e.id}" data-action="edit" title="Edit"><span class="icon">edit</span></button>`;
       h+=`<button class="act-icon danger" data-id="${e.id}" data-action="del" title="Delete"><span class="icon">close</span></button>`;
-      h+=`</div>`;
-    } else {
-      h+=`<div class="act-row"><button class="act-icon" data-id="${e.id}" data-action="rate" title="Rate"><span class="icon">grade</span></button></div>`;
     }
+    h+=`</div>`;
     h+=`</div>`;
     card.innerHTML=h;
     list.appendChild(card);
@@ -1330,7 +1346,7 @@ function renderEssays(){
 async function openOrig(id){
   const e=essays.find(x=>x.id===id);if(!e)return;
   window.open(e.url,'_blank');
-  if(isEditable()){await db.collection('essays').doc(id).update({readCount:firebase.firestore.FieldValue.increment(1),read:true});}
+  // Read count only increments when Mark Read is clicked, not here
   openRateModal(id,'essay');
 }
 function openMd(id,type){
@@ -1341,12 +1357,16 @@ function openMd(id,type){
   document.getElementById('viewerTitleBar').textContent=mdTitleCache;
   document.getElementById('mdViewerBody').innerHTML=mdHtmlCache;
   document.getElementById('mdViewer').classList.add('open');
-  if(isEditable()&&type==='essay')db.collection('essays').doc(id).update({readCount:firebase.firestore.FieldValue.increment(1),read:true});
+  // Read count only increments on Mark Read click, not on viewing essay content
 }
 async function toggleRead(id){
   const e=essays.find(x=>x.id===id);if(!e)return;
-  await db.collection('essays').doc(id).update({read:!e.read});
-  showToast(e.read?'Marked as unread':'Marked as read');
+  const nowRead=!e.read;
+  const update={read:nowRead};
+  // Increment read count only when marking as read, not when unmarking
+  if(nowRead)update.readCount=firebase.firestore.FieldValue.increment(1);
+  await db.collection('essays').doc(id).update(update);
+  showToast(nowRead?'Marked as read':'Marked as unread');
 }
 async function toggleVisibility(id){
   const e=essays.find(x=>x.id===id);if(!e||userRole!=='owner')return;
@@ -1433,20 +1453,19 @@ function renderPosts(){
     h+=`<span class="plat plat-${p.platform}">${PLBL[p.platform]||p.platform}</span>`;
     h+=`<span class="post-author">${p.author}</span>`;
     if(p.date)h+=`<span class="post-date">${p.date}</span>`;
+    h+=`<div style="margin-left:auto;display:flex;gap:4px;">`;
+    h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" title="Rate" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">grade</span></button>`;
     if(isEditable()){
-      h+=`<div style="margin-left:auto;display:flex;gap:4px;">`;
-      h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" title="Rate" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">grade</span></button>`;
       h+=`<button class="act-icon" data-id="${p.id}" data-action="edit" title="Edit" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">edit</span></button>`;
       h+=`<button class="act-icon danger" data-id="${p.id}" data-action="del" title="Delete" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">close</span></button>`;
-      h+=`</div>`;
     }
+    h+=`</div>`;
     h+=`</div>`;
     if(tagsHtml)h+=`<div class="post-tags">${tagsHtml}</div>`;
     h+=`<div class="post-content">${p.content}</div>`;
     h+=`<div class="post-stats"><div class="stars">${starsHtml(p.ratings)}</div><strong>${avgStr(p.ratings)}</strong></div>`;
     h+=`<div class="post-actions">`;
     if(p.url)h+=`<a class="act-src" href="${p.url}" target="_blank" rel="noopener"><span class="icon" style="font-size:15px;">north_east</span> Source</a>`;
-    if(!isEditable())h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" title="Rate" style="margin-left:auto;"><span class="icon">grade</span></button>`;
     h+=`</div>`;
     card.innerHTML=h;
     grid.appendChild(card);
@@ -1836,11 +1855,40 @@ function setupReaderSettings(){
 
 /* ═══ RATE ═══ */
 function openRateModal(id,type){
-  pendingRateId=id;pendingRateType=type;pickedStar=0;
+  pendingRateId=id;pendingRateType=type;pickedStar=0;ratingConfirmed=false;
   document.querySelectorAll('.rstar').forEach(s=>s.classList.remove('sel'));
   document.getElementById('rateLbl').textContent='';
-  const p={essay:'How would you rate this essay?',post:'How would you rate this post?',reading:'How would you rate this reading?',memory:'How would you rate this memory?'};
-  document.getElementById('ratePrompt').textContent=p[type]||'Rate this?';
+  // Reset checkbox
+  const chk=document.getElementById('rateConfirmCheck');
+  if(chk)chk.checked=false;
+  // Set prompt and confirmation text per type
+  const prompts={
+    essay:'How would you rate this essay?',
+    post:'How would you rate this post?',
+    reading:'How would you rate this reading?',
+    memory:'How would you rate this memory?'
+  };
+  const confirms={
+    essay:'I have honestly read this essay in full.',
+    post:'I have honestly read this post in full.',
+    reading:'I have honestly gone through this reading in full.',
+    memory:'I have honestly reflected on this memory.'
+  };
+  document.getElementById('ratePrompt').textContent=prompts[type]||'How would you rate this?';
+  const confirmText=document.getElementById('rateConfirmText');
+  if(confirmText)confirmText.textContent=confirms[type]||'I have honestly read this in full.';
+  // Show user their previous rating if any
+  const store=type==='essay'?essays:type==='post'?posts:type==='reading'?readings:memories;
+  const item=store.find(x=>x.id===id);
+  if(item&&currentUser){
+    const prev=userRating(item.ratings);
+    if(prev>0){
+      document.querySelectorAll('.rstar').forEach((s,i)=>s.classList.toggle('sel',i<prev));
+      pickedStar=prev;
+      const lbl=['','Poor','Fair','Good','Very Good','Excellent'];
+      document.getElementById('rateLbl').textContent='Your previous rating: '+lbl[prev];
+    }
+  }
   openModal('ov-rate');
 }
 document.querySelectorAll('.rstar').forEach(s=>{
@@ -1851,16 +1899,20 @@ document.querySelectorAll('.rstar').forEach(s=>{
     document.getElementById('rateLbl').textContent=lbl[n]||'';
   });
 });
-document.getElementById('closeRateModal')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;});
-document.getElementById('skipRateBtn')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;});
+document.getElementById('closeRateModal')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;ratingConfirmed=false;});
+document.getElementById('skipRateBtn')?.addEventListener('click',()=>{closeModal('ov-rate');pendingRateId=null;ratingConfirmed=false;});
+document.getElementById('rateConfirmCheck')?.addEventListener('change',function(){ratingConfirmed=this.checked;});
 document.getElementById('submitRateBtn')?.addEventListener('click',async()=>{
   if(!pickedStar){showToast('Select a rating first');return;}
+  if(!ratingConfirmed){showToast('Please confirm you have read this fully','err');return;}
   const col=pendingRateType==='essay'?'essays':pendingRateType==='post'?'posts':pendingRateType==='reading'?'readings':'memories';
   try{
-    await db.collection(col).doc(pendingRateId).update({ratings:firebase.firestore.FieldValue.arrayUnion(pickedStar)});
+    // Save rating as map keyed by user email (dots replaced with underscores for Firestore)
+    const key='ratings.'+currentUser.email.replace(/\./g,'_');
+    await db.collection(col).doc(pendingRateId).update({[key]:pickedStar});
     showToast('Rating saved');
   }catch(e){showToast('Error saving rating','err');}
-  pendingRateId=null;closeModal('ov-rate');
+  pendingRateId=null;ratingConfirmed=false;closeModal('ov-rate');
 });
 
 /* ═══ MD VIEWER ═══ */
