@@ -226,7 +226,7 @@ a{color:var(--pri);text-decoration:none;}
 .badge-unread{background:var(--bg-3);border:1px solid var(--rule);color:var(--ink-3);}
 .badge-hidden{background:var(--err-bg);border:1px solid var(--err);color:var(--err);}
 .badge-admin{background:var(--amber-pale);border:1px solid var(--amber);color:var(--am-dark);}
-.essay-title{font-family:'Newsreader',serif;font-size:1.2rem;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:8px;}
+.essay-title{font-family:'Newsreader',serif;font-size:1.55rem;font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:10px;}
 .essay-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
 .essay-tag{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;padding:2px 8px;border:1px solid var(--rule);color:var(--ink-3);border-radius:var(--r-full);font-weight:700;}
 .essay-stats{display:flex;align-items:center;gap:14px;font-size:0.7rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.1em;}
@@ -291,7 +291,7 @@ a{color:var(--pri);text-decoration:none;}
 .reading-author{font-size:0.9rem;font-weight:700;font-style:italic;color:var(--ink);font-family:'Newsreader',serif;}
 .reading-source-lbl{font-size:0.62rem;color:var(--ink-3);font-style:italic;}
 .reading-date{font-size:0.62rem;color:var(--ink-3);margin-left:auto;}
-.reading-title{font-family:'Newsreader',serif;font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+.reading-title{font-family:'Newsreader',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.25;}
 .reading-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
 .reading-tag{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;padding:2px 7px;border:1px solid var(--rule);color:var(--ink-3);border-radius:var(--r-full);font-weight:700;}
 .reading-notes{font-size:0.84rem;line-height:1.7;color:var(--ink-2);font-style:italic;border-left:2px solid #7c3aed;padding-left:12px;margin-bottom:8px;}
@@ -1339,13 +1339,14 @@ function renderEssays(){
 
     let h=`<div class="essay-num">${String(e.num).padStart(2,'0')}</div>`;
     h+=`<div class="essay-body">`;
-    h+=`<div class="essay-eye"><span class="essay-date">${e.date}</span>${badgeHtml}${hiddenBadge}</div>`;
+    h+=`<div class="essay-eye">${badgeHtml}${hiddenBadge}</div>`;
     h+=`<div class="essay-title">${e.title}</div>`;
     if(tagsHtml)h+=`<div class="essay-tags">${tagsHtml}</div>`;
     const eTotalReads=totalReadCount(e);
     // myCount already calculated above
     h+=`<div class="essay-stats">`;
-    h+=`<span>&#128214; <strong>${eTotalReads}&times;</strong> total</span>`;
+    h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${e.date}</span>`;
+    h+=`<span>&#128214; <strong>${eTotalReads}&times;</strong></span>`;
     if(myCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${myCount}&times;</strong> you</span>`;
     h+=`<div class="stars">${starsHtml(e.ratings)}</div><strong style="color:var(--pri)">${avgStr(e.ratings)}</strong>`;
     h+=`</div>`;
@@ -1515,32 +1516,37 @@ function renderPosts(){
     const card=document.createElement('div');
     card.className='post-card';
     card.style.animationDelay=(i*0.025)+'s';
+    // Dynamic number: position in current filtered+sorted list
+    const dynNum=String(i+1).padStart(2,'0');
     const tagsHtml=(p.tags||[]).map(t=>`<span class="post-tag">${t}</span>`).join('');
+    // Declare pMyCount FIRST before any use
+    const pMyCount=myReadCount(p);
+    const pTotalReads=totalReadCount(p);
+
     let h=`<div class="post-head">`;
-    if(p.num)h+=`<span class="post-order">#${String(p.num).padStart(2,'0')}</span>`;
+    h+=`<span class="post-order">#${dynNum}</span>`;
     h+=`<span class="plat plat-${p.platform}">${PLBL[p.platform]||p.platform}</span>`;
-    h+=`<span class="post-author">${p.author}</span>`;
-    if(p.date)h+=`<span class="post-date">${p.date}</span>`;
     h+=`<div style="margin-left:auto;display:flex;gap:4px;">`;
     h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" title="Rate" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">grade</span></button>`;
     if(isEditable()){
       h+=`<button class="act-icon" data-id="${p.id}" data-action="edit" title="Edit" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">edit</span></button>`;
       h+=`<button class="act-icon danger" data-id="${p.id}" data-action="del" title="Delete" style="width:28px;height:28px;"><span class="icon" style="font-size:15px;">close</span></button>`;
     }
-    h+=`</div>`;
-    h+=`</div>`;
+    h+=`</div></div>`;
+    // Author on its own line, prominent
+    h+=`<div style="font-family:'Newsreader',serif;font-size:1rem;font-weight:700;font-style:italic;color:var(--ink);">${p.author}</div>`;
     if(tagsHtml)h+=`<div class="post-tags">${tagsHtml}</div>`;
-    h+=`<div class="post-content">${p.content}</div>`;
-    const pTotalReads=totalReadCount(p);
-    // pMyCount already calculated above
+    // Content — bigger and bold
+    h+=`<div class="post-content" style="font-size:1rem;font-weight:600;font-style:normal;color:var(--ink);line-height:1.75;border-left:3px solid var(--pri);padding-left:14px;">${p.content}</div>`;
+    // Stats + date at bottom
     h+=`<div class="post-stats">`;
-    h+=`<span>&#128214; <strong>${pTotalReads}&times;</strong> total</span>`;
-    if(pMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${pMyCount}&times;</strong> you</span>`;
+    h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${p.date||''}</span>`;
+    h+=`<span>&#128214; <strong>${pTotalReads}&times;</strong></span>`;
+    if(pMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${pMyCount}&times;</strong></span>`;
     h+=`<div class="stars">${starsHtml(p.ratings)}</div><strong>${avgStr(p.ratings)}</strong>`;
     h+=`</div>`;
     h+=`<div class="post-actions">`;
     if(p.url)h+=`<a class="act-src" href="${p.url}" target="_blank" rel="noopener"><span class="icon" style="font-size:15px;">north_east</span> Source</a>`;
-    const pMyCount=myReadCount(p);
     if(pMyCount>0){
       h+=`<button class="act-icon green" data-id="${p.id}" data-action="read" title="You have read this ${pMyCount} time${pMyCount===1?'':'s'}" style="min-width:42px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;"><span class="icon fill" style="font-size:13px;">check_circle</span>${pMyCount}&times;</button>`;
     } else {
@@ -1630,30 +1636,34 @@ function renderReadings(){
     const el=document.createElement('div');
     el.className='reading-entry';
     el.style.animationDelay=(i*0.025)+'s';
+    // Dynamic number: position in current filtered+sorted list
+    const dynNum=String(i+1).padStart(2,'0');
     const tagsHtml=(r.tags||[]).map(t=>`<span class="reading-tag">${t}</span>`).join('');
+    // Declare counts FIRST
+    const rMyCount=myReadCount(r);
+    const rTotalReads=totalReadCount(r);
+
     let h=`<span class="rtype rtype-${r.type}">${RLBL[r.type]||r.type}</span>`;
     h+=`<div class="reading-body">`;
     h+=`<div class="reading-head">`;
+    h+=`<span class="badge badge-unread" style="font-size:0.58rem;">#${dynNum}</span>`;
     h+=`<span class="reading-author">${r.author}</span>`;
     if(r.source)h+=`<span class="reading-source-lbl">via ${r.source}</span>`;
-    if(r.num)h+=`<span class="badge badge-unread" style="font-size:0.58rem;">#${String(r.num).padStart(2,'0')}</span>`;
-    if(r.date)h+=`<span class="reading-date">${r.date}</span>`;
     h+=`</div>`;
-    if(r.title)h+=`<div class="reading-title">${r.title}</div>`;
+    // Title — bigger and bolder
+    if(r.title)h+=`<div class="reading-title" style="font-size:1.25rem;font-weight:700;margin-bottom:8px;">${r.title}</div>`;
     if(tagsHtml)h+=`<div class="reading-tags">${tagsHtml}</div>`;
     h+=`<div class="reading-notes">${r.content}</div>`;
-    const rTotalReads=totalReadCount(r);
-    // rMyCount already calculated above
     h+=`<div class="reading-stats">`;
-    h+=`<span>&#128214; <strong>${rTotalReads}&times;</strong> total</span>`;
-    if(rMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${rMyCount}&times;</strong> you</span>`;
+    h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${r.date||''}</span>`;
+    h+=`<span>&#128214; <strong>${rTotalReads}&times;</strong></span>`;
+    if(rMyCount>0)h+=`<span style="color:var(--amber);">&#128100; <strong style="color:var(--amber);">${rMyCount}&times;</strong></span>`;
     h+=`<div class="stars">${starsHtml(r.ratings)}</div><strong>${avgStr(r.ratings)}</strong>`;
     h+=`</div>`;
     h+=`</div>`;
     h+=`<div class="reading-actions">`;
     if(r.url)h+=`<a class="act-rsrc" href="${r.url}" target="_blank" rel="noopener"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;
     h+=`<div class="act-row" style="margin-top:4px;">`;
-    const rMyCount=myReadCount(r);
     if(rMyCount>0){
       h+=`<button class="act-icon green" data-id="${r.id}" data-action="read" title="You have read this ${rMyCount} time${rMyCount===1?'':'s'}" style="min-width:42px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;"><span class="icon fill" style="font-size:13px;">check_circle</span>${rMyCount}&times;</button>`;
     } else {
