@@ -578,7 +578,11 @@ function showApp(user){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('masthead').style.display='block';
-  ['essays','posts','readings','memories'].forEach(function(t){document.getElementById('page-'+t).style.display='block';});
+  ['essays','posts','readings','memories'].forEach(function(t){
+    var el=document.getElementById('page-'+t);
+    el.style.display='';
+    el.classList.toggle('active',t==='essays');
+  });
 
   /* user chip */
   var avatar=document.getElementById('userAvatar');
