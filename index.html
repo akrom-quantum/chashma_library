@@ -127,19 +127,34 @@ a{color:var(--pri);text-decoration:none;}
 .home-panel{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px;overflow:hidden;}
 .home-panel-title{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink-3);font-weight:700;margin-bottom:14px;}
 /* Heatmap */
-.heatmap-wrap{overflow-x:auto;}
-.heatmap-grid{display:flex;gap:3px;align-items:flex-end;}
+.heatmap-wrap{overflow-x:auto;position:relative;}
+.heatmap-grid{display:flex;gap:3px;align-items:flex-start;padding-bottom:4px;}
 .heatmap-col{display:flex;flex-direction:column;gap:3px;}
-.heatmap-cell{width:12px;height:12px;border-radius:2px;background:var(--bg-3);}
-.heatmap-cell[data-v="1"]{background:rgba(0,53,39,0.2);}
-.heatmap-cell[data-v="2"]{background:rgba(0,53,39,0.4);}
-.heatmap-cell[data-v="3"]{background:rgba(0,53,39,0.65);}
+.heatmap-cell{width:13px;height:13px;border-radius:2px;background:var(--bg-3);cursor:pointer;transition:transform .1s;flex-shrink:0;}
+.heatmap-cell:hover{transform:scale(1.35);z-index:2;position:relative;}
+.heatmap-cell[data-v="1"]{background:rgba(0,53,39,0.18);}
+.heatmap-cell[data-v="2"]{background:rgba(0,53,39,0.38);}
+.heatmap-cell[data-v="3"]{background:rgba(0,53,39,0.62);}
 .heatmap-cell[data-v="4"]{background:var(--pri);}
-[data-theme="dark"] .heatmap-cell[data-v="1"]{background:rgba(149,211,186,0.2);}
-[data-theme="dark"] .heatmap-cell[data-v="2"]{background:rgba(149,211,186,0.4);}
-[data-theme="dark"] .heatmap-cell[data-v="3"]{background:rgba(149,211,186,0.65);}
+[data-theme="dark"] .heatmap-cell[data-v="1"]{background:rgba(149,211,186,0.18);}
+[data-theme="dark"] .heatmap-cell[data-v="2"]{background:rgba(149,211,186,0.38);}
+[data-theme="dark"] .heatmap-cell[data-v="3"]{background:rgba(149,211,186,0.62);}
 [data-theme="dark"] .heatmap-cell[data-v="4"]{background:var(--pri-2);}
-.heatmap-label{font-size:0.55rem;color:var(--ink-4);margin-top:4px;text-align:center;}
+.heatmap-label{font-size:0.52rem;color:var(--ink-4);margin-top:3px;text-align:center;height:12px;line-height:12px;}
+/* Day detail popup */
+.heatmap-popup{position:fixed;z-index:500;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:14px 16px;min-width:220px;max-width:300px;pointer-events:none;animation:popIn .15s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.heatmap-popup-date{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--ink-3);margin-bottom:8px;}
+.heatmap-popup-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--rule);font-size:0.76rem;color:var(--ink-2);}
+.heatmap-popup-item:last-child{border-bottom:none;padding-bottom:0;}
+.heatmap-popup-col{font-size:0.54rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:2px 6px;border-radius:var(--r-full);flex-shrink:0;margin-top:1px;}
+.hp-col-essays{background:var(--pri-pale);color:var(--pri);}
+.hp-col-posts{background:#e8f4fe;color:#1a6fa8;}
+.hp-col-readings{background:#ede8fe;color:#4c2daa;}
+.hp-col-memories{background:var(--amber-pale);color:var(--am-dark);}
+[data-theme="dark"] .hp-col-posts{background:rgba(26,140,216,.13);color:#60b4f0;}
+[data-theme="dark"] .hp-col-readings{background:rgba(91,63,188,.13);color:#c4a0ff;}
+.heatmap-popup-empty{font-size:0.78rem;color:var(--ink-3);font-style:italic;}
 /* Streaks */
 .streak-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);}
 .streak-row:last-child{border-bottom:none;}
@@ -567,12 +582,30 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 
       <div class="home-row">
         <div class="home-panel">
-          <div class="home-panel-title">My Activity (Last 16 Weeks)</div>
+          <div class="home-panel-title">My Activity (Last 16 Weeks) <span style="font-size:0.58rem;color:var(--ink-4);font-weight:400;">&mdash; click any cell</span></div>
           <div class="heatmap-wrap" id="myHeatmap"></div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
+            <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.18);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.38);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.62);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--pri);"></div>
+            <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
+          </div>
         </div>
         <div class="home-panel">
-          <div class="home-panel-title">Global Activity (Last 16 Weeks)</div>
+          <div class="home-panel-title">Global Activity (Last 16 Weeks) <span style="font-size:0.58rem;color:var(--ink-4);font-weight:400;">&mdash; click any cell</span></div>
           <div class="heatmap-wrap" id="globalHeatmap"></div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
+            <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.18);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.38);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.62);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:var(--pri);"></div>
+            <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
+          </div>
         </div>
       </div>
 
@@ -1134,24 +1167,45 @@ document.getElementById('btnBannerRequest')?.addEventListener('click',async()=>{
 /* ═══ NOTIFICATIONS ═══ */
 function loadNotifications(){
   if(!currentUser)return;
+  // lastSeen: per-user ISO timestamp stored in localStorage
   const lastSeen=lsG('notifLastSeen_'+currentUser.uid)||'1970-01-01T00:00:00.000Z';
-  // Listen for new items across all collections
   const cols=['essays','posts','readings','memories'];
   notifications=[];
   cols.forEach(col=>{
     if(unsubs['notif_'+col])unsubs['notif_'+col]();
+    // Only fetch items created after the user last cleared notifications
+    // Use onSnapshot so badge updates in real time when owner adds something
     unsubs['notif_'+col]=db.collection(col)
       .where('createdAt','>',lastSeen)
       .onSnapshot(snap=>{
+        // Remove old entries for this col, re-add fresh
+        notifications=notifications.filter(n=>n._col!==col);
         snap.docs.forEach(d=>{
           const data={id:d.id,...d.data(),_col:col};
-          if(!notifications.find(n=>n.id===d.id&&n._col===col)){
-            // Don't notify the person who added it (owner/admin edge)
-            notifications.push(data);
-          }
+          // Don't notify the person who created the item
+          // addedBy is set when saving; fallback: if owner/admin added it, readers get notified
+          const addedBy=data.addedBy||'';
+          if(addedBy===currentUser.email)return; // suppress for self
+          notifications.push(data);
         });
         renderNotifications();
-      },()=>{});
+      },err=>{
+        // Index not built yet (no createdAt field on old docs) — fall back to unfiltered snapshot
+        if(err.code==='failed-precondition'||err.code==='unimplemented'||err.message.includes('index')){
+          unsubs['notif_'+col]=db.collection(col).onSnapshot(snap=>{
+            notifications=notifications.filter(n=>n._col!==col);
+            snap.docs.forEach(d=>{
+              const data={id:d.id,...d.data(),_col:col};
+              const ts=data.createdAt||'';
+              if(ts<=lastSeen)return;
+              const addedBy=data.addedBy||'';
+              if(addedBy===currentUser.email)return;
+              notifications.push(data);
+            });
+            renderNotifications();
+          });
+        }
+      });
   });
 }
 
@@ -1162,19 +1216,41 @@ function renderNotifications(){
   if(count>0){badge.style.display='';badge.textContent=count>9?'9+':count;}
   else badge.style.display='none';
 
-  if(!count){list.innerHTML='<div class="notif-empty">All caught up!</div>';return;}
+  if(!count){list.innerHTML='<div class="notif-empty">All caught up! 🎉</div>';return;}
   list.innerHTML='';
   const colLabels={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
-  [...notifications].reverse().slice(0,10).forEach(n=>{
+  const colIcons={essays:'description',posts:'article',readings:'library_books',memories:'auto_stories'};
+  // Sort newest first by createdAt
+  const sorted=[...notifications].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).slice(0,15);
+  sorted.forEach(n=>{
     const item=document.createElement('div');item.className='notif-item';
     const title=n.title||n.author||'New item';
-    item.innerHTML=`<div class="notif-dot"></div><div class="notif-text"><div class="notif-title">${title}</div><div class="notif-sub">New ${colLabels[n._col]||n._col} · ${(n.createdAt||n.date||'').slice(0,10)}</div></div>`;
+    const dateStr=(n.createdAt||n.date||'').slice(0,10);
+    const colName=colLabels[n._col]||n._col;
+    const iconName=colIcons[n._col]||'circle';
+    item.innerHTML=`
+      <div class="notif-dot"></div>
+      <div class="notif-text">
+        <div class="notif-title">${title}</div>
+        <div class="notif-sub">New ${colName} · ${dateStr}</div>
+      </div>
+      <span class="icon" style="font-size:15px;color:var(--ink-4);flex-shrink:0;">${iconName}</span>`;
     item.addEventListener('click',()=>{
       closeAllDropdowns();
-      switchTab(n._col);
+      // Navigate to item: open detail if post/reading, switch tab otherwise
+      if(n._col==='posts'){switchTab('posts');setTimeout(()=>openDetail(n.id,'posts'),100);}
+      else if(n._col==='readings'){switchTab('readings');setTimeout(()=>openDetail(n.id,'readings'),100);}
+      else if(n._col==='essays'){switchTab('essays');}
+      else switchTab(n._col);
     });
     list.appendChild(item);
   });
+  if(notifications.length>15){
+    const more=document.createElement('div');
+    more.style.cssText='padding:8px 16px;font-size:0.68rem;color:var(--ink-3);font-style:italic;text-align:center;';
+    more.textContent=`+${notifications.length-15} more — mark all read to clear`;
+    list.appendChild(more);
+  }
 }
 
 document.getElementById('notifClear')?.addEventListener('click',()=>{
@@ -1333,29 +1409,46 @@ function buildHeatmapData(readCountsFn, weeks=16){
   return grid;
 }
 
+// activityIndex: {date -> [{col, title, id}]} built once per render
+let activityIndex = {};
+
+function buildActivityIndex(){
+  activityIndex = {};
+  const allItems=[...essays,...posts,...readings,...memories];
+  allItems.forEach(item=>{
+    // Use actual read event date: prefer item.date (content date), fallback createdAt
+    // For display in popup we show the item info; key is item date as proxy for "when added/read"
+    const d=(item.date||item.createdAt||'').slice(0,10);
+    if(!d)return;
+    const col=essays.includes(item)?'essays':posts.includes(item)?'posts':readings.includes(item)?'readings':'memories';
+    if(!activityIndex[d])activityIndex[d]=[];
+    activityIndex[d].push({col,title:item.title||item.author||'Untitled',id:item.id,totalReads:totalReadCount(item),myReads:myReadCount(item)});
+  });
+}
+
 function renderHeatmaps(){
-  // Build activity from item createdAt/date fields
+  buildActivityIndex();
+  // My activity map: days where I have read something
   const myActivity={};
   const globalActivity={};
   const allItems=[...essays,...posts,...readings,...memories];
   allItems.forEach(item=>{
-    const d=item.date||item.createdAt||'';
+    const d=(item.date||item.createdAt||'').slice(0,10);
     if(!d)return;
-    const key=d.slice(0,10);
-    globalActivity[key]=(globalActivity[key]||0)+totalReadCount(item);
-    myActivity[key]=(myActivity[key]||0)+myReadCount(item);
+    const g=totalReadCount(item);
+    const m=myReadCount(item);
+    if(g>0)globalActivity[d]=(globalActivity[d]||0)+g;
+    if(m>0)myActivity[d]=(myActivity[d]||0)+m;
   });
-  renderHeatmap('myHeatmap',myActivity);
-  renderHeatmap('globalHeatmap',globalActivity);
+  renderHeatmap('myHeatmap',myActivity,true);
+  renderHeatmap('globalHeatmap',globalActivity,false);
 }
 
-function renderHeatmap(containerId,activityMap){
+function renderHeatmap(containerId,activityMap,isMine){
   const el=document.getElementById(containerId);
   if(!el)return;
   const weeks=16;
-  const days=weeks*7;
   const now=new Date();
-  // Build week columns
   const cols=[];
   for(let w=0;w<weeks;w++){
     const col=[];
@@ -1363,20 +1456,20 @@ function renderHeatmap(containerId,activityMap){
       const date=new Date(now);
       date.setDate(date.getDate()-(w*7+d));
       const key=date.toISOString().slice(0,10);
-      const v=activityMap[key]||0;
-      col.unshift({key,v:Math.min(v,4)>0?Math.min(4,Math.ceil(v/2)):0});
+      const raw=activityMap[key]||0;
+      // Intensity: 0=none,1=low,2=medium,3=high,4=max
+      const v=raw===0?0:raw===1?1:raw<=3?2:raw<=6?3:4;
+      col.unshift({key,v,raw});
     }
     cols.unshift(col);
   }
-  // Build month labels: detect month changes
   const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let html='<div class="heatmap-grid">';
   cols.forEach((col,wi)=>{
     html+=`<div class="heatmap-col">`;
     col.forEach(cell=>{
-      html+=`<div class="heatmap-cell" data-v="${cell.v}" title="${cell.key}: ${cell.v>0?'active':'no activity'}"></div>`;
+      html+=`<div class="heatmap-cell" data-v="${cell.v}" data-date="${cell.key}" data-mine="${isMine}" data-raw="${cell.raw}"></div>`;
     });
-    // Month label on first day of month
     const firstDay=new Date(col[0].key);
     const prevDay=wi>0?new Date(cols[wi-1][0].key):null;
     const showMonth=!prevDay||firstDay.getMonth()!==prevDay.getMonth();
@@ -1385,7 +1478,50 @@ function renderHeatmap(containerId,activityMap){
   });
   html+='</div>';
   el.innerHTML=html;
+  // Attach click handlers for interactive popup
+  el.querySelectorAll('.heatmap-cell').forEach(cell=>{
+    cell.addEventListener('click',(ev)=>{
+      ev.stopPropagation();
+      showHeatmapPopup(cell.dataset.date, cell.dataset.mine==='true', ev.clientX, ev.clientY);
+    });
+  });
 }
+
+let _heatmapPopup=null;
+function showHeatmapPopup(date, isMine, cx, cy){
+  // Remove existing popup
+  if(_heatmapPopup){_heatmapPopup.remove();_heatmapPopup=null;}
+  const items=activityIndex[date]||[];
+  const relevant=isMine?items.filter(x=>x.myReads>0):items.filter(x=>x.totalReads>0);
+  const colLabel={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
+  const d=new Date(date);
+  const dateStr=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  let html=`<div class="heatmap-popup-date">${dateStr}</div>`;
+  if(!relevant.length){
+    html+=`<div class="heatmap-popup-empty">No ${isMine?'personal ':''} activity recorded on this day.</div>`;
+  } else {
+    relevant.slice(0,8).forEach(item=>{
+      const reads=isMine?item.myReads:item.totalReads;
+      html+=`<div class="heatmap-popup-item"><span class="heatmap-popup-col hp-col-${item.col}">${colLabel[item.col]}</span><span style="flex:1;line-height:1.4;">${item.title}</span><span style="font-size:0.65rem;color:var(--ink-3);flex-shrink:0;margin-left:4px;">${reads}×</span></div>`;
+    });
+    if(relevant.length>8)html+=`<div style="font-size:0.65rem;color:var(--ink-3);padding-top:5px;font-style:italic;">+${relevant.length-8} more…</div>`;
+  }
+  const popup=document.createElement('div');
+  popup.className='heatmap-popup';
+  popup.innerHTML=html;
+  document.body.appendChild(popup);
+  _heatmapPopup=popup;
+  // Position: prefer below+right of click, flip if near edge
+  const pw=240,ph=popup.offsetHeight||180;
+  const vw=window.innerWidth,vh=window.innerHeight;
+  let left=cx+12,top=cy+12;
+  if(left+pw>vw-8)left=cx-pw-8;
+  if(top+ph>vh-8)top=cy-ph-8;
+  popup.style.left=Math.max(8,left)+'px';
+  popup.style.top=Math.max(8,top)+'px';
+}
+// Close popup on any outside click
+document.addEventListener('click',()=>{if(_heatmapPopup){_heatmapPopup.remove();_heatmapPopup=null;}});
 
 function renderHomeStreaks(){
   const el=document.getElementById('homeStreaks');
@@ -1629,7 +1765,7 @@ async function saveEssay(){
       await db.collection('essays').doc(editEssayId).update({num,date,title,author,url,tags,myEssayMd,analysisMd});showToast('Essay updated');
     } else {
       if(essays.find(e=>e.num===num)){showToast('Essay #'+num+' already exists','err');return;}
-      await db.collection('essays').add({num,date,title,author,url,tags,myEssayMd,analysisMd,readCounts:{},ratings:{},hidden:false,createdAt:new Date().toISOString()});showToast('Essay added');
+      await db.collection('essays').add({num,date,title,author,url,tags,myEssayMd,analysisMd,readCounts:{},ratings:{},hidden:false,createdAt:new Date().toISOString(),addedBy:currentUser?.email||''});showToast('Essay added');
     }
     closeModal('ov-essay');
   }catch(err){showToast('Error: '+err.message,'err');}
@@ -1716,7 +1852,7 @@ async function savePost(){
       await db.collection('posts').doc(editPostId).update({date,author,title,platform,content,url:url||'',tags});showToast('Post updated');
     } else {
       const nextNum=posts.length?Math.max(...posts.map(p=>p.num||0))+1:1;
-      await db.collection('posts').add({num:nextNum,date,author,title,platform,content,url:url||'',tags,createdAt:new Date().toISOString(),ratings:{},readCounts:{}});showToast('Post added');
+      await db.collection('posts').add({num:nextNum,date,author,title,platform,content,url:url||'',tags,createdAt:new Date().toISOString(),ratings:{},readCounts:{},addedBy:currentUser?.email||''});showToast('Post added');
     }
     closeModal('ov-post');
   }catch(err){showToast('Error: '+err.message,'err');}
@@ -1807,7 +1943,7 @@ async function saveReading(){
       await db.collection('readings').doc(editReadingId).update({date,author,source,title,type,content,url:url||'',tags});showToast('Reading updated');
     } else {
       const nextNum=readings.length?Math.max(...readings.map(r=>r.num||0))+1:1;
-      await db.collection('readings').add({num:nextNum,date,author,source,title,type,content,url:url||'',tags,createdAt:new Date().toISOString(),ratings:{},readCounts:{}});showToast('Reading added');
+      await db.collection('readings').add({num:nextNum,date,author,source,title,type,content,url:url||'',tags,createdAt:new Date().toISOString(),ratings:{},readCounts:{},addedBy:currentUser?.email||''});showToast('Reading added');
     }
     closeModal('ov-reading');
   }catch(err){showToast('Error: '+err.message,'err');}
@@ -1956,7 +2092,7 @@ async function saveMemory(){
       await db.collection('memories').doc(editMemId).update({title,content,tags,updatedAt:now});showToast('Memory updated','amber');
     } else {
       const nextNum=memories.length?Math.max(...memories.map(m=>m.num||0))+1:1;
-      await db.collection('memories').add({num:nextNum,title,content,tags,createdAt:now,updatedAt:now,ratings:{},readCounts:{}});showToast('Memory saved','amber');
+      await db.collection('memories').add({num:nextNum,title,content,tags,createdAt:now,updatedAt:now,ratings:{},readCounts:{},addedBy:currentUser?.email||''});showToast('Memory saved','amber');
     }
     document.getElementById('memWriter').classList.remove('open');
   }catch(err){showToast('Error: '+err.message,'err');}
