@@ -1842,7 +1842,8 @@ function renderPosts(){
     card.innerHTML=h;
     // Click card to open detail (but not buttons)
     card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts','open');openDetail(p.id,'posts');}});
-    grid.appendChild(card);   // ← add this line if missing
+    grid.appendChild(card);
+  });
 
   grid.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',(ev)=>{
