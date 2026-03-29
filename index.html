@@ -758,10 +758,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <div id="lbPosts"></div>
         </div>
       </div>
-     <div class="analytics-section">
-        <h3>Current Reading Streaks</h3>
-        <div id="lbStreaks"></div>
-      </div>
       <div class="analytics-section" id="userActivitySection" style="display:none;">
         <h3>User Activity — Last 7 Days <span style="font-size:0.72rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner only)</span></h3>
         <div id="userActivityLog"></div>
@@ -2002,7 +1998,7 @@ function renderMemories(){
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openWriter(id);
       else if(act==='del')delItem('memories',id);
-      else if(act==='rate'){logActivity(id,'memories');openRateModal(id,'memory');}
+      else if(act==='rate'){logActivity(id,'memories','rate');openRateModal(id,'memory');}
       else if(act==='read'){const item=memories.find(x=>x.id===id);if(item)handleMarkRead(id,'memories',item);}
     });
   });
@@ -2010,7 +2006,7 @@ function renderMemories(){
 
 function openMemoryDetail(id){
   const m=memories.find(x=>x.id===id);if(!m)return;
-  logActivity(id,'memories');
+  logActivity(id,'memories','open');
   const overlay=document.getElementById('detailOverlay');
   const content=document.getElementById('detailContent');
   document.getElementById('detailTitleBar').textContent=m.title||`Memory #${String(m.num||0).padStart(2,'0')}`;
@@ -2196,7 +2192,7 @@ document.getElementById('readAgainNo')?.addEventListener('click',()=>{closeModal
 document.getElementById('readAgainYes')?.addEventListener('click',async()=>{
   if(!pendingReadId||!pendingReadCol)return;
   const id=pendingReadId,col=pendingReadCol;closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;
-  await incrementReadCount(id,col);await logActivity(id,col);showToast('Reading count updated');
+  await incrementReadCount(id,col);await logActivity(id,col,'read');showToast('Reading count updated');
 });
 
 /* ═══ RATING ═══ */
