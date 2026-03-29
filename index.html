@@ -132,14 +132,14 @@ a{color:var(--pri);text-decoration:none;}
 .heatmap-col{display:flex;flex-direction:column;gap:3px;}
 .heatmap-cell{width:13px;height:13px;border-radius:2px;background:var(--bg-3);cursor:pointer;transition:transform .1s;flex-shrink:0;}
 .heatmap-cell:hover{transform:scale(1.35);z-index:2;position:relative;}
-.heatmap-cell[data-v="1"]{background:rgba(0,53,39,0.18);}
-.heatmap-cell[data-v="2"]{background:rgba(0,53,39,0.38);}
-.heatmap-cell[data-v="3"]{background:rgba(0,53,39,0.62);}
-.heatmap-cell[data-v="4"]{background:var(--pri);}
-[data-theme="dark"] .heatmap-cell[data-v="1"]{background:rgba(149,211,186,0.18);}
-[data-theme="dark"] .heatmap-cell[data-v="2"]{background:rgba(149,211,186,0.38);}
-[data-theme="dark"] .heatmap-cell[data-v="3"]{background:rgba(149,211,186,0.62);}
-[data-theme="dark"] .heatmap-cell[data-v="4"]{background:var(--pri-2);}
+.heatmap-cell[data-v="1"]{background:#a7f3d0;}
+.heatmap-cell[data-v="2"]{background:#34d399;}
+.heatmap-cell[data-v="3"]{background:#10b981;}
+.heatmap-cell[data-v="4"]{background:#047857;}
+[data-theme="dark"] .heatmap-cell[data-v="1"]{background:rgba(52,211,153,0.25);}
+[data-theme="dark"] .heatmap-cell[data-v="2"]{background:#34d399;}
+[data-theme="dark"] .heatmap-cell[data-v="3"]{background:#10b981;}
+[data-theme="dark"] .heatmap-cell[data-v="4"]{background:#065f46;}
 .heatmap-label{font-size:0.52rem;color:var(--ink-4);margin-top:3px;text-align:center;height:12px;line-height:12px;}
 /* Day detail popup */
 .heatmap-popup{position:fixed;z-index:500;background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:14px 16px;min-width:220px;max-width:300px;pointer-events:none;animation:popIn .15s ease;}
@@ -283,14 +283,14 @@ a{color:var(--pri);text-decoration:none;}
 
 /* ═══ MEMORY CARDS ═══ */
 .memory-list{display:flex;flex-direction:column;gap:14px;}
-.memory-card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 24px;transition:all .2s;animation:fadeUp .3s ease both;box-shadow:var(--sh-sm);}
+.memory-card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 24px;transition:all .2s;animation:fadeUp .3s ease both;box-shadow:var(--sh-sm);cursor:pointer;}
 .memory-card:hover{box-shadow:var(--sh-md);border-color:var(--amber);transform:translateY(-1px);}
 .mem-num{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--amber);margin-bottom:4px;}
 .mem-title{font-family:'Newsreader',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.3;}
 .mem-meta{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:7px;}
 .mem-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
 .mem-tag{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;padding:2px 7px;border:1px solid var(--amber);color:var(--am-dark);border-radius:var(--r-full);font-weight:700;background:var(--amber-pale);}
-.mem-preview{font-size:0.82rem;line-height:1.72;color:var(--ink-2);font-style:italic;border-left:2px solid var(--amber);padding-left:10px;margin-bottom:8px;}
+.mem-preview{font-size:0.82rem;line-height:1.72;color:var(--ink-2);font-style:italic;border-left:2px solid var(--amber);padding-left:10px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .mem-actions{display:flex;gap:5px;flex-wrap:wrap;}
 
 /* ═══ DETAIL OVERLAY (Posts & Readings) ═══ */
@@ -587,10 +587,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
             <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
             <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.18);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.38);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.62);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:var(--pri);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div>
             <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
           </div>
         </div>
@@ -600,10 +600,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
             <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
             <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.18);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.38);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:rgba(0,53,39,0.62);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:var(--pri);"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div>
+            <div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div>
             <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
           </div>
         </div>
@@ -744,7 +744,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
         <h3>Reading Leaderboard — Total</h3>
         <div id="lbTotal"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;" id="lbSubGrid">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:14px;" id="lbSubGrid">
         <div class="analytics-section" style="margin-bottom:0;">
           <h3>Essays</h3>
           <div id="lbEssays"></div>
@@ -761,6 +761,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
       <div class="analytics-section">
         <h3>Current Reading Streaks</h3>
         <div id="lbStreaks"></div>
+      </div>
+      <div class="analytics-section" id="userActivitySection" style="display:none;">
+        <h3>Daily Activity by User <span style="font-size:0.75rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner view)</span></h3>
+        <div id="userActivityTable"></div>
       </div>
     </div>
 
@@ -1707,11 +1711,15 @@ function renderEssays(){
     btn.addEventListener('click',(ev)=>{
       ev.stopPropagation();
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
-      if(act==='orig'){const e=essays.find(x=>x.id===id);if(e)window.open(e.url,'_blank');openRateModal(id,'essay');}
-      else if(act==='essay')openMd(id,'essay');
-      else if(act==='analysis')openMd(id,'analysis');
+      if(act==='orig'){
+        const e=essays.find(x=>x.id===id);if(e)window.open(e.url,'_blank');
+        logActivity(id,'essays'); // ← source click counts
+        openRateModal(id,'essay');
+      }
+      else if(act==='essay'){openMd(id,'essay');logActivity(id,'essays');} // ← my essay click counts
+      else if(act==='analysis'){openMd(id,'analysis');logActivity(id,'essays');} // ← analysis click counts
       else if(act==='read')toggleRead(id);
-      else if(act==='rate')openRateModal(id,'essay');
+      else if(act==='rate'){logActivity(id,'essays');openRateModal(id,'essay');} // ← rate click counts
       else if(act==='toggle-vis')toggleVisibility(id);
       else if(act==='edit')openEditEssay(id);
       else if(act==='del')delItem('essays',id);
@@ -1807,7 +1815,7 @@ function renderPosts(){
     h+=`<div class="stars">${starsHtml(p.ratings)}</div><strong style="color:var(--pri)">${avgStr(p.ratings)}</strong></div>`;
     card.innerHTML=h;
     // Click card to open detail (but not buttons)
-    card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]'))openDetail(p.id,'posts');});
+    card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts');openDetail(p.id,'posts');}});
     grid.appendChild(card);
   });
 
@@ -1817,7 +1825,7 @@ function renderPosts(){
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditPost(id);
       else if(act==='del')delItem('posts',id);
-      else if(act==='rate')openRateModal(id,'post');
+      else if(act==='rate'){logActivity(id,'posts');openRateModal(id,'post');} // ← rate counts
       else if(act==='read'){const item=posts.find(x=>x.id===id);if(item)handleMarkRead(id,'posts',item);}
     });
   });
@@ -1896,8 +1904,7 @@ function renderReadings(){
     h+=`</div></div>`;
     el.innerHTML=h;
     // Click to open detail
-    el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a'))openDetail(r.id,'readings');});
-    list.appendChild(el);
+el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a')){logActivity(r.id,'readings');openDetail(r.id,'readings');}});    list.appendChild(el);
   });
 
   list.querySelectorAll('[data-action]').forEach(btn=>{
@@ -1906,7 +1913,7 @@ function renderReadings(){
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditReading(id);
       else if(act==='del')delItem('readings',id);
-      else if(act==='rate')openRateModal(id,'reading');
+      else if(act==='rate'){logActivity(id,'readings');openRateModal(id,'reading');} // ← rate counts
       else if(act==='read'){const item=readings.find(x=>x.id===id);if(item)handleMarkRead(id,'readings',item);}
     });
   });
@@ -1963,13 +1970,12 @@ function renderMemories(){
   data.forEach((m,i)=>{
     const card=document.createElement('div');card.className='memory-card';card.style.animationDelay=(i*0.02)+'s';
     const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${t}</span>`).join('');
-    const preview=m.content.length>280?m.content.slice(0,280)+'…':m.content;
     const mMyCount=myReadCount(m);const mTotal=totalReadCount(m);
     let h=`<div class="mem-num">Memory #${String(m.num||0).padStart(2,'0')}</div>`;
     if(m.title)h+=`<div class="mem-title">${m.title}</div>`;
     h+=`<div class="mem-meta">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+m.updatedAt:''}</div>`;
     if(tagsHtml)h+=`<div class="mem-tags">${tagsHtml}</div>`;
-    h+=`<div class="mem-preview">${preview}</div>`;
+    h+=`<div class="mem-preview">${m.content}</div>`;
     h+=`<div style="display:flex;align-items:center;gap:10px;font-size:0.65rem;color:var(--ink-3);margin-bottom:10px;">`;
     h+=`<span>📖 <strong>${mTotal}×</strong></span>`;
     if(mMyCount>0)h+=`<span style="color:var(--amber);">👤 <strong>${mMyCount}×</strong></span>`;
@@ -1980,20 +1986,65 @@ function renderMemories(){
     h+=`<button class="btn-sm" data-id="${m.id}" data-action="rate" style="font-size:0.62rem;">★ Rate</button>`;
     if(isEditable()){h+=`<button class="btn-sm" data-id="${m.id}" data-action="edit" style="font-size:0.62rem;">✎ Edit</button>`;h+=`<button class="btn-sm" data-id="${m.id}" data-action="del" style="font-size:0.62rem;color:var(--err);">✕ Delete</button>`;}
     h+=`</div>`;
-    card.innerHTML=h;list.appendChild(card);
+    card.innerHTML=h;
+    // Click card body (not buttons) → open detail overlay
+    card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]'))openMemoryDetail(m.id);});
+    list.appendChild(card);
   });
 
   list.querySelectorAll('[data-action]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
+    btn.addEventListener('click',(ev)=>{
+      ev.stopPropagation();
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openWriter(id);
       else if(act==='del')delItem('memories',id);
-      else if(act==='rate')openRateModal(id,'memory');
+      else if(act==='rate'){logActivity(id,'memories');openRateModal(id,'memory');}
       else if(act==='read'){const item=memories.find(x=>x.id===id);if(item)handleMarkRead(id,'memories',item);}
     });
   });
 }
 
+function openMemoryDetail(id){
+  const m=memories.find(x=>x.id===id);if(!m)return;
+  logActivity(id,'memories');
+  const overlay=document.getElementById('detailOverlay');
+  const content=document.getElementById('detailContent');
+  document.getElementById('detailTitleBar').textContent=m.title||`Memory #${String(m.num||0).padStart(2,'0')}`;
+
+  const myCount=myReadCount(m);const total=totalReadCount(m);
+  const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${t}</span>`).join('');
+
+  let h=`<div class="detail-header-block">`;
+  h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">`;
+  h+=`<span style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;padding:3px 9px;border-radius:var(--r-full);background:var(--amber-pale);color:var(--am-dark);border:1px solid var(--amber);">Memory #${String(m.num||0).padStart(2,'0')}</span>`;
+  h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+m.updatedAt:''}</span>`;
+  h+=`</div>`;
+  if(m.title)h+=`<div class="detail-big-title">${m.title}</div>`;
+  if(tagsHtml)h+=`<div class="mem-tags" style="margin-bottom:10px;">${tagsHtml}</div>`;
+  h+=`</div>`;
+
+  h+=`<div class="detail-actions-row">`;
+  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
+  else h+=`<button class="act-icon" id="detailReadBtn" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
+  h+=`<button class="act-icon" id="detailRateBtn" title="Rate"><span class="icon">grade</span></button>`;
+  if(isEditable()){h+=`<button class="act-icon" id="detailEditBtn" title="Edit in writer"><span class="icon">edit</span></button>`;h+=`<button class="act-icon danger" id="detailDelBtn" title="Delete"><span class="icon">close</span></button>`;}
+  h+=`<div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--ink-3);">`;
+  h+=`<span>📖 ${total}×</span>${myCount>0?`<span style="color:var(--amber);">👤 ${myCount}×</span>`:''}`;
+  h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong style="color:var(--amber)">${avgStr(m.ratings)}</strong>`;
+  h+=`</div></div>`;
+
+  // Full content — no clamp, full text with line breaks preserved
+  h+=`<div class="detail-body-text" style="white-space:pre-wrap;">${m.content}</div>`;
+  content.innerHTML=h;
+  overlay.classList.add('open');
+  overlay.scrollTop=0;
+
+  document.getElementById('detailReadBtn')?.addEventListener('click',async()=>{await handleMarkRead(id,'memories',m);openMemoryDetail(id);});
+  document.getElementById('detailRateBtn')?.addEventListener('click',()=>openRateModal(id,'memory'));
+  document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');openWriter(id);});
+  document.getElementById('detailDelBtn')?.addEventListener('click',()=>{if(confirm('Delete this memory permanently?')){overlay.classList.remove('open');delItem('memories',id);}});
+}            
+            
 /* ═══ DETAIL OVERLAY (Posts & Readings) ═══ */
 function openDetail(id, col){
   const items=col==='posts'?posts:readings;
@@ -2020,8 +2071,7 @@ function openDetail(id, col){
   h+=`</div>`;
 
   h+=`<div class="detail-actions-row">`;
-  if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;
-  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
+if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" onclick="logActivity('${id}','${col}')" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
   else h+=`<button class="act-icon" id="detailReadBtn" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
   h+=`<button class="act-icon" id="detailRateBtn" title="Rate"><span class="icon">grade</span></button>`;
   if(isEditable()){h+=`<button class="act-icon" id="detailEditBtn" title="Edit"><span class="icon">edit</span></button>`;h+=`<button class="act-icon danger" id="detailDelBtn" title="Delete"><span class="icon">close</span></button>`;}
@@ -2037,8 +2087,7 @@ function openDetail(id, col){
 
   // Wire action buttons
   document.getElementById('detailReadBtn')?.addEventListener('click',async()=>{await handleMarkRead(id,col,item);openDetail(id,col);});
-  document.getElementById('detailRateBtn')?.addEventListener('click',()=>openRateModal(id,col==='posts'?'post':'reading'));
-  document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');if(col==='posts')openEditPost(id);else openEditReading(id);});
+  document.getElementById('detailRateBtn')?.addEventListener('click',()=>{logActivity(id,col);openRateModal(id,col==='posts'?'post':'reading');});  document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');if(col==='posts')openEditPost(id);else openEditReading(id);});
   document.getElementById('detailDelBtn')?.addEventListener('click',()=>{if(confirm('Remove this item permanently?')){overlay.classList.remove('open');delItem(col,id);}});
 }
 
@@ -2124,6 +2173,7 @@ async function logActivity(id,col){
   const key='activity.'+today+'.'+currentUser.email.replace(/\./g,'_');
   try{await db.collection('activityLog').doc('global').set({[key]:firebase.firestore.FieldValue.increment(1)},{merge:true});}catch{}
 }
+window.logActivity=logActivity; // makes it callable from inline onclick
 
 document.getElementById('closeReadAgain')?.addEventListener('click',()=>{closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;});
 document.getElementById('readAgainNo')?.addEventListener('click',()=>{closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;showToast('Reading count unchanged');});
@@ -2177,6 +2227,85 @@ function renderAnalytics(){
   renderLeaderboard('lbReadings',computeLeaderboard(readings));
   renderLeaderboard('lbPosts',computeLeaderboard(posts));
   renderStreakLeaderboard('lbStreaks');
+  if(isOwner()) renderUserActivityTable();
+}
+
+async function renderUserActivityTable(){
+  const section=document.getElementById('userActivitySection');
+  const container=document.getElementById('userActivityTable');
+  if(!section||!container)return;
+  section.style.display='block';
+  container.innerHTML='<div style="font-size:0.78rem;color:var(--ink-3);font-style:italic;padding:8px 0;">Loading activity data…</div>';
+
+  // Fetch activityLog from Firestore
+  let actLog={};
+  try{
+    const doc=await db.collection('activityLog').doc('global').get();
+    if(doc.exists) actLog=doc.data()||{};
+  }catch(e){container.innerHTML='<div style="color:var(--err);font-size:0.8rem;">Could not load activity log.</div>';return;}
+
+  // actLog shape: { "activity.2025-03-01.user_email": count, ... }
+  // Parse into { emailKey -> { date -> count } }
+  const userDateMap={};
+  Object.entries(actLog).forEach(([key,cnt])=>{
+    const parts=key.split('.');
+    // key format: activity.YYYY-MM-DD.emailKey (emailKey may contain dots replaced by _)
+    if(parts.length<3||parts[0]!=='activity')return;
+    const date=parts[1];
+    const emailKey=parts.slice(2).join('.'); // rejoin in case email had dots
+    if(!userDateMap[emailKey])userDateMap[emailKey]={};
+    userDateMap[emailKey][date]=(userDateMap[emailKey][date]||0)+Number(cnt||0);
+  });
+
+  if(!Object.keys(userDateMap).length){
+    container.innerHTML='<div class="empty-state" style="padding:16px;"><p>No activity logged yet. Activity is recorded when users click source, open posts/readings, rate, or mark read.</p></div>';
+    return;
+  }
+
+  // Collect all dates, sort descending, take last 30 days
+  const allDates=[...new Set(Object.values(userDateMap).flatMap(d=>Object.keys(d)))].sort().reverse().slice(0,30);
+  const recentDates=allDates.slice(0,14); // show 14 days columns
+
+  // Build table
+  let html=`<div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
+    <thead>
+      <tr style="border-bottom:2px solid var(--rule);">
+        <th style="text-align:left;padding:8px 12px 8px 0;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);white-space:nowrap;min-width:140px;">User</th>
+        <th style="text-align:center;padding:8px 4px;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);">Total</th>`;
+  recentDates.forEach(d=>{
+    const short=d.slice(5); // MM-DD
+    html+=`<th style="text-align:center;padding:8px 4px;font-size:0.58rem;color:var(--ink-3);white-space:nowrap;">${short}</th>`;
+  });
+  html+=`</tr></thead><tbody>`;
+
+  // Sort users by total activity desc
+  const userRows=Object.entries(userDateMap).map(([emailKey,dates])=>{
+    const email=emailKey.replace(/_/g,'.');
+    const user=allUsers.find(u=>u.email===email);
+    const name=user?.name&&user.name!==email ? user.name : email.split('@')[0];
+    const total=Object.values(dates).reduce((s,v)=>s+v,0);
+    return{emailKey,email,name,dates,total};
+  }).sort((a,b)=>b.total-a.total);
+
+  userRows.forEach((row,ri)=>{
+    const rowBg=ri%2===0?'':'background:var(--bg-2);';
+    html+=`<tr style="${rowBg}border-bottom:1px solid var(--rule);">`;
+    html+=`<td style="padding:8px 12px 8px 0;white-space:nowrap;">
+      <div style="font-weight:700;color:var(--ink);font-size:0.78rem;">${row.name}</div>
+      <div style="color:var(--ink-3);font-size:0.62rem;">${row.email}</div>
+    </td>`;
+    html+=`<td style="text-align:center;padding:8px 4px;font-family:'Newsreader',serif;font-style:italic;color:var(--pri);font-size:0.9rem;">${row.total}</td>`;
+    recentDates.forEach(d=>{
+      const v=row.dates[d]||0;
+      const bg=v===0?'':v<=2?'background:rgba(0,53,39,0.12);':v<=5?'background:rgba(0,53,39,0.28);':'background:rgba(0,53,39,0.55);color:#fff;';
+      html+=`<td style="text-align:center;padding:6px 4px;border-radius:4px;${bg}font-weight:${v>0?'700':'400'};color:${v>0&&v>5?'#fff':'inherit'};">${v||'·'}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  html+=`<div style="font-size:0.62rem;color:var(--ink-3);margin-top:10px;font-style:italic;">Showing last 14 days. Activity = any qualifying click (source, open, rate, read). Darker cell = more activity that day.</div>`;
+  container.innerHTML=html;
 }
 
 function computeLeaderboard(items){
@@ -2186,7 +2315,7 @@ function computeLeaderboard(items){
     Object.entries(counts).forEach(([emailKey,cnt])=>{
       userTotals[emailKey]=(userTotals[emailKey]||0)+Number(cnt||0);
     });
-  });
+  });  
   return Object.entries(userTotals)
     .map(([emailKey,total])=>{
       const email=emailKey.replace(/_/g,'.');
@@ -2204,7 +2333,10 @@ function renderLeaderboard(elId,data){
   const rankClass=['gold','silver','bronze'];
   data.slice(0,5).forEach((u,i)=>{
     const item=document.createElement('div');item.className='leaderboard-item';
-    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${u.name}<div class="lb-sub">${u.email}</div></div><div class="lb-val">${u.total}×</div>`;
+    // Only show email below if name is different from email
+    const nameLine=u.name&&u.name!==u.email ? u.name : u.email.split('@')[0];
+    const subLine=u.name&&u.name!==u.email ? u.email : '';
+    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${nameLine}${subLine?`<div class="lb-sub">${subLine}</div>`:''}</div><div class="lb-val">${u.total}×</div>`;
     el.appendChild(item);
   });
 }
@@ -2217,7 +2349,9 @@ function renderStreakLeaderboard(elId){
   const rankClass=['gold','silver','bronze'];
   streaks.slice(0,5).forEach((s,i)=>{
     const item=document.createElement('div');item.className='leaderboard-item';
-    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${s.name}<div class="lb-sub">${s.email}</div></div><div class="lb-val">🔥 ${s.streak}d</div>`;
+    const nameLine=s.name&&s.name!==s.email ? s.name : s.email.split('@')[0];
+    const subLine=s.name&&s.name!==s.email ? s.email : '';
+    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${nameLine}${subLine?`<div class="lb-sub">${subLine}</div>`:''}</div><div class="lb-val">🔥 ${s.streak}d</div>`;
     el.appendChild(item);
   });
 }
