@@ -2174,13 +2174,16 @@ async function logActivity(id, col, actionType='view'){
   const emailKey=currentUser.email.replace(/\./g,'_');
   // Store: activity.YYYY-MM-DD.emailKey.col.actionType = count
   // e.g. activity.2025-03-29.akrom_gmail_com.essays.read
-  const key=`activity.${today}.${emailKey}.${col}.${actionType}`;
-  try{
-    await db.collection('activityLog').doc('global').set(
-      {[key]:firebase.firestore.FieldValue.increment(1)},
-      {merge:true}
-    );
-  }catch{}
+  const key=`activity__${today}__${emailKey}__${col}__${actionType}`;
+try{
+  await db.collection('activityLog').doc('global').set(
+    {[key]:firebase.firestore.FieldValue.increment(1)},
+    {merge:true}
+  );
+  console.log('[activity] logged:', key);
+}catch(err){
+  console.error('[activity] write failed:', err);
+}
   // Instantly refresh heatmap if Home tab is visible
   const homeActive=document.getElementById('page-home')?.classList.contains('active');
   if(homeActive) renderHeatmaps();
@@ -2267,7 +2270,7 @@ async function renderUserActivityLog(){
   const colLabels={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
 
   Object.entries(raw).forEach(([key,cnt])=>{
-    const parts=key.split('.');
+    const parts=key.split('__');
     // parts: [activity, YYYY-MM-DD, emailKey, col, actionType]
     if(parts.length<5||parts[0]!=='activity')return;
     const date=parts[1];
