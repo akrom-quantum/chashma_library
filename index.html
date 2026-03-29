@@ -1065,7 +1065,13 @@ document.getElementById('btnSignOut').addEventListener('click',()=>{
 });
 
 auth.onAuthStateChanged(async user=>{
-  if(!user){showLogin();return;}
+  if(!user){
+    // Small delay to let Firebase check cached session first
+    setTimeout(()=>{
+      if(!firebase.auth().currentUser){showLogin();}
+    },800);
+    return;
+  }
   currentUser=user;
   // Fetch owner config from Firestore
   try{
@@ -1112,6 +1118,10 @@ function showLogin(){
   document.getElementById('appShell').classList.remove('visible');
   currentUser=null;userRole='reader';
 }
+
+// Keep loading screen visible until auth state is confirmed
+document.getElementById('loginScreen').classList.add('hidden');
+document.getElementById('loadingScreen').classList.remove('hidden');
 
 function showApp(user){
   document.getElementById('loginScreen').classList.add('hidden');
@@ -1717,7 +1727,7 @@ function renderEssays(){
     h+=`<button class="act-icon${hasE?'':' dim'}" data-id="${e.id}" data-action="essay" title="My Essay"><span class="icon">description</span></button>`;
     h+=`<button class="act-icon${hasA?'':' dim'}" data-id="${e.id}" data-action="analysis" title="Analysis"><span class="icon">query_stats</span></button>`;
     if(myCount>0){
-      h+=`<div style="display:flex;align-items:center;gap:4px;"><button class="act-icon green" data-id="${e.id}" data-action="read" title="${myCount}× read"><span class="icon fill" style="font-size:15px;">check_circle</span></button><span style="font-size:0.68rem;font-weight:700;color:var(--pri);font-family:'Manrope',sans-serif;">${myCount}×</span></div>`;
+      h+=`<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.68rem;font-weight:700;color:var(--pri);font-family:'Manrope',sans-serif;">${myCount}×</span><button class="act-icon green" data-id="${e.id}" data-action="read" title="${myCount}× read"><span class="icon fill" style="font-size:15px;">check_circle</span></button></div>`;
     } else {
       h+=`<button class="act-icon" data-id="${e.id}" data-action="read" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
     }
