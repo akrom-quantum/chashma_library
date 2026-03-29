@@ -758,10 +758,15 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <div id="lbPosts"></div>
         </div>
       </div>
-      <div class="analytics-section">
+     <div class="analytics-section">
         <h3>Current Reading Streaks</h3>
         <div id="lbStreaks"></div>
       </div>
+      <div class="analytics-section" id="userActivitySection" style="display:none;">
+        <h3>User Activity — Last 7 Days <span style="font-size:0.72rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner only)</span></h3>
+        <div id="userActivityLog"></div>
+      </div>
+    </div>
       <div class="analytics-section" id="userActivitySection" style="display:none;">
         <h3>Daily Activity by User <span style="font-size:0.75rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner view)</span></h3>
         <div id="userActivityTable"></div>
@@ -1713,13 +1718,13 @@ function renderEssays(){
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='orig'){
         const e=essays.find(x=>x.id===id);if(e)window.open(e.url,'_blank');
-        logActivity(id,'essays'); // ← source click counts
+        logActivity(id,'essays','source');
         openRateModal(id,'essay');
       }
-      else if(act==='essay'){openMd(id,'essay');logActivity(id,'essays');} // ← my essay click counts
-      else if(act==='analysis'){openMd(id,'analysis');logActivity(id,'essays');} // ← analysis click counts
+      else if(act==='essay'){openMd(id,'essay');logActivity(id,'essays','open');} // ← my essay click counts  
+      else if(act==='analysis'){openMd(id,'analysis');logActivity(id,'essays','analysis');} // ← analysis click counts
       else if(act==='read')toggleRead(id);
-      else if(act==='rate'){logActivity(id,'essays');openRateModal(id,'essay');} // ← rate click counts
+      else if(act==='rate'){logActivity(id,'essays','rate');openRateModal(id,'essay');} // ← rate click counts
       else if(act==='toggle-vis')toggleVisibility(id);
       else if(act==='edit')openEditEssay(id);
       else if(act==='del')delItem('essays',id);
@@ -1815,8 +1820,7 @@ function renderPosts(){
     h+=`<div class="stars">${starsHtml(p.ratings)}</div><strong style="color:var(--pri)">${avgStr(p.ratings)}</strong></div>`;
     card.innerHTML=h;
     // Click card to open detail (but not buttons)
-    card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts');openDetail(p.id,'posts');}});
-    grid.appendChild(card);
+    card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts','open');openDetail(p.id,'posts');}});
   });
 
   grid.querySelectorAll('[data-action]').forEach(btn=>{
@@ -1825,7 +1829,7 @@ function renderPosts(){
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditPost(id);
       else if(act==='del')delItem('posts',id);
-      else if(act==='rate'){logActivity(id,'posts');openRateModal(id,'post');} // ← rate counts
+      else if(act==='rate'){logActivity(id,'posts','rate');openRateModal(id,'post');} // ← rate counts
       else if(act==='read'){const item=posts.find(x=>x.id===id);if(item)handleMarkRead(id,'posts',item);}
     });
   });
@@ -1904,7 +1908,7 @@ function renderReadings(){
     h+=`</div></div>`;
     el.innerHTML=h;
     // Click to open detail
-el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a')){logActivity(r.id,'readings');openDetail(r.id,'readings');}});    list.appendChild(el);
+el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a')){logActivity(r.id,'readings','open');openDetail(r.id,'readings');}});    list.appendChild(el);
   });
 
   list.querySelectorAll('[data-action]').forEach(btn=>{
@@ -1913,7 +1917,7 @@ el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.t
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditReading(id);
       else if(act==='del')delItem('readings',id);
-      else if(act==='rate'){logActivity(id,'readings');openRateModal(id,'reading');} // ← rate counts
+      else if(act==='rate'){logActivity(id,'readings','rate');openRateModal(id,'reading');} // ← rate counts
       else if(act==='read'){const item=readings.find(x=>x.id===id);if(item)handleMarkRead(id,'readings',item);}
     });
   });
@@ -2071,7 +2075,7 @@ function openDetail(id, col){
   h+=`</div>`;
 
   h+=`<div class="detail-actions-row">`;
-if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" onclick="logActivity('${id}','${col}')" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
+if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" onclick="logActivity('${id}','${col}','source')"  style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
   else h+=`<button class="act-icon" id="detailReadBtn" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
   h+=`<button class="act-icon" id="detailRateBtn" title="Rate"><span class="icon">grade</span></button>`;
   if(isEditable()){h+=`<button class="act-icon" id="detailEditBtn" title="Edit"><span class="icon">edit</span></button>`;h+=`<button class="act-icon danger" id="detailDelBtn" title="Delete"><span class="icon">close</span></button>`;}
@@ -2087,7 +2091,8 @@ if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" onclick="lo
 
   // Wire action buttons
   document.getElementById('detailReadBtn')?.addEventListener('click',async()=>{await handleMarkRead(id,col,item);openDetail(id,col);});
-  document.getElementById('detailRateBtn')?.addEventListener('click',()=>{logActivity(id,col);openRateModal(id,col==='posts'?'post':'reading');});  document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');if(col==='posts')openEditPost(id);else openEditReading(id);});
+  document.getElementById('detailRateBtn')?.addEventListener('click',()=>{logActivity(id,col,'rate');openRateModal(id,col==='posts'?'post':'reading');});
+  document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');if(col==='posts')openEditPost(id);else openEditReading(id);});
   document.getElementById('detailDelBtn')?.addEventListener('click',()=>{if(confirm('Remove this item permanently?')){overlay.classList.remove('open');delItem(col,id);}});
 }
 
@@ -2153,7 +2158,7 @@ async function handleMarkRead(id,col,item){
   if(myCount===0){
     await incrementReadCount(id,col);showToast('Reading #1 recorded');
     // Update streak activity log
-    await logActivity(id,col);
+    await logActivity(id,col,'read');
   } else {
     pendingReadId=id;pendingReadCol=col;
     const typeName={essays:'essay',posts:'post',readings:'reading',memories:'memory'}[col]||'item';
@@ -2167,13 +2172,24 @@ async function incrementReadCount(id,col){
   const key='readCounts.'+currentUser.email.replace(/\./g,'_');
   await db.collection(col).doc(id).update({[key]:firebase.firestore.FieldValue.increment(1)});
 }
-async function logActivity(id,col){
+async function logActivity(id, col, actionType='view'){
   if(!currentUser)return;
   const today=new Date().toISOString().slice(0,10);
-  const key='activity.'+today+'.'+currentUser.email.replace(/\./g,'_');
-  try{await db.collection('activityLog').doc('global').set({[key]:firebase.firestore.FieldValue.increment(1)},{merge:true});}catch{}
+  const emailKey=currentUser.email.replace(/\./g,'_');
+  // Store: activity.YYYY-MM-DD.emailKey.col.actionType = count
+  // e.g. activity.2025-03-29.akrom_gmail_com.essays.read
+  const key=`activity.${today}.${emailKey}.${col}.${actionType}`;
+  try{
+    await db.collection('activityLog').doc('global').set(
+      {[key]:firebase.firestore.FieldValue.increment(1)},
+      {merge:true}
+    );
+  }catch{}
+  // Instantly refresh heatmap if Home tab is visible
+  const homeActive=document.getElementById('page-home')?.classList.contains('active');
+  if(homeActive) renderHeatmaps();
 }
-window.logActivity=logActivity; // makes it callable from inline onclick
+window.logActivity=logActivity;
 
 document.getElementById('closeReadAgain')?.addEventListener('click',()=>{closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;});
 document.getElementById('readAgainNo')?.addEventListener('click',()=>{closeModal('ov-readagain');pendingReadId=null;pendingReadCol=null;showToast('Reading count unchanged');});
@@ -2215,7 +2231,9 @@ document.getElementById('submitRateBtn')?.addEventListener('click',async()=>{
   const col=pendingRateType==='essay'?'essays':pendingRateType==='post'?'posts':pendingRateType==='reading'?'readings':'memories';
   try{
     const key='ratings.'+currentUser.email.replace(/\./g,'_');
-    await db.collection(col).doc(pendingRateId).update({[key]:pickedStar});showToast('Rating saved');
+    await db.collection(col).doc(pendingRateId).update({[key]:pickedStar});     
+      logActivity(pendingRateId,col,'rate');     
+      showToast('Rating saved');
   }catch(e){showToast('Error saving rating','err');}
   pendingRateId=null;ratingConfirmed=false;closeModal('ov-rate');
 });
@@ -2227,7 +2245,116 @@ function renderAnalytics(){
   renderLeaderboard('lbReadings',computeLeaderboard(readings));
   renderLeaderboard('lbPosts',computeLeaderboard(posts));
   renderStreakLeaderboard('lbStreaks');
-  if(isOwner()) renderUserActivityTable();
+  if(isOwner()) renderUserActivityLog();
+}
+
+async function renderUserActivityLog(){
+  const section=document.getElementById('userActivitySection');
+  const container=document.getElementById('userActivityLog');
+  if(!section||!container)return;
+  section.style.display='block';
+  container.innerHTML=`<div style="font-size:0.78rem;color:var(--ink-3);font-style:italic;padding:8px 0;">Loading…</div>`;
+
+  let raw={};
+  try{
+    const doc=await db.collection('activityLog').doc('global').get();
+    raw=doc.exists?doc.data()||{}:{};
+  }catch{
+    container.innerHTML='<div style="color:var(--err);font-size:0.8rem;padding:8px 0;">Could not load activity log.</div>';
+    return;
+  }
+
+  // Key format: activity.YYYY-MM-DD.emailKey.col.actionType = count
+  // Parse into: { emailKey -> { date -> { label -> count } } }
+  const tree={};
+  const actionLabels={read:'Marked Read',rate:'Rated',open:'Opened',source:'Opened Source',analysis:'Viewed Analysis',view:'Viewed'};
+  const colLabels={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
+
+  Object.entries(raw).forEach(([key,cnt])=>{
+    const parts=key.split('.');
+    // parts: [activity, YYYY-MM-DD, emailKey, col, actionType]
+    if(parts.length<5||parts[0]!=='activity')return;
+    const date=parts[1];
+    const emailKey=parts[2];
+    const col=parts[3];
+    const actionType=parts[4];
+    const label=`${actionLabels[actionType]||actionType} (${colLabels[col]||col})`;
+    if(!tree[emailKey])tree[emailKey]={};
+    if(!tree[emailKey][date])tree[emailKey][date]={};
+    tree[emailKey][date][label]=(tree[emailKey][date][label]||0)+Number(cnt||0);
+  });
+
+  // Build last 7 days list
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+
+  // Sort users by total activity in last 7 days desc
+  const userOrder=Object.entries(tree).map(([emailKey,dates])=>{
+    const total=days.reduce((s,d)=>s+Object.values(dates[d]||{}).reduce((a,v)=>a+v,0),0);
+    return{emailKey,total};
+  }).sort((a,b)=>b.total-a.total);
+
+  if(!userOrder.length){
+    container.innerHTML='<div class="empty-state" style="padding:16px;"><p>No activity logged yet. Activity records on every click: open, rate, read, source.</p></div>';
+    return;
+  }
+
+  let html='';
+  userOrder.forEach(({emailKey})=>{
+    const email=emailKey.replace(/_/g,'.');
+    const user=allUsers.find(u=>u.email===email);
+    const displayName=user?.name&&user.name!==email?user.name:email.split('@')[0];
+    const weekTotal=days.reduce((s,d)=>s+Object.values(tree[emailKey]?.[d]||{}).reduce((a,v)=>a+v,0),0);
+
+    html+=`<div style="margin-bottom:20px;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;">`;
+    // User header row
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg-2);border-bottom:1px solid var(--rule);">`;
+    html+=`<div><div style="font-size:0.85rem;font-weight:700;color:var(--ink);">${displayName}</div><div style="font-size:0.65rem;color:var(--ink-3);">${email}</div></div>`;
+    html+=`<div style="font-family:'Newsreader',serif;font-size:1.1rem;font-style:italic;color:var(--pri);">${weekTotal} actions this week</div>`;
+    html+=`</div>`;
+
+    // Date rows
+    days.forEach(date=>{
+      const dayData=tree[emailKey]?.[date]||{};
+      const dayTotal=Object.values(dayData).reduce((s,v)=>s+v,0);
+      const shortDate=new Date(date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      const isToday=date===new Date().toISOString().slice(0,10);
+
+      html+=`<div style="padding:10px 16px;border-bottom:1px solid var(--rule);${isToday?'background:var(--pri-pale);':''}" >`;
+      html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${dayTotal?'8px':'0'};">`;
+      html+=`<span style="font-size:0.7rem;font-weight:700;color:${isToday?'var(--pri)':'var(--ink-2)'};">${shortDate}${isToday?' · Today':''}</span>`;
+      if(!dayTotal){
+        html+=`<span style="font-size:0.68rem;color:var(--ink-4);font-style:italic;">no activity</span>`;
+      } else {
+        html+=`<span style="font-size:0.68rem;font-weight:700;color:var(--pri);">${dayTotal} total</span>`;
+      }
+      html+=`</div>`;
+
+      if(dayTotal>0){
+        // Sort activity types by count desc
+        const sorted=Object.entries(dayData).sort((a,b)=>b[1]-a[1]);
+        html+=`<div style="display:flex;flex-direction:column;gap:4px;">`;
+        sorted.forEach(([label,count])=>{
+          const pct=Math.round(count/dayTotal*100);
+          html+=`<div style="display:flex;align-items:center;gap:8px;">`;
+          html+=`<div style="flex:1;font-size:0.72rem;color:var(--ink-2);">${label}</div>`;
+          html+=`<div style="width:80px;height:5px;background:var(--bg-3);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:var(--pri);border-radius:3px;"></div></div>`;
+          html+=`<div style="font-size:0.72rem;font-weight:700;color:var(--pri);min-width:24px;text-align:right;">${count}×</div>`;
+          html+=`</div>`;
+        });
+        html+=`</div>`;
+      }
+      html+=`</div>`;
+    });
+    // Remove last border
+    html=html.replace(/border-bottom:1px solid var\(--rule\);">\s*$/, '">');
+    html+=`</div>`;
+  });
+
+  container.innerHTML=html;
 }
 
 async function renderUserActivityTable(){
