@@ -1542,22 +1542,38 @@ function renderHomeStreaks(){
 }
 
 function computeStreaks(){
-  // Build per-user daily activity
+  // Read from activityLog which stores actual click dates
+  // Falls back gracefully if activityLog not loaded yet
   const userDays={};
-  const allItems=[...essays,...posts,...readings,...memories];
-  allItems.forEach(item=>{
-    const counts=item.readCounts;
-    if(!counts)return;
-    Object.entries(counts).forEach(([emailKey,cnt])=>{
-      if(!cnt)return;
-      // We don't have per-day read data, so use item date as proxy
-      const day=(item.date||item.createdAt||'').slice(0,10);
-      if(!day)return;
+
+  // Primary source: activityLog keys (actual interaction dates)
+  if(window._activityLogCache){
+    Object.keys(window._activityLogCache).forEach(key=>{
+      const parts=key.split('__');
+      if(parts.length<5||parts[0]!=='activity')return;
+      const date=parts[1];
+      const emailKey=parts[2];
       if(!userDays[emailKey])userDays[emailKey]=new Set();
-      userDays[emailKey].add(day);
+      userDays[emailKey].add(date);
     });
-  });
-  // Compute current streak for each user
+  }
+
+  // Fallback: use readCounts with content date (old behavior)
+  if(!Object.keys(userDays).length){
+    const allItems=[...essays,...posts,...readings,...memories];
+    allItems.forEach(item=>{
+      const counts=item.readCounts;
+      if(!counts)return;
+      Object.entries(counts).forEach(([emailKey,cnt])=>{
+        if(!cnt)return;
+        const day=(item.date||item.createdAt||'').slice(0,10);
+        if(!day)return;
+        if(!userDays[emailKey])userDays[emailKey]=new Set();
+        userDays[emailKey].add(day);
+      });
+    });
+  }
+
   const streaks=[];
   allUsers.forEach(u=>{
     const key=u.email.replace(/\./g,'_');
@@ -1565,11 +1581,20 @@ function computeStreaks(){
     if(!days||!days.size)return;
     const sorted=[...days].sort().reverse();
     const today=new Date().toISOString().slice(0,10);
+    const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    // Streak is valid if most recent activity was today or yesterday
+    if(sorted[0]!==today&&sorted[0]!==yesterday)return;
     let streak=0;
     let current=today;
+    // If most recent is yesterday, start from yesterday
+    if(sorted[0]===yesterday)current=yesterday;
     for(const day of sorted){
-      if(day===current){streak++;const d=new Date(current);d.setDate(d.getDate()-1);current=d.toISOString().slice(0,10);}
-      else if(day<current)break;
+      if(day===current){
+        streak++;
+        const d=new Date(current);
+        d.setDate(d.getDate()-1);
+        current=d.toISOString().slice(0,10);
+      } else if(day<current) break;
     }
     if(streak>0)streaks.push({name:u.name||u.email,email:u.email,streak});
   });
@@ -1817,7 +1842,7 @@ function renderPosts(){
     card.innerHTML=h;
     // Click card to open detail (but not buttons)
     card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts','open');openDetail(p.id,'posts');}});
-  });
+    grid.appendChild(card);   // ← add this line if missing
 
   grid.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',(ev)=>{
@@ -2180,6 +2205,9 @@ try{
     {[key]:firebase.firestore.FieldValue.increment(1)},
     {merge:true}
   );
+  // Cache in memory for streak computation without extra Firestore read
+  if(!window._activityLogCache) window._activityLogCache={};
+  window._activityLogCache[key]=(window._activityLogCache[key]||0)+1;
   console.log('[activity] logged:', key);
 }catch(err){
   console.error('[activity] write failed:', err);
@@ -2258,6 +2286,7 @@ async function renderUserActivityLog(){
   try{
     const doc=await db.collection('activityLog').doc('global').get();
     raw=doc.exists?doc.data()||{}:{};
+    window._activityLogCache=raw; // share with streak computation
   }catch{
     container.innerHTML='<div style="color:var(--err);font-size:0.8rem;padding:8px 0;">Could not load activity log.</div>';
     return;
