@@ -204,6 +204,12 @@ a{color:var(--pri);text-decoration:none;}
 .btn-sm-pri{background:var(--pri);border-color:var(--pri);color:#fff;}
 .btn-sm-pri:hover{background:var(--pri-2);border-color:var(--pri-2);color:#fff;}
 
+/* ═══ SOURCE LINK GLOBAL TOGGLE (owner only) ═══ */
+.source-toggle-bar{background:var(--amber-bg);border:1px solid var(--amber-pale);border-radius:var(--r-lg);padding:10px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.source-toggle-bar span{font-size:0.72rem;color:var(--am-dark);font-weight:600;flex:1;}
+.source-toggle-btn{padding:5px 14px;font-size:0.66rem;font-weight:700;border-radius:var(--r-full);border:1px solid var(--amber);color:var(--am-dark);background:transparent;cursor:pointer;transition:all .15s;}
+.source-toggle-btn.active{background:var(--amber);color:#fff;border-color:var(--amber);}
+
 /* ═══ ESSAY CARD ═══ */
 .essay-list{display:flex;flex-direction:column;gap:2px;}
 .essay-card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 24px;display:flex;gap:16px;align-items:flex-start;transition:all .2s;animation:fadeUp .3s ease both;position:relative;}
@@ -237,6 +243,17 @@ a{color:var(--pri);text-decoration:none;}
 .badge-new{background:var(--pri);color:#fff;}
 .badge-read{background:var(--pri-pale);border:1px solid rgba(0,53,39,0.2);color:var(--pri);}
 .badge-hidden{background:var(--err-bg);border:1px solid var(--err);color:var(--err);}
+/* author badge on essay card */
+.essay-author-badge{font-size:0.62rem;font-weight:700;padding:2px 9px;border-radius:var(--r-full);background:var(--sec-cont);color:var(--pri);border:1px solid rgba(0,53,39,0.15);display:inline-block;}
+
+/* ═══ MD VIEWER — TABLE SUPPORT ═══ */
+.md-body table{width:100%;border-collapse:collapse;margin:18px 0;font-size:0.88rem;}
+.md-body th{background:var(--pri);color:#fff;padding:9px 14px;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;}
+.md-body td{padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-2);vertical-align:top;}
+.md-body tr:nth-child(even) td{background:var(--bg-2);}
+.md-body tr:hover td{background:var(--pri-pale);}
+[data-theme="dark"] .md-body th{background:var(--pri-2);}
+[data-theme="dark"] .md-body tr:hover td{background:var(--pri-pale);}
 
 /* ═══ POST & READING CARDS ═══ */
 .post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
@@ -343,7 +360,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 .writer-top-actions{display:flex;gap:7px;}
 .btn-discard{padding:6px 16px;font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;border:1px solid rgba(255,255,255,0.5);border-radius:var(--r-full);color:#fff;background:transparent;cursor:pointer;}
 .btn-save-mem{padding:6px 16px;font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;border:1px solid #fff;border-radius:var(--r-full);color:var(--amber);background:#fff;cursor:pointer;}
-.writer-body{flex:1;padding:28px 32px;overflow-y:auto;max-width:760px;width:100%;display:flex;flex-direction:column;gap:14px;}
+.writer-body{flex:1;padding:28px 32px;overflow-y:auto;max-width:760px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
 .writer-field label{display:block;font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--ink-3);margin-bottom:4px;}
 .writer-field label .opt{text-transform:none;letter-spacing:0;font-weight:400;font-style:italic;font-size:0.64rem;}
 .writer-field input{width:100%;padding:9px 13px;font-size:0.88rem;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--card);color:var(--ink);outline:none;transition:border-color .2s;font-family:'Manrope',sans-serif;}
@@ -363,9 +380,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 .lb-name{flex:1;font-size:0.85rem;font-weight:700;color:var(--ink);}
 .lb-sub{font-size:0.65rem;color:var(--ink-3);}
 .lb-val{font-family:'Newsreader',serif;font-size:1.2rem;font-style:italic;color:var(--pri);}
-.lb-bars{display:flex;gap:8px;align-items:center;}
-.lb-mini{display:flex;flex-direction:column;align-items:center;font-size:0.58rem;color:var(--ink-3);}
-.lb-mini-val{font-family:'Newsreader',serif;font-size:0.88rem;color:var(--ink-2);font-style:italic;}
 
 /* ═══ SETTINGS ═══ */
 .settings-section{background:var(--card);border:1px solid var(--rule);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:14px;}
@@ -446,7 +460,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 .mobile-nav-item.active{color:var(--pri);}
 .mobile-nav-item .icon{font-size:20px;}
 
-/* ═══ READER ACCESS BANNER (one-time) ═══ */
+/* ═══ READER ACCESS BANNER ═══ */
 #accessBanner{background:var(--pri);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
 #accessBanner p{flex:1;font-size:0.8rem;line-height:1.6;}
 .btn-banner-req{padding:6px 14px;font-size:0.68rem;font-weight:700;background:#fff;color:var(--pri);border:none;border-radius:var(--r-full);cursor:pointer;}
@@ -490,7 +504,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 <!-- APP SHELL -->
 <div id="appShell">
 
-  <!-- ONE-TIME ACCESS BANNER (readers only, dismissible) -->
   <div id="accessBanner" style="display:none;">
     <p>You have <strong>read-only access</strong>. Request admin access to add and edit content.</p>
     <button class="btn-banner-req" id="btnBannerRequest">Request Access</button>
@@ -508,11 +521,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
       <button class="top-tab" data-tab="memories">Memories</button>
     </nav>
     <div class="topbar-right">
-      <div class="day-counter" id="dayCounter" title="Days since you joined"><span class="icon" style="font-size:14px;">calendar_today</span> Day <span class="day-num" id="dayNum">0</span></div>
-      <button class="icon-btn" id="themeBtn" title="Toggle theme"><span class="icon">dark_mode</span></button>
-      <!-- Notifications -->
+      <div class="day-counter" id="dayCounter"><span class="icon" style="font-size:14px;">calendar_today</span> Day <span class="day-num" id="dayNum">0</span></div>
+      <button class="icon-btn" id="themeBtn"><span class="icon">dark_mode</span></button>
       <div class="notif-wrap">
-        <button class="icon-btn" id="notifBtn" title="Notifications">
+        <button class="icon-btn" id="notifBtn">
           <span class="icon fill">notifications</span>
           <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
         </button>
@@ -524,7 +536,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <div id="notifList"><div class="notif-empty">All caught up!</div></div>
         </div>
       </div>
-      <!-- Profile -->
       <div class="profile-wrap">
         <div class="profile-avatar" id="profileAvatar"><span class="icon" style="font-size:20px;">person</span></div>
         <div class="profile-dropdown hidden" id="profileDropdown">
@@ -545,70 +556,30 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
     </div>
   </header>
 
-  <!-- MAIN -->
   <div class="main-area">
 
     <!-- HOME PAGE -->
     <div class="page" id="page-home">
       <div class="home-welcome" id="homeWelcome">Good day.</div>
       <div class="home-sub" id="homeSub">Here's your archive at a glance.</div>
-
       <div class="stat-grid">
-        <div class="stat-card" data-goto="essays">
-          <div class="stat-label">Essays</div>
-          <div class="stat-num" id="hEssays">0</div>
-          <div class="stat-progress-wrap"><div class="stat-progress-bar" id="hEssayBar" style="width:0%"></div></div>
-          <div class="stat-pct" id="hEssayPct">0% read by you</div>
-        </div>
-        <div class="stat-card" data-goto="posts">
-          <div class="stat-label">Posts</div>
-          <div class="stat-num" id="hPosts">0</div>
-          <div class="stat-progress-wrap"><div class="stat-progress-bar" id="hPostBar" style="width:0%"></div></div>
-          <div class="stat-pct" id="hPostPct">0% read by you</div>
-        </div>
-        <div class="stat-card" data-goto="readings">
-          <div class="stat-label">Readings</div>
-          <div class="stat-num" id="hReadings">0</div>
-          <div class="stat-progress-wrap"><div class="stat-progress-bar" id="hReadingBar" style="width:0%"></div></div>
-          <div class="stat-pct" id="hReadingPct">0% read by you</div>
-        </div>
-        <div class="stat-card" data-goto="memories">
-          <div class="stat-label">Memories</div>
-          <div class="stat-num" id="hMemories">0</div>
-          <div class="stat-progress-wrap"><div class="stat-progress-bar" id="hMemoryBar" style="width:0%"></div></div>
-          <div class="stat-pct" id="hMemoryPct">0% read by you</div>
-        </div>
+        <div class="stat-card" data-goto="essays"><div class="stat-label">Essays</div><div class="stat-num" id="hEssays">0</div><div class="stat-progress-wrap"><div class="stat-progress-bar" id="hEssayBar" style="width:0%"></div></div><div class="stat-pct" id="hEssayPct">0% read by you</div></div>
+        <div class="stat-card" data-goto="posts"><div class="stat-label">Posts</div><div class="stat-num" id="hPosts">0</div><div class="stat-progress-wrap"><div class="stat-progress-bar" id="hPostBar" style="width:0%"></div></div><div class="stat-pct" id="hPostPct">0% read by you</div></div>
+        <div class="stat-card" data-goto="readings"><div class="stat-label">Readings</div><div class="stat-num" id="hReadings">0</div><div class="stat-progress-wrap"><div class="stat-progress-bar" id="hReadingBar" style="width:0%"></div></div><div class="stat-pct" id="hReadingPct">0% read by you</div></div>
+        <div class="stat-card" data-goto="memories"><div class="stat-label">Memories</div><div class="stat-num" id="hMemories">0</div><div class="stat-progress-wrap"><div class="stat-progress-bar" id="hMemoryBar" style="width:0%"></div></div><div class="stat-pct" id="hMemoryPct">0% read by you</div></div>
       </div>
-
       <div class="home-row">
         <div class="home-panel">
           <div class="home-panel-title">My Activity (Last 16 Weeks) <span style="font-size:0.58rem;color:var(--ink-4);font-weight:400;">&mdash; click any cell</span></div>
           <div class="heatmap-wrap" id="myHeatmap"></div>
-          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
-            <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
-            <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div>
-            <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
-          </div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;"><span style="font-size:0.55rem;color:var(--ink-4);">Less</span><div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div><div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div><div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div><div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div><div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div><span style="font-size:0.55rem;color:var(--ink-4);">More</span></div>
         </div>
         <div class="home-panel">
           <div class="home-panel-title">Global Activity (Last 16 Weeks) <span style="font-size:0.58rem;color:var(--ink-4);font-weight:400;">&mdash; click any cell</span></div>
           <div class="heatmap-wrap" id="globalHeatmap"></div>
-          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;">
-            <span style="font-size:0.55rem;color:var(--ink-4);">Less</span>
-            <div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div>
-            <div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div>
-            <span style="font-size:0.55rem;color:var(--ink-4);">More</span>
-          </div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:8px;"><span style="font-size:0.55rem;color:var(--ink-4);">Less</span><div style="width:10px;height:10px;border-radius:2px;background:var(--bg-3);"></div><div style="width:10px;height:10px;border-radius:2px;background:#a7f3d0;"></div><div style="width:10px;height:10px;border-radius:2px;background:#34d399;"></div><div style="width:10px;height:10px;border-radius:2px;background:#10b981;"></div><div style="width:10px;height:10px;border-radius:2px;background:#047857;"></div><span style="font-size:0.55rem;color:var(--ink-4);">More</span></div>
         </div>
       </div>
-
       <div class="home-panel" style="margin-bottom:0;">
         <div class="home-panel-title">Current Streaks</div>
         <div id="homeStreaks"><div class="empty-state" style="padding:20px;"><p>No streak data yet.</p></div></div>
@@ -620,7 +591,16 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
       <div class="page-header">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div><h1 class="page-title">Essays</h1><p class="page-desc">Deep thoughts, curated.</p></div>
-          <button class="btn-sm btn-sm-pri editable-only" id="btnAddEssay" style="display:none;">+ Add Essay</button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <!-- Source link global toggle — owner only -->
+            <div id="sourceToggleWrap" style="display:none;">
+              <button class="source-toggle-btn" id="btnSourceToggle" title="Toggle source links visibility for all readers">
+                <span class="icon" style="font-size:14px;vertical-align:middle;">link</span> Sources: <span id="sourceToggleLabel">Visible</span>
+              </button>
+            </div>
+            <!-- Author filter pill row lives in controls; add-author-filter via select -->
+            <button class="btn-sm btn-sm-pri editable-only" id="btnAddEssay" style="display:none;">+ Add Essay</button>
+          </div>
         </div>
       </div>
       <div id="essayUnreadBanner"></div>
@@ -632,8 +612,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
             <button class="filter-pill" id="ef-unread">Unread</button>
             <button class="filter-pill" id="ef-read">Read</button>
           </div>
+          <!-- Author filter -->
+          <select class="sort-sel" id="essayAuthorFilter" style="min-width:110px;"><option value="">All Authors</option></select>
           <div class="sort-wrap">
-            <select class="sort-sel" id="essaySortBy"><option value="num">Number</option><option value="reads">Reads</option><option value="rating">Rating</option></select>
+            <select class="sort-sel" id="essaySortBy"><option value="num">Number</option><option value="date">Date</option><option value="reads">Reads</option><option value="rating">Rating</option></select>
             <button class="sort-dir-btn asc" id="essaySortDir"></button>
           </div>
           <button class="btn-sm" id="btnExportEssays"><span class="icon" style="font-size:13px;vertical-align:middle;">content_copy</span> Export</button>
@@ -740,39 +722,21 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
     <!-- ANALYTICS PAGE -->
     <div class="page" id="page-analytics">
       <div class="page-header"><h1 class="page-title">Analytics</h1><p class="page-desc">Insights about your archive.</p></div>
-      <div class="analytics-section">
-        <h3>Reading Leaderboard — Total</h3>
-        <div id="lbTotal"></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:14px;" id="lbSubGrid">
-        <div class="analytics-section" style="margin-bottom:0;">
-          <h3>Essays</h3>
-          <div id="lbEssays"></div>
-        </div>
-        <div class="analytics-section" style="margin-bottom:0;">
-          <h3>Readings</h3>
-          <div id="lbReadings"></div>
-        </div>
-        <div class="analytics-section" style="margin-bottom:0;">
-          <h3>Posts</h3>
-          <div id="lbPosts"></div>
-        </div>
+      <div class="analytics-section"><h3>Reading Leaderboard — Total</h3><div id="lbTotal"></div></div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:14px;">
+        <div class="analytics-section" style="margin-bottom:0;"><h3>Essays</h3><div id="lbEssays"></div></div>
+        <div class="analytics-section" style="margin-bottom:0;"><h3>Readings</h3><div id="lbReadings"></div></div>
+        <div class="analytics-section" style="margin-bottom:0;"><h3>Posts</h3><div id="lbPosts"></div></div>
       </div>
       <div class="analytics-section" id="userActivitySection" style="display:none;">
         <h3>User Activity — Last 7 Days <span style="font-size:0.72rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner only)</span></h3>
         <div id="userActivityLog"></div>
       </div>
     </div>
-      <div class="analytics-section" id="userActivitySection" style="display:none;">
-        <h3>Daily Activity by User <span style="font-size:0.75rem;color:var(--ink-3);font-weight:400;font-style:italic;">(owner view)</span></h3>
-        <div id="userActivityTable"></div>
-      </div>
-    </div>
 
     <!-- SETTINGS PAGE -->
     <div class="page" id="page-settings">
       <div class="page-header"><h1 class="page-title">Settings</h1><p class="page-desc">Manage access and preferences.</p></div>
-
       <div id="ownerSettingsSections" style="display:none;">
         <div class="settings-section">
           <h3>Pending Admin Requests <span id="pendingCount" style="font-size:0.78rem;color:var(--ink-3);font-weight:400;font-style:italic;"></span></h3>
@@ -795,7 +759,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           </div>
         </div>
       </div>
-
       <div id="readerSettingsSection" style="display:none;">
         <div class="settings-section">
           <h3>Your Access</h3>
@@ -804,7 +767,6 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <button class="btn-sm btn-sm-pri" id="btnSettingsRequestAccess" style="padding:9px 22px;">Request Admin Access</button>
         </div>
       </div>
-
       <div class="settings-section">
         <h3>Appearance</h3>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;">
@@ -812,19 +774,15 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
           <button class="btn-sm" id="settingsThemeBtn">Toggle Dark / Light</button>
         </div>
       </div>
-
       <div class="settings-section">
         <h3>Notifications</h3>
         <p style="font-size:0.8rem;color:var(--ink-3);line-height:1.6;">Notifications show new essays, posts, readings and memories added since your last visit. Click the bell icon in the topbar to view them.</p>
-        <div style="margin-top:12px;">
-          <button class="btn-sm" id="btnResetNotifs">Reset Notification State</button>
-        </div>
+        <div style="margin-top:12px;"><button class="btn-sm" id="btnResetNotifs">Reset Notification State</button></div>
       </div>
     </div>
 
   </div><!-- end main-area -->
 
-  <!-- MOBILE NAV -->
   <nav class="mobile-nav" id="mobileNav">
     <div class="mobile-nav-item" data-tab="home"><span class="icon">home</span>Home</div>
     <div class="mobile-nav-item" data-tab="essays"><span class="icon">description</span>Essays</div>
@@ -846,15 +804,15 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
   </div>
   <div class="writer-body">
     <div class="writer-field"><label>Title <span class="opt">(optional)</span></label><input type="text" id="wTitle" placeholder="Give this memory a name…"></div>
-    <div class="writer-field"><label>Tags <span class="opt">(comma-separated)</span></label><input type="text" id="wTags" placeholder="#fikr, #hayot"></div>
+    <div class="writer-field"><label>Tags <span class="opt">(space or comma separated, each # is one tag)</span></label><input type="text" id="wTags" placeholder="#fikr #hayot #ilm"></div>
     <div class="writer-field" style="flex:1;display:flex;flex-direction:column;">
-      <label style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.16em;color:var(--ink-3);margin-bottom:4px;">Notes</label>
+      <label>Notes</label>
       <textarea class="writer-textarea" id="wText" placeholder="Write freely…"></textarea>
     </div>
   </div>
 </div>
 
-<!-- MD VIEWER (essays) -->
+<!-- MD VIEWER (essays — My Essay only) -->
 <div class="viewer-overlay" id="mdViewer">
   <div class="viewer-topbar">
     <button class="btn-back" id="btnViewerBack"><span class="icon" style="font-size:17px;">arrow_back</span> Back</button>
@@ -866,7 +824,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
   </div>
 </div>
 
-<!-- DETAIL OVERLAY (posts & readings) -->
+<!-- DETAIL OVERLAY (posts & readings & memories) -->
 <div class="detail-overlay" id="detailOverlay">
   <div class="detail-topbar">
     <button class="btn-back" id="btnDetailBack"><span class="icon" style="font-size:17px;">arrow_back</span> Back</button>
@@ -875,7 +833,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
   <div class="detail-content" id="detailContent"></div>
 </div>
 
-<!-- MODAL: ESSAY -->
+<!-- MODAL: ESSAY — no Analysis field, Author is free text, num is free -->
 <div class="overlay-modal" id="ov-essay">
   <div class="modal">
     <div class="mhead"><h2 id="mEssayTitle">Add Essay</h2><button class="mclose" id="closeEssayModal">✕</button></div>
@@ -885,11 +843,10 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
         <div class="fg"><label>Date <span class="req">*</span></label><input type="date" id="eDate"></div>
       </div>
       <div class="fg"><label>Title <span class="req">*</span></label><input type="text" id="eTitle" placeholder="Essay title"></div>
-      <div class="fg"><label>Author <span class="req">*</span></label><input type="text" id="eAuthor" placeholder="Author name"></div>
+      <div class="fg"><label>Author <span class="req">*</span></label><input type="text" id="eAuthor" placeholder="Author name (e.g. Paul Graham)"></div>
       <div class="fg"><label>Original Link <span class="req">*</span></label><input type="url" id="eUrl" placeholder="https://…"></div>
-      <div class="fg"><label>Hashtags <span class="opt">(optional)</span></label><input type="text" id="eTags" placeholder="#muhit, #vaqt"></div>
+      <div class="fg"><label>Hashtags <span class="opt">(space or comma separated — each # is one tag)</span></label><input type="text" id="eTags" placeholder="#muhit #vaqt #fikr"></div>
       <div class="fg"><label>My Essay — Markdown <span class="opt">(optional)</span></label><textarea id="eMyMd" placeholder="Paste .md content…"></textarea></div>
-      <div class="fg"><label>Analysis — Markdown <span class="opt">(optional)</span></label><textarea id="eAnMd" placeholder="Paste .md analysis…"></textarea></div>
     </div>
     <div class="mfoot"><button class="btn-modal-cancel" id="cancelEssayModal">Cancel</button><button class="btn-modal-save" id="saveEssayBtn">Save Essay</button></div>
   </div>
@@ -908,7 +865,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
       </div>
       <div class="fg"><label>Content <span class="req">*</span></label><textarea id="pContent" placeholder="Paste post text…"></textarea></div>
       <div class="fg"><label>Source Link <span class="opt">(optional)</span></label><input type="url" id="pUrl" placeholder="https://…"></div>
-      <div class="fg"><label>Hashtags <span class="opt">(optional)</span></label><input type="text" id="pTags" placeholder="#fikr, #ilm"></div>
+      <div class="fg"><label>Hashtags <span class="opt">(space or comma separated — each # is one tag)</span></label><input type="text" id="pTags" placeholder="#fikr #ilm"></div>
     </div>
     <div class="mfoot"><button class="btn-modal-cancel" id="cancelPostModal">Cancel</button><button class="btn-modal-save" id="savePostBtn">Save Post</button></div>
   </div>
@@ -930,7 +887,7 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
       </div>
       <div class="fg"><label>Notes <span class="req">*</span></label><textarea id="rContent" placeholder="Your notes or description…"></textarea></div>
       <div class="fg"><label>Source Link <span class="opt">(optional)</span></label><input type="url" id="rUrl" placeholder="https://…"></div>
-      <div class="fg"><label>Hashtags <span class="opt">(optional)</span></label><input type="text" id="rTags" placeholder="#kitob, #ilm"></div>
+      <div class="fg"><label>Hashtags <span class="opt">(space or comma separated — each # is one tag)</span></label><input type="text" id="rTags" placeholder="#kitob #ilm"></div>
     </div>
     <div class="mfoot"><button class="btn-modal-cancel" id="cancelReadingModal">Cancel</button><button class="btn-modal-save" id="saveReadingBtn">Save Reading</button></div>
   </div>
@@ -979,9 +936,8 @@ sup.fn-ref{color:var(--pri);font-size:.66em;font-weight:700;}
 <script>
 (function(){'use strict';
 
-/* ═══ CONFIG (owner email fetched from Firestore 'config/app' doc) ═══ */
-let OWNER = '';
-
+/* ═══ FIREBASE ═══ */
+let OWNER='';
 firebase.initializeApp({
   apiKey:"AIzaSyDr6Ff7QsmtEOmE-AtAWmTOOYWO8Nf4Dnk",
   authDomain:"chashma-akrom.firebaseapp.com",
@@ -990,36 +946,44 @@ firebase.initializeApp({
   messagingSenderId:"81405507085",
   appId:"1:81405507085:web:4c9e891715374987454744"
 });
-const auth = firebase.auth();
-const db   = firebase.firestore();
-
-// Enable offline persistence
-db.enablePersistence({synchronizeTabs:true}).catch(err=>{
-  if(err.code==='failed-precondition'){console.warn('Offline persistence: multiple tabs open');}
-  else if(err.code==='unimplemented'){console.warn('Offline persistence not supported');}
-});
-
+const auth=firebase.auth();
+const db=firebase.firestore();
+db.enablePersistence({synchronizeTabs:true}).catch(()=>{});
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
 /* ═══ STATE ═══ */
-let currentUser=null, userRole='reader';
-let essays=[], posts=[], readings=[], memories=[], admins=[], requests=[], allUsers=[];
+let currentUser=null,userRole='reader';
+let essays=[],posts=[],readings=[],memories=[],admins=[],requests=[],allUsers=[];
 let unsubs={};
-let eFilter='all', pFilter='all', rFilter='all';
-let eSort='num', pSort='date', rSort='date', mSort='num';
-let eDir=1, pDir=1, rDir=1, mDir=1;
-let activeETag=null, activePTag=null, activeRTag=null, activeMTag=null;
-let editEssayId=null, editPostId=null, editReadingId=null, editMemId=null;
-let pendingRateId=null, pendingRateType=null, pickedStar=0, ratingConfirmed=false;
-let pendingReadId=null, pendingReadCol=null;
-let mdHtmlCache='', mdTitleCache='';
-let notifications=[], notifSeen=false;
-let userJoinDate=null;
-let currentDetailId=null, currentDetailCol=null;
+let eFilter='all',pFilter='all',rFilter='all';
+let eSort='num',pSort='date',rSort='date',mSort='num';
+let eDir=1,pDir=1,rDir=1,mDir=1;
+let activeETag=null,activePTag=null,activeRTag=null,activeMTag=null;
+let activeEAuthor=''; // author filter for essays
+let editEssayId=null,editPostId=null,editReadingId=null,editMemId=null;
+let pendingRateId=null,pendingRateType=null,pickedStar=0,ratingConfirmed=false;
+let pendingReadId=null,pendingReadCol=null;
+let mdHtmlCache='',mdTitleCache='';
+let notifications=[],userJoinDate=null;
+let currentDetailId=null,currentDetailCol=null;
+// Source link global visibility — stored in Firestore config/app.sourceLinksVisible (bool, default true)
+let sourceLinksVisible=true;
 
 /* ═══ HELPERS ═══ */
 function lsG(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function lsS(k,v){localStorage.setItem(k,JSON.stringify(v));}
+
+/* XSS-safe HTML escaping for user data inserted into card HTML strings */
+function esc(str){
+  if(str==null)return'';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
 function avg(r){if(!r)return NaN;const v=Array.isArray(r)?r:Object.values(r);if(!v.length)return NaN;return v.reduce((s,x)=>s+Number(x),0)/v.length;}
 function avgStr(r){const a=avg(r);return isNaN(a)?'—':a.toFixed(1);}
 function starsHtml(r){const a=avg(r);if(isNaN(a))return'<span style="font-size:0.65rem;color:var(--ink-4);">—★</span>';return`<span style="font-size:0.78rem;font-weight:700;color:#d4a017;letter-spacing:-0.01em;">${a.toFixed(1)}★</span>`;}
@@ -1031,8 +995,33 @@ function isEditable(){return userRole==='owner'||userRole==='admin';}
 function isOwner(){return userRole==='owner';}
 const PLBL={twitter:'Twitter / X',telegram:'Telegram',substack:'Substack',youtube:'YouTube',other:'Other'};
 const RLBL={book:'Book',article:'Article',video:'Video',podcast:'Podcast',other:'Other'};
-
 function safe(html){return typeof DOMPurify!=='undefined'?DOMPurify.sanitize(html):html;}
+
+/* ═══ HASHTAG PARSER — splits on each # as a new tag ═══ */
+function parseTags(raw){
+  if(!raw||!raw.trim())return[];
+  // Split on each # sign — every word starting with # is one tag
+  // Also accept comma/space separators before first #
+  const parts=raw.split(/(?=#)/); // split before each #
+  const tags=[];
+  parts.forEach(part=>{
+    // A part may itself contain spaces or commas (if user mixed styles)
+    // Split further by comma/space, keep only those starting with #
+    const words=part.split(/[\s,]+/);
+    words.forEach(w=>{
+      const cleaned=w.trim();
+      if(!cleaned)return;
+      if(cleaned.startsWith('#')&&cleaned.length>1){
+        tags.push(cleaned);
+      } else if(cleaned.length>0&&!cleaned.startsWith('#')){
+        // plain word without # — add # prefix
+        tags.push('#'+cleaned);
+      }
+    });
+  });
+  // Deduplicate
+  return[...new Set(tags.filter(t=>t.length>1))];
+}
 
 /* ═══ THEME ═══ */
 function applyTheme(t){
@@ -1060,49 +1049,29 @@ document.getElementById('btnGoogleLogin').addEventListener('click',()=>{
 });
 document.getElementById('btnSignOut').addEventListener('click',()=>{
   Object.values(unsubs).forEach(u=>u&&u());
-  auth.signOut();
-  closeAllDropdowns();
+  auth.signOut();closeAllDropdowns();
 });
 
 auth.onAuthStateChanged(async user=>{
-  if(!user){
-    // Small delay to let Firebase check cached session first
-    setTimeout(()=>{
-      if(!firebase.auth().currentUser){showLogin();}
-    },800);
-    return;
-  }
+  if(!user){setTimeout(()=>{if(!firebase.auth().currentUser)showLogin();},800);return;}
   currentUser=user;
-  // Fetch owner config from Firestore
   try{
     const cfg=await db.collection('config').doc('app').get();
-    if(cfg.exists&&cfg.data().ownerEmail) OWNER=cfg.data().ownerEmail;
-    else OWNER='abdinabiyevakrom@gmail.com'; // fallback
+    if(cfg.exists){
+      if(cfg.data().ownerEmail)OWNER=cfg.data().ownerEmail;
+      if(typeof cfg.data().sourceLinksVisible==='boolean')sourceLinksVisible=cfg.data().sourceLinksVisible;
+    } else OWNER='abdinabiyevakrom@gmail.com';
   }catch{OWNER='abdinabiyevakrom@gmail.com';}
-
   await determineRole(user);
-  // Record user
   const isNew=!(await db.collection('users').doc(user.email).get()).exists;
   const now=new Date().toISOString();
-  await db.collection('users').doc(user.email).set({
-    email:user.email,name:user.displayName||user.email,
-    photoURL:user.photoURL||'',role:userRole,lastSeen:now,
-    ...(isNew?{joinedAt:now}:{})
-  },{merge:true});
-  // Get join date
+  await db.collection('users').doc(user.email).set({email:user.email,name:user.displayName||user.email,photoURL:user.photoURL||'',role:userRole,lastSeen:now,...(isNew?{joinedAt:now}:{})},{merge:true});
   const userDoc=await db.collection('users').doc(user.email).get();
   userJoinDate=userDoc.data()?.joinedAt||now;
-
-  showApp(user);
-  setupListeners();
-  loadNotifications();
-
-  // Show one-time access banner for readers
+  showApp(user);setupListeners();loadNotifications();
   if(userRole==='reader'&&!lsG('accessBannerDismissed_'+user.uid)){
     const reqSnap=await db.collection('accessRequests').where('email','==',user.email).where('status','==','pending').get();
-    if(reqSnap.empty){
-      document.getElementById('accessBanner').style.display='flex';
-    }
+    if(reqSnap.empty)document.getElementById('accessBanner').style.display='flex';
   }
 });
 
@@ -1111,15 +1080,12 @@ async function determineRole(user){
   const snap=await db.collection('admins').doc(user.email).get();
   userRole=snap.exists?'admin':'reader';
 }
-
 function showLogin(){
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('appShell').classList.remove('visible');
   currentUser=null;userRole='reader';
 }
-
-// Keep loading screen visible until auth state is confirmed
 document.getElementById('loginScreen').classList.add('hidden');
 document.getElementById('loadingScreen').classList.remove('hidden');
 
@@ -1127,42 +1093,44 @@ function showApp(user){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('appShell').classList.add('visible');
-
-  // Avatar
   const setAvatar=(el,size)=>{
-    if(user.photoURL){
-      const img=document.createElement('img');img.src=user.photoURL;
-      img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';
-      el.innerHTML='';el.appendChild(img);
-    } else {
-      el.innerHTML=`<span class="icon" style="font-size:${size}px;">person</span>`;
-    }
+    if(user.photoURL){const img=document.createElement('img');img.src=user.photoURL;img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';el.innerHTML='';el.appendChild(img);}
+    else el.innerHTML=`<span class="icon" style="font-size:${size}px;">person</span>`;
   };
   setAvatar(document.getElementById('profileAvatar'),18);
   setAvatar(document.getElementById('pdAvatarLg'),22);
-
   const name=user.displayName||(user.email||'').split('@')[0];
   document.getElementById('pdName').textContent=name;
-  const roleLabels={owner:'Owner',admin:'Admin',reader:'Reader'};
-  document.getElementById('pdRole').textContent=roleLabels[userRole];
-
+  document.getElementById('pdRole').textContent={owner:'Owner',admin:'Admin',reader:'Reader'}[userRole];
   document.querySelectorAll('.editable-only').forEach(el=>el.style.display=isEditable()?'':'none');
-
-  if(userRole==='owner'){
-    document.getElementById('ownerSettingsSections').style.display='block';
-    document.getElementById('readerSettingsSection').style.display='none';
-  } else if(userRole==='reader'){
-    document.getElementById('ownerSettingsSections').style.display='none';
-    document.getElementById('readerSettingsSection').style.display='block';
-    setupReaderSettings();
-  } else {
-    document.getElementById('ownerSettingsSections').style.display='none';
-    document.getElementById('readerSettingsSection').style.display='none';
-  }
-
-  updateDayCounter();
-  switchTab('home');
+  // Source toggle — owner only
+  const stw=document.getElementById('sourceToggleWrap');
+  if(stw)stw.style.display=isOwner()?'':'none';
+  updateSourceToggleUI();
+  if(userRole==='owner'){document.getElementById('ownerSettingsSections').style.display='block';document.getElementById('readerSettingsSection').style.display='none';}
+  else if(userRole==='reader'){document.getElementById('ownerSettingsSections').style.display='none';document.getElementById('readerSettingsSection').style.display='block';setupReaderSettings();}
+  else{document.getElementById('ownerSettingsSections').style.display='none';document.getElementById('readerSettingsSection').style.display='none';}
+  updateDayCounter();switchTab('home');
 }
+
+/* ═══ SOURCE LINK TOGGLE ═══ */
+function updateSourceToggleUI(){
+  const btn=document.getElementById('btnSourceToggle');
+  const lbl=document.getElementById('sourceToggleLabel');
+  if(!btn||!lbl)return;
+  lbl.textContent=sourceLinksVisible?'Visible':'Hidden';
+  btn.classList.toggle('active',!sourceLinksVisible);
+}
+document.getElementById('btnSourceToggle')?.addEventListener('click',async()=>{
+  if(!isOwner())return;
+  sourceLinksVisible=!sourceLinksVisible;
+  try{
+    await db.collection('config').doc('app').set({sourceLinksVisible},{merge:true});
+    updateSourceToggleUI();
+    renderEssays();
+    showToast('Source links '+(sourceLinksVisible?'now visible to all':'hidden from readers'));
+  }catch(e){showToast('Error: '+e.message,'err');sourceLinksVisible=!sourceLinksVisible;updateSourceToggleUI();}
+});
 
 /* ═══ ACCESS BANNER ═══ */
 document.getElementById('btnBannerDismiss')?.addEventListener('click',()=>{
@@ -1182,132 +1150,80 @@ document.getElementById('btnBannerRequest')?.addEventListener('click',async()=>{
 /* ═══ NOTIFICATIONS ═══ */
 function loadNotifications(){
   if(!currentUser)return;
-  // lastSeen: per-user ISO timestamp stored in localStorage
   const lastSeen=lsG('notifLastSeen_'+currentUser.uid)||'1970-01-01T00:00:00.000Z';
   const cols=['essays','posts','readings','memories'];
   notifications=[];
   cols.forEach(col=>{
     if(unsubs['notif_'+col])unsubs['notif_'+col]();
-    // Only fetch items created after the user last cleared notifications
-    // Use onSnapshot so badge updates in real time when owner adds something
-    unsubs['notif_'+col]=db.collection(col)
-      .where('createdAt','>',lastSeen)
-      .onSnapshot(snap=>{
-        // Remove old entries for this col, re-add fresh
-        notifications=notifications.filter(n=>n._col!==col);
-        snap.docs.forEach(d=>{
-          const data={id:d.id,...d.data(),_col:col};
-          // Don't notify the person who created the item
-          // addedBy is set when saving; fallback: if owner/admin added it, readers get notified
-          const addedBy=data.addedBy||'';
-          if(addedBy===currentUser.email)return; // suppress for self
-          notifications.push(data);
-        });
-        renderNotifications();
-      },err=>{
-        // Index not built yet (no createdAt field on old docs) — fall back to unfiltered snapshot
-        if(err.code==='failed-precondition'||err.code==='unimplemented'||err.message.includes('index')){
-          unsubs['notif_'+col]=db.collection(col).onSnapshot(snap=>{
-            notifications=notifications.filter(n=>n._col!==col);
-            snap.docs.forEach(d=>{
-              const data={id:d.id,...d.data(),_col:col};
-              const ts=data.createdAt||'';
-              if(ts<=lastSeen)return;
-              const addedBy=data.addedBy||'';
-              if(addedBy===currentUser.email)return;
-              notifications.push(data);
-            });
-            renderNotifications();
-          });
-        }
+    unsubs['notif_'+col]=db.collection(col).where('createdAt','>',lastSeen).onSnapshot(snap=>{
+      notifications=notifications.filter(n=>n._col!==col);
+      snap.docs.forEach(d=>{
+        const data={id:d.id,...d.data(),_col:col};
+        if((data.addedBy||'')===currentUser.email)return;
+        notifications.push(data);
       });
+      renderNotifications();
+    },err=>{
+      if(err.code==='failed-precondition'||err.code==='unimplemented'||err.message.includes('index')){
+        unsubs['notif_'+col]=db.collection(col).onSnapshot(snap=>{
+          notifications=notifications.filter(n=>n._col!==col);
+          snap.docs.forEach(d=>{
+            const data={id:d.id,...d.data(),_col:col};
+            const ts=data.createdAt||'';
+            if(ts<=lastSeen)return;
+            if((data.addedBy||'')===currentUser.email)return;
+            notifications.push(data);
+          });
+          renderNotifications();
+        });
+      }
+    });
   });
 }
-
 function renderNotifications(){
   const badge=document.getElementById('notifBadge');
   const list=document.getElementById('notifList');
   const count=notifications.length;
-  if(count>0){badge.style.display='';badge.textContent=count>9?'9+':count;}
-  else badge.style.display='none';
-
+  if(count>0){badge.style.display='';badge.textContent=count>9?'9+':count;}else badge.style.display='none';
   if(!count){list.innerHTML='<div class="notif-empty">All caught up! 🎉</div>';return;}
   list.innerHTML='';
   const colLabels={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
   const colIcons={essays:'description',posts:'article',readings:'library_books',memories:'auto_stories'};
-  // Sort newest first by createdAt
   const sorted=[...notifications].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).slice(0,15);
   sorted.forEach(n=>{
     const item=document.createElement('div');item.className='notif-item';
-    const title=n.title||n.author||'New item';
+    const title=esc(n.title||n.author||'New item');
     const dateStr=(n.createdAt||n.date||'').slice(0,10);
     const colName=colLabels[n._col]||n._col;
     const iconName=colIcons[n._col]||'circle';
-    item.innerHTML=`
-      <div class="notif-dot"></div>
-      <div class="notif-text">
-        <div class="notif-title">${title}</div>
-        <div class="notif-sub">New ${colName} · ${dateStr}</div>
-      </div>
-      <span class="icon" style="font-size:15px;color:var(--ink-4);flex-shrink:0;">${iconName}</span>`;
+    item.innerHTML=`<div class="notif-dot"></div><div class="notif-text"><div class="notif-title">${title}</div><div class="notif-sub">New ${colName} · ${dateStr}</div></div><span class="icon" style="font-size:15px;color:var(--ink-4);flex-shrink:0;">${iconName}</span>`;
     item.addEventListener('click',()=>{
       closeAllDropdowns();
-      // Navigate to item: open detail if post/reading, switch tab otherwise
       if(n._col==='posts'){switchTab('posts');setTimeout(()=>openDetail(n.id,'posts'),100);}
       else if(n._col==='readings'){switchTab('readings');setTimeout(()=>openDetail(n.id,'readings'),100);}
-      else if(n._col==='essays'){switchTab('essays');}
+      else if(n._col==='essays')switchTab('essays');
       else switchTab(n._col);
     });
     list.appendChild(item);
   });
-  if(notifications.length>15){
-    const more=document.createElement('div');
-    more.style.cssText='padding:8px 16px;font-size:0.68rem;color:var(--ink-3);font-style:italic;text-align:center;';
-    more.textContent=`+${notifications.length-15} more — mark all read to clear`;
-    list.appendChild(more);
-  }
 }
-
 document.getElementById('notifClear')?.addEventListener('click',()=>{
   if(!currentUser)return;
   lsS('notifLastSeen_'+currentUser.uid,new Date().toISOString());
-  notifications=[];
-  renderNotifications();
-  showToast('Notifications cleared');
+  notifications=[];renderNotifications();showToast('Notifications cleared');
 });
-
 document.getElementById('btnResetNotifs')?.addEventListener('click',()=>{
   if(!currentUser)return;
   lsS('notifLastSeen_'+currentUser.uid,'1970-01-01T00:00:00.000Z');
-  showToast('Notification state reset');
-  loadNotifications();
+  showToast('Notification state reset');loadNotifications();
 });
 
 /* ═══ PROFILE DROPDOWN ═══ */
-document.getElementById('profileAvatar').addEventListener('click',(e)=>{
-  e.stopPropagation();
-  const dd=document.getElementById('profileDropdown');
-  dd.classList.toggle('hidden');
-  document.getElementById('notifPanel').classList.add('hidden');
-});
-document.getElementById('notifBtn').addEventListener('click',(e)=>{
-  e.stopPropagation();
-  const np=document.getElementById('notifPanel');
-  np.classList.toggle('hidden');
-  document.getElementById('profileDropdown').classList.add('hidden');
-});
+document.getElementById('profileAvatar').addEventListener('click',(e)=>{e.stopPropagation();document.getElementById('profileDropdown').classList.toggle('hidden');document.getElementById('notifPanel').classList.add('hidden');});
+document.getElementById('notifBtn').addEventListener('click',(e)=>{e.stopPropagation();document.getElementById('notifPanel').classList.toggle('hidden');document.getElementById('profileDropdown').classList.add('hidden');});
 document.addEventListener('click',()=>closeAllDropdowns());
-function closeAllDropdowns(){
-  document.getElementById('profileDropdown').classList.add('hidden');
-  document.getElementById('notifPanel').classList.add('hidden');
-}
-document.querySelectorAll('[data-pd]').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const tab=btn.getAttribute('data-pd');
-    closeAllDropdowns();
-    switchTab(tab);
-  });
-});
+function closeAllDropdowns(){document.getElementById('profileDropdown').classList.add('hidden');document.getElementById('notifPanel').classList.add('hidden');}
+document.querySelectorAll('[data-pd]').forEach(btn=>btn.addEventListener('click',()=>{const tab=btn.getAttribute('data-pd');closeAllDropdowns();switchTab(tab);}));
 document.getElementById('brandBtn').addEventListener('click',()=>switchTab('home'));
 
 /* ═══ FIRESTORE LISTENERS ═══ */
@@ -1316,32 +1232,33 @@ function setupListeners(){
     if(unsubs[col])unsubs[col]();
     unsubs[col]=db.collection(col).onSnapshot(snap=>{
       const data=snap.docs.map(d=>({id:d.id,...d.data()}));
-      if(col==='essays') essays=data;
-      else if(col==='posts') posts=data;
-      else if(col==='readings') readings=data;
+      if(col==='essays')essays=data;
+      else if(col==='posts')posts=data;
+      else if(col==='readings')readings=data;
       else memories=data;
       updateHomeCounts();
       const active=document.querySelector('.top-tab.active');
-      if(active){
-        const t=active.getAttribute('data-tab');
-        if(t===col||t==='home')renderPage(t);
-      }
+      if(active){const t=active.getAttribute('data-tab');if(t===col||t==='home')renderPage(t);}
     },err=>showToast('Data error: '+err.message,'err'));
   });
-
   if(userRole==='owner'){
-    unsubs['requests']=db.collection('accessRequests').where('status','==','pending').onSnapshot(snap=>{
-      requests=snap.docs.map(d=>({id:d.id,...d.data()}));
-      const badge=document.getElementById('sidebarReqBadge');
-      if(badge){badge.style.display=requests.length?'':'none';if(requests.length)badge.textContent=requests.length;}
-      renderSettings();
-    });
+    unsubs['requests']=db.collection('accessRequests').where('status','==','pending').onSnapshot(snap=>{requests=snap.docs.map(d=>({id:d.id,...d.data()}));renderSettings();});
     unsubs['admins']=db.collection('admins').onSnapshot(snap=>{admins=snap.docs.map(d=>({id:d.id,...d.data()}));renderSettings();});
     unsubs['users']=db.collection('users').onSnapshot(snap=>{allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));renderSettings();renderAnalytics();});
   } else {
-    // Non-owners can still see analytics if we have user data
     db.collection('users').get().then(snap=>{allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));renderAnalytics();});
   }
+  // Watch sourceLinksVisible in realtime
+  if(unsubs['config'])unsubs['config']();
+  unsubs['config']=db.collection('config').doc('app').onSnapshot(snap=>{
+    if(snap.exists&&typeof snap.data().sourceLinksVisible==='boolean'){
+      sourceLinksVisible=snap.data().sourceLinksVisible;
+      updateSourceToggleUI();
+      // Re-render essays if on that page
+      const active=document.querySelector('.top-tab.active');
+      if(active&&active.getAttribute('data-tab')==='essays')renderEssays();
+    }
+  });
 }
 
 /* ═══ TABS ═══ */
@@ -1351,10 +1268,7 @@ function switchTab(tab){
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+tab));
   renderPage(tab);
 }
-document.querySelectorAll('.top-tab,.mobile-nav-item[data-tab]').forEach(btn=>{
-  btn.addEventListener('click',()=>switchTab(btn.getAttribute('data-tab')));
-});
-
+document.querySelectorAll('.top-tab,.mobile-nav-item[data-tab]').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.getAttribute('data-tab'))));
 function renderPage(tab){
   if(tab==='home')renderHome();
   else if(tab==='essays')renderEssays();
@@ -1372,107 +1286,58 @@ function updateHomeCounts(){
   document.getElementById('hReadings').textContent=readings.length;
   document.getElementById('hMemories').textContent=memories.length;
 }
-
 function renderHome(){
   updateHomeCounts();
   const name=(currentUser?.displayName||(currentUser?.email||'').split('@')[0]||'').split(' ')[0];
   const hr=new Date().getHours();
   const greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
-  document.getElementById('homeWelcome').textContent=(greet)+', '+name+'.';
+  document.getElementById('homeWelcome').textContent=greet+', '+name+'.';
   document.getElementById('homeSub').textContent='Here\'s your archive at a glance — Day '+(document.getElementById('dayNum').textContent)+'.';
-
-  // Progress bars
-  const pct=(items)=>{
-    if(!items.length)return 0;
-    const read=items.filter(iReadIt).length;
-    return Math.round(read/items.length*100);
-  };
-  [['essays','Essay'],['posts','Post'],['readings','Reading'],['memories','Memory']].forEach(([col,label])=>{
-    const items=col==='essays'?essays:col==='posts'?posts:col==='readings'?readings:memories;
+  const pct=(items)=>{if(!items.length)return 0;return Math.round(items.filter(iReadIt).length/items.length*100);};
+  [['Essay',essays],['Post',posts],['Reading',readings],['Memory',memories]].forEach(([label,items])=>{
     const p=pct(items);
-    const barId='h'+label+'Bar', pctId='h'+label+'Pct';
-    const barEl=document.getElementById(barId);
-    const pctEl=document.getElementById(pctId);
+    const barEl=document.getElementById('h'+label+'Bar');
+    const pctEl=document.getElementById('h'+label+'Pct');
     if(barEl)barEl.style.width=p+'%';
     if(pctEl)pctEl.textContent=p+'% read by you';
   });
-  document.getElementById('hEssayBar').style.width=pct(essays)+'%';
-  document.getElementById('hEssayPct').textContent=pct(essays)+'% read by you';
-  document.getElementById('hPostBar').style.width=pct(posts)+'%';
-  document.getElementById('hPostPct').textContent=pct(posts)+'% read by you';
-  document.getElementById('hReadingBar').style.width=pct(readings)+'%';
-  document.getElementById('hReadingPct').textContent=pct(readings)+'% read by you';
-  document.getElementById('hMemoryBar').style.width=pct(memories)+'%';
-  document.getElementById('hMemoryPct').textContent=pct(memories)+'% read by you';
-
-  renderHeatmaps();
-  renderHomeStreaks();
+  renderHeatmaps();renderHomeStreaks();
 }
 
-function buildHeatmapData(readCountsFn, weeks=16){
-  const days=weeks*7;
-  const grid=[];
-  const now=new Date();
-  for(let i=days-1;i>=0;i--){
-    const d=new Date(now);d.setDate(d.getDate()-i);
-    const key=d.toISOString().slice(0,10);
-    grid.push({date:key,v:0});
-  }
-  // Aggregate read events from readCounts with date keys
-  // Since we store cumulative counts, we use activity log if available
-  // Fallback: use createdAt of items to mark days they were added
-  return grid;
-}
-
-// activityIndex: {date -> [{col, title, id}]} built once per render
-let activityIndex = {};
-
+let activityIndex={};
 function buildActivityIndex(){
-  activityIndex = {};
+  activityIndex={};
   const allItems=[...essays,...posts,...readings,...memories];
   allItems.forEach(item=>{
-    // Use actual read event date: prefer item.date (content date), fallback createdAt
-    // For display in popup we show the item info; key is item date as proxy for "when added/read"
-    const d=(item.date||item.createdAt||'').slice(0,10);
-    if(!d)return;
+    const d=(item.date||item.createdAt||'').slice(0,10);if(!d)return;
     const col=essays.includes(item)?'essays':posts.includes(item)?'posts':readings.includes(item)?'readings':'memories';
     if(!activityIndex[d])activityIndex[d]=[];
     activityIndex[d].push({col,title:item.title||item.author||'Untitled',id:item.id,totalReads:totalReadCount(item),myReads:myReadCount(item)});
   });
 }
-
 function renderHeatmaps(){
   buildActivityIndex();
-  // My activity map: days where I have read something
-  const myActivity={};
-  const globalActivity={};
+  const myActivity={},globalActivity={};
   const allItems=[...essays,...posts,...readings,...memories];
   allItems.forEach(item=>{
-    const d=(item.date||item.createdAt||'').slice(0,10);
-    if(!d)return;
-    const g=totalReadCount(item);
-    const m=myReadCount(item);
+    const d=(item.date||item.createdAt||'').slice(0,10);if(!d)return;
+    const g=totalReadCount(item);const m=myReadCount(item);
     if(g>0)globalActivity[d]=(globalActivity[d]||0)+g;
     if(m>0)myActivity[d]=(myActivity[d]||0)+m;
   });
   renderHeatmap('myHeatmap',myActivity,true);
   renderHeatmap('globalHeatmap',globalActivity,false);
 }
-
 function renderHeatmap(containerId,activityMap,isMine){
-  const el=document.getElementById(containerId);
-  if(!el)return;
-  const weeks=16;
-  const now=new Date();
+  const el=document.getElementById(containerId);if(!el)return;
+  const weeks=16,now=new Date();
   const cols=[];
   for(let w=0;w<weeks;w++){
     const col=[];
     for(let d=6;d>=0;d--){
-      const date=new Date(now);
-      date.setDate(date.getDate()-(w*7+d));
+      const date=new Date(now);date.setDate(date.getDate()-(w*7+d));
       const key=date.toISOString().slice(0,10);
       const raw=activityMap[key]||0;
-      // Intensity: 0=none,1=low,2=medium,3=high,4=max
       const v=raw===0?0:raw===1?1:raw<=3?2:raw<=6?3:4;
       col.unshift({key,v,raw});
     }
@@ -1482,9 +1347,7 @@ function renderHeatmap(containerId,activityMap,isMine){
   let html='<div class="heatmap-grid">';
   cols.forEach((col,wi)=>{
     html+=`<div class="heatmap-col">`;
-    col.forEach(cell=>{
-      html+=`<div class="heatmap-cell" data-v="${cell.v}" data-date="${cell.key}" data-mine="${isMine}" data-raw="${cell.raw}"></div>`;
-    });
+    col.forEach(cell=>{html+=`<div class="heatmap-cell" data-v="${cell.v}" data-date="${cell.key}" data-mine="${isMine}" data-raw="${cell.raw}"></div>`;});
     const firstDay=new Date(col[0].key);
     const prevDay=wi>0?new Date(cols[wi-1][0].key):null;
     const showMonth=!prevDay||firstDay.getMonth()!==prevDay.getMonth();
@@ -1493,18 +1356,12 @@ function renderHeatmap(containerId,activityMap,isMine){
   });
   html+='</div>';
   el.innerHTML=html;
-  // Attach click handlers for interactive popup
   el.querySelectorAll('.heatmap-cell').forEach(cell=>{
-    cell.addEventListener('click',(ev)=>{
-      ev.stopPropagation();
-      showHeatmapPopup(cell.dataset.date, cell.dataset.mine==='true', ev.clientX, ev.clientY);
-    });
+    cell.addEventListener('click',(ev)=>{ev.stopPropagation();showHeatmapPopup(cell.dataset.date,cell.dataset.mine==='true',ev.clientX,ev.clientY);});
   });
 }
-
 let _heatmapPopup=null;
-function showHeatmapPopup(date, isMine, cx, cy){
-  // Remove existing popup
+function showHeatmapPopup(date,isMine,cx,cy){
   if(_heatmapPopup){_heatmapPopup.remove();_heatmapPopup=null;}
   const items=activityIndex[date]||[];
   const relevant=isMine?items.filter(x=>x.myReads>0):items.filter(x=>x.totalReads>0);
@@ -1512,99 +1369,67 @@ function showHeatmapPopup(date, isMine, cx, cy){
   const d=new Date(date);
   const dateStr=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
   let html=`<div class="heatmap-popup-date">${dateStr}</div>`;
-  if(!relevant.length){
-    html+=`<div class="heatmap-popup-empty">No ${isMine?'personal ':''} activity recorded on this day.</div>`;
-  } else {
+  if(!relevant.length){html+=`<div class="heatmap-popup-empty">No activity on this day.</div>`;}
+  else{
     relevant.slice(0,8).forEach(item=>{
-      const reads=isMine?item.myReads:item.totalReads;
-      html+=`<div class="heatmap-popup-item"><span class="heatmap-popup-col hp-col-${item.col}">${colLabel[item.col]}</span><span style="flex:1;line-height:1.4;">${item.title}</span><span style="font-size:0.65rem;color:var(--ink-3);flex-shrink:0;margin-left:4px;">${reads}×</span></div>`;
+      html+=`<div class="heatmap-popup-item"><span class="heatmap-popup-col hp-col-${item.col}">${colLabel[item.col]}</span><span style="flex:1;line-height:1.4;">${esc(item.title)}</span><span style="font-size:0.65rem;color:var(--ink-3);flex-shrink:0;margin-left:4px;">${isMine?item.myReads:item.totalReads}×</span></div>`;
     });
     if(relevant.length>8)html+=`<div style="font-size:0.65rem;color:var(--ink-3);padding-top:5px;font-style:italic;">+${relevant.length-8} more…</div>`;
   }
-  const popup=document.createElement('div');
-  popup.className='heatmap-popup';
-  popup.innerHTML=html;
-  document.body.appendChild(popup);
-  _heatmapPopup=popup;
-  // Position: prefer below+right of click, flip if near edge
-  const pw=240,ph=popup.offsetHeight||180;
-  const vw=window.innerWidth,vh=window.innerHeight;
+  const popup=document.createElement('div');popup.className='heatmap-popup';popup.innerHTML=html;
+  document.body.appendChild(popup);_heatmapPopup=popup;
+  const pw=240,ph=popup.offsetHeight||180,vw=window.innerWidth,vh=window.innerHeight;
   let left=cx+12,top=cy+12;
-  if(left+pw>vw-8)left=cx-pw-8;
-  if(top+ph>vh-8)top=cy-ph-8;
-  popup.style.left=Math.max(8,left)+'px';
-  popup.style.top=Math.max(8,top)+'px';
+  if(left+pw>vw-8)left=cx-pw-8;if(top+ph>vh-8)top=cy-ph-8;
+  popup.style.left=Math.max(8,left)+'px';popup.style.top=Math.max(8,top)+'px';
 }
-// Close popup on any outside click
 document.addEventListener('click',()=>{if(_heatmapPopup){_heatmapPopup.remove();_heatmapPopup=null;}});
 
 function renderHomeStreaks(){
-  const el=document.getElementById('homeStreaks');
-  if(!el)return;
+  const el=document.getElementById('homeStreaks');if(!el)return;
   const streaks=computeStreaks();
   if(!streaks.length){el.innerHTML='<div class="empty-state" style="padding:16px;"><p>No streak data yet.</p></div>';return;}
   el.innerHTML='';
   streaks.slice(0,5).forEach((s,i)=>{
     const row=document.createElement('div');row.className='streak-row';
-    row.innerHTML=`<div class="streak-rank">${i+1}</div><div class="streak-name">${s.name}<div class="streak-sub">${s.email}</div></div><div class="streak-val">🔥 ${s.streak} day${s.streak===1?'':'s'}</div>`;
+    row.innerHTML=`<div class="streak-rank">${i+1}</div><div class="streak-name">${esc(s.name)}<div class="streak-sub">${esc(s.email)}</div></div><div class="streak-val">🔥 ${s.streak} day${s.streak===1?'':'s'}</div>`;
     el.appendChild(row);
   });
 }
-
 function computeStreaks(){
-  // Read from activityLog which stores actual click dates
-  // Falls back gracefully if activityLog not loaded yet
   const userDays={};
-
-  // Primary source: activityLog keys (actual interaction dates)
   if(window._activityLogCache){
     Object.keys(window._activityLogCache).forEach(key=>{
-      const parts=key.split('__');
-      if(parts.length<5||parts[0]!=='activity')return;
-      const date=parts[1];
-      const emailKey=parts[2];
+      const parts=key.split('__');if(parts.length<5||parts[0]!=='activity')return;
+      const date=parts[1],emailKey=parts[2];
       if(!userDays[emailKey])userDays[emailKey]=new Set();
       userDays[emailKey].add(date);
     });
   }
-
-  // Fallback: use readCounts with content date (old behavior)
   if(!Object.keys(userDays).length){
     const allItems=[...essays,...posts,...readings,...memories];
     allItems.forEach(item=>{
-      const counts=item.readCounts;
-      if(!counts)return;
+      const counts=item.readCounts;if(!counts)return;
       Object.entries(counts).forEach(([emailKey,cnt])=>{
         if(!cnt)return;
-        const day=(item.date||item.createdAt||'').slice(0,10);
-        if(!day)return;
+        const day=(item.date||item.createdAt||'').slice(0,10);if(!day)return;
         if(!userDays[emailKey])userDays[emailKey]=new Set();
         userDays[emailKey].add(day);
       });
     });
   }
-
   const streaks=[];
   allUsers.forEach(u=>{
     const key=u.email.replace(/\./g,'_');
-    const days=userDays[key];
-    if(!days||!days.size)return;
+    const days=userDays[key];if(!days||!days.size)return;
     const sorted=[...days].sort().reverse();
     const today=new Date().toISOString().slice(0,10);
     const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-    // Streak is valid if most recent activity was today or yesterday
     if(sorted[0]!==today&&sorted[0]!==yesterday)return;
-    let streak=0;
-    let current=today;
-    // If most recent is yesterday, start from yesterday
-    if(sorted[0]===yesterday)current=yesterday;
+    let streak=0;let current=sorted[0]===today?today:yesterday;
     for(const day of sorted){
-      if(day===current){
-        streak++;
-        const d=new Date(current);
-        d.setDate(d.getDate()-1);
-        current=d.toISOString().slice(0,10);
-      } else if(day<current) break;
+      if(day===current){streak++;const d=new Date(current);d.setDate(d.getDate()-1);current=d.toISOString().slice(0,10);}
+      else if(day<current)break;
     }
     if(streak>0)streaks.push({name:u.name||u.email,email:u.email,streak});
   });
@@ -1618,7 +1443,7 @@ function sortItems(data,by,dir){
     if(by==='num'){va=a.num||0;vb=b.num||0;}
     else if(by==='rating'){va=avg(a.ratings)||0;vb=avg(b.ratings)||0;}
     else if(by==='reads'){va=totalReadCount(a);vb=totalReadCount(b);}
-    else if(by==='author'){va=a.author||'';vb=b.author||'';}
+    else if(by==='author'){va=(a.author||'').toLowerCase();vb=(b.author||'').toLowerCase();}
     else if(by==='source'){va=a.source||'';vb=b.source||'';}
     else{va=a.date||a.createdAt||'';vb=b.date||b.createdAt||'';}
     if(va<vb)return -1*dir;if(va>vb)return 1*dir;return 0;
@@ -1636,6 +1461,7 @@ document.getElementById('essaySortBy')?.addEventListener('change',function(){eSo
 document.getElementById('postSortBy')?.addEventListener('change',function(){pSort=this.value;renderPosts();});
 document.getElementById('readingSortBy')?.addEventListener('change',function(){rSort=this.value;renderReadings();});
 document.getElementById('memSortBy')?.addEventListener('change',function(){mSort=this.value;renderMemories();});
+document.getElementById('essayAuthorFilter')?.addEventListener('change',function(){activeEAuthor=this.value;renderEssays();});
 
 /* ═══ FILTER PILLS ═══ */
 ['all','unread','read'].forEach(f=>document.getElementById('ef-'+f)?.addEventListener('click',function(){eFilter=f;document.querySelectorAll('#page-essays .filter-pill').forEach(b=>b.classList.remove('active'));this.classList.add('active');renderEssays();}));
@@ -1655,77 +1481,103 @@ function buildTagStrip(stripId,rowId,items,activeTag,setTag,render,amber=false){
   if(!strip)return;
   strip.innerHTML='';
   const allBtn=document.createElement('button');
-  allBtn.className='htag'+(amber?' amber':'')+(activeTag?'':' active');
+  allBtn.className='htag'+(activeTag?'':' active');
   allBtn.textContent='All';
   allBtn.addEventListener('click',()=>{setTag(null);render();});
   strip.appendChild(allBtn);
   allTags.forEach(t=>{
     const btn=document.createElement('button');
-    btn.className='htag'+(amber?' amber':'')+(activeTag===t?' active':'');
+    btn.className='htag'+(activeTag===t?' active':'');
     btn.textContent=t;
     btn.addEventListener('click',()=>{setTag(activeTag===t?null:t);render();});
     strip.appendChild(btn);
   });
 }
 
+/* ═══ AUTHOR FILTER DROPDOWN (essays) ═══ */
+function updateAuthorFilter(){
+  const sel=document.getElementById('essayAuthorFilter');if(!sel)return;
+  const authors=[...new Set(essays.map(e=>e.author).filter(Boolean))].sort();
+  const current=sel.value;
+  sel.innerHTML='<option value="">All Authors</option>';
+  authors.forEach(a=>{
+    const opt=document.createElement('option');
+    opt.value=a;opt.textContent=a;
+    if(a===current)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+
 /* ═══ UNREAD BANNER ═══ */
-function renderUnreadBanner(containerId, items, col){
-  const container=document.getElementById(containerId);
-  if(!container)return;
+function renderUnreadBanner(containerId,items,col){
+  const container=document.getElementById(containerId);if(!container)return;
   const unread=sortItems(items.filter(x=>!iReadIt(x)&&!x.hidden),col==='essays'?'num':'date',-1);
   if(!unread.length){container.innerHTML='';return;}
   const item=unread[0];
-  const title=item.title||item.author||'Untitled';
+  const title=esc(item.title||item.author||'Untitled');
   const date=item.date||item.createdAt||'';
   const num=item.num?`#${String(item.num).padStart(2,'0')} · `:'';
   const colLabels={essays:'Latest Unread Essay',posts:'Latest Unread Post',readings:'Latest Unread Reading',memories:'Latest Unread Memory'};
   container.innerHTML=`<div class="unread-banner" data-col="${col}" data-id="${item.id}"><div class="unread-banner-num">${item.num?String(item.num).padStart(2,'0'):'★'}</div><div class="unread-banner-body"><div class="unread-banner-label">${colLabels[col]||'Latest Unread'}</div><div class="unread-banner-title">${title}</div><div class="unread-banner-meta">${num}${date.slice(0,10)}</div></div><span class="unread-banner-arrow">arrow_forward</span></div>`;
   container.querySelector('.unread-banner').addEventListener('click',()=>{
-    if(col==='essays') openMd(item.id,'essay');
+    if(col==='essays')openMd(item.id,'essay');
     else openDetail(item.id,col);
   });
 }
 
 /* ═══ ESSAYS ═══ */
 function renderEssays(){
+  updateAuthorFilter();
   const q=(document.getElementById('essaySearch')?.value||'').toLowerCase();
   let data=essays.slice();
   if(userRole==='reader')data=data.filter(e=>!e.hidden);
-  if(q)data=data.filter(e=>String(e.num).includes(q)||e.title.toLowerCase().includes(q)||(e.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  if(q)data=data.filter(e=>String(e.num).includes(q)||(e.title||'').toLowerCase().includes(q)||(e.tags||[]).some(t=>t.toLowerCase().includes(q))||(e.author||'').toLowerCase().includes(q));
   if(eFilter==='read')data=data.filter(e=>iReadIt(e));
   if(eFilter==='unread')data=data.filter(e=>!iReadIt(e));
   if(activeETag)data=data.filter(e=>(e.tags||[]).includes(activeETag));
+  if(activeEAuthor)data=data.filter(e=>e.author===activeEAuthor);
   data=sortItems(data,eSort,eDir);
   buildTagStrip('essayTagStrip','essayTagRow',essays,activeETag,v=>{activeETag=v;},renderEssays);
   renderUnreadBanner('essayUnreadBanner',essays,'essays');
 
   const list=document.getElementById('essayList');list.innerHTML='';
   if(!data.length){list.innerHTML='<div style="text-align:center;padding:50px;color:var(--ink-3);font-style:italic;">No essays found.</div>';return;}
-  const latest=Math.max(...essays.map(e=>e.num||0));
 
   data.forEach((e,i)=>{
     const myCount=myReadCount(e);
     const hasRead=myCount>0;
-    const isNew=e.num===latest&&!hasRead;
-    const hasE=!!e.myEssayMd, hasA=!!e.analysisMd;
+    const hasE=!!e.myEssayMd;
+    // Source link visibility: owner/admin always sees it; readers see only if sourceLinksVisible=true
+    const showSource=(isEditable()||sourceLinksVisible)&&!!e.url;
     const card=document.createElement('article');
     card.className='essay-card'+(hasRead?' is-read':'')+(e.hidden?' is-hidden':'');
     card.style.animationDelay=(i*0.02)+'s';
-    const tagsHtml=(e.tags||[]).map(t=>`<span class="essay-tag">${t}</span>`).join('');
+    const tagsHtml=(e.tags||[]).map(t=>`<span class="essay-tag">${esc(t)}</span>`).join('');
     const totalR=totalReadCount(e);
+
     let h=`<div class="essay-num">${String(e.num).padStart(2,'0')}</div>`;
     h+=`<div class="essay-body">`;
-    h+=`<div class="essay-eye">${isNew?'<span class="badge badge-new">New</span>':''}${e.hidden?'<span class="badge badge-hidden">Hidden</span>':''}</div>`;
-    h+=`<div class="essay-title">${e.title}</div>`;
-    if(e.author)h+=`<div style="font-size:0.72rem;color:var(--ink-3);margin-bottom:6px;font-style:italic;">${e.author}</div>`;
+    h+=`<div class="essay-eye">`;
+    // NEW badge only shows if this num is the latest for this author
+    const latestForAuthor=Math.max(...essays.filter(x=>x.author===e.author).map(x=>x.num||0));
+    const isNew=(e.num===latestForAuthor)&&!hasRead;
+    if(isNew)h+=`<span class="badge badge-new">New</span>`;
+    if(e.hidden)h+=`<span class="badge badge-hidden">Hidden</span>`;
+    // Author badge
+    if(e.author)h+=`<span class="essay-author-badge">${esc(e.author)}</span>`;
+    h+=`</div>`;
+    h+=`<div class="essay-title">${esc(e.title)}</div>`;
     if(tagsHtml)h+=`<div class="essay-tags">${tagsHtml}</div>`;
-    h+=`<div class="essay-stats"><span style="font-size:0.62rem;color:var(--ink-3);">${e.date||''}</span><span>📖 <strong>${totalR}×</strong></span>`;
+    h+=`<div class="essay-stats"><span style="font-size:0.62rem;color:var(--ink-3);">${esc(e.date||'')}</span><span>📖 <strong>${totalR}×</strong></span>`;
     if(myCount>0)h+=`<span style="color:var(--amber);">👤 <strong style="color:var(--amber);">${myCount}×</strong> you</span>`;
     h+=`<div class="stars">${starsHtml(e.ratings)}</div><strong style="color:var(--pri)">${avgStr(e.ratings)}</strong></div></div>`;
+
     h+=`<div class="essay-actions"><div class="act-row">`;
-    h+=`<button class="act-icon" data-id="${e.id}" data-action="orig" title="Open Original"><span class="icon">open_in_new</span></button>`;
+    // Source link — shown conditionally
+    if(showSource)h+=`<button class="act-icon" data-id="${e.id}" data-action="orig" title="Open Original"><span class="icon">open_in_new</span></button>`;
+    // My Essay button — only if markdown exists
     h+=`<button class="act-icon${hasE?'':' dim'}" data-id="${e.id}" data-action="essay" title="My Essay"><span class="icon">description</span></button>`;
-    h+=`<button class="act-icon${hasA?'':' dim'}" data-id="${e.id}" data-action="analysis" title="Analysis"><span class="icon">query_stats</span></button>`;
+    // Mark read
     if(myCount>0){
       h+=`<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.68rem;font-weight:700;color:var(--pri);font-family:'Manrope',sans-serif;">${myCount}×</span><button class="act-icon green" data-id="${e.id}" data-action="read" title="${myCount}× read"><span class="icon fill" style="font-size:15px;">check_circle</span></button></div>`;
     } else {
@@ -1733,11 +1585,12 @@ function renderEssays(){
     }
     h+=`</div><div class="act-row">`;
     h+=`<button class="act-icon" data-id="${e.id}" data-action="rate" title="Rate"><span class="icon">grade</span></button>`;
+    // Visibility toggle — owner only
     if(isOwner())h+=`<button class="act-icon${e.hidden?' amber-btn':''}" data-id="${e.id}" data-action="toggle-vis" title="${e.hidden?'Make Visible':'Hide'}"><span class="icon">${e.hidden?'visibility_off':'visibility'}</span></button>`;
-    if(isEditable()){
-      h+=`<button class="act-icon" data-id="${e.id}" data-action="edit" title="Edit"><span class="icon">edit</span></button>`;
-      h+=`<button class="act-icon danger" data-id="${e.id}" data-action="del" title="Delete"><span class="icon">close</span></button>`;
-    }
+    // Edit — editable roles
+    if(isEditable())h+=`<button class="act-icon" data-id="${e.id}" data-action="edit" title="Edit"><span class="icon">edit</span></button>`;
+    // Delete — OWNER ONLY
+    if(isOwner())h+=`<button class="act-icon danger" data-id="${e.id}" data-action="del" title="Delete"><span class="icon">close</span></button>`;
     h+=`</div></div>`;
     card.innerHTML=h;
     list.appendChild(card);
@@ -1748,14 +1601,12 @@ function renderEssays(){
       ev.stopPropagation();
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='orig'){
-        const e=essays.find(x=>x.id===id);if(e)window.open(e.url,'_blank');
-        logActivity(id,'essays','source');
-        openRateModal(id,'essay');
+        const e=essays.find(x=>x.id===id);if(e&&e.url)window.open(e.url,'_blank');
+        logActivity(id,'essays','source');openRateModal(id,'essay');
       }
-      else if(act==='essay'){openMd(id,'essay');logActivity(id,'essays','open');} // ← my essay click counts  
-      else if(act==='analysis'){openMd(id,'analysis');logActivity(id,'essays','analysis');} // ← analysis click counts
+      else if(act==='essay'){openMd(id,'essay');logActivity(id,'essays','open');}
       else if(act==='read')toggleRead(id);
-      else if(act==='rate'){logActivity(id,'essays','rate');openRateModal(id,'essay');} // ← rate click counts
+      else if(act==='rate'){logActivity(id,'essays','rate');openRateModal(id,'essay');}
       else if(act==='toggle-vis')toggleVisibility(id);
       else if(act==='edit')openEditEssay(id);
       else if(act==='del')delItem('essays',id);
@@ -1773,6 +1624,8 @@ async function toggleVisibility(id){
   showToast(e.hidden?'Essay now visible':'Essay hidden');
 }
 async function delItem(col,id){
+  // Only owner can delete essays; editable roles can delete others
+  if(col==='essays'&&!isOwner())return;
   if(!isEditable())return;
   if(!confirm('Remove this item permanently?'))return;
   await db.collection(col).doc(id).delete();showToast('Removed');
@@ -1784,14 +1637,24 @@ document.getElementById('closeEssayModal')?.addEventListener('click',()=>closeMo
 document.getElementById('cancelEssayModal')?.addEventListener('click',()=>closeModal('ov-essay'));
 document.getElementById('saveEssayBtn')?.addEventListener('click',saveEssay);
 
-function openAddEssay(){if(!isEditable())return;editEssayId=null;document.getElementById('mEssayTitle').textContent='Add Essay';['eNum','eDate','eTitle','eAuthor','eUrl','eTags','eMyMd','eAnMd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});openModal('ov-essay');}
+function openAddEssay(){
+  if(!isEditable())return;
+  editEssayId=null;
+  document.getElementById('mEssayTitle').textContent='Add Essay';
+  ['eNum','eDate','eTitle','eAuthor','eUrl','eTags','eMyMd'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  openModal('ov-essay');
+}
 function openEditEssay(id){
   const e=essays.find(x=>x.id===id);if(!e)return;
-  editEssayId=id;document.getElementById('mEssayTitle').textContent='Edit Essay';
-  document.getElementById('eNum').value=e.num;document.getElementById('eDate').value=e.date||'';
-  document.getElementById('eTitle').value=e.title;document.getElementById('eAuthor').value=e.author||'';
-  document.getElementById('eUrl').value=e.url;document.getElementById('eTags').value=(e.tags||[]).join(', ');
-  document.getElementById('eMyMd').value=e.myEssayMd||'';document.getElementById('eAnMd').value=e.analysisMd||'';
+  editEssayId=id;
+  document.getElementById('mEssayTitle').textContent='Edit Essay';
+  document.getElementById('eNum').value=e.num;
+  document.getElementById('eDate').value=e.date||'';
+  document.getElementById('eTitle').value=e.title;
+  document.getElementById('eAuthor').value=e.author||'';
+  document.getElementById('eUrl').value=e.url||'';
+  document.getElementById('eTags').value=(e.tags||[]).join(' ');
+  document.getElementById('eMyMd').value=e.myEssayMd||'';
   openModal('ov-essay');
 }
 async function saveEssay(){
@@ -1801,15 +1664,14 @@ async function saveEssay(){
   const author=document.getElementById('eAuthor').value.trim();
   const url=document.getElementById('eUrl').value.trim();
   if(!num||!date||!title||!author||!url){showToast('Fill all required fields','err');return;}
-  const tags=document.getElementById('eTags').value.split(',').map(t=>t.trim()).filter(Boolean).map(t=>t.startsWith('#')?t:'#'+t);
+  const tags=parseTags(document.getElementById('eTags').value);
   const myEssayMd=document.getElementById('eMyMd').value.trim();
-  const analysisMd=document.getElementById('eAnMd').value.trim();
   try{
     if(editEssayId){
-      await db.collection('essays').doc(editEssayId).update({num,date,title,author,url,tags,myEssayMd,analysisMd});showToast('Essay updated');
+      await db.collection('essays').doc(editEssayId).update({num,date,title,author,url,tags,myEssayMd});showToast('Essay updated');
     } else {
-      if(essays.find(e=>e.num===num)){showToast('Essay #'+num+' already exists','err');return;}
-      await db.collection('essays').add({num,date,title,author,url,tags,myEssayMd,analysisMd,readCounts:{},ratings:{},hidden:false,createdAt:new Date().toISOString(),addedBy:currentUser?.email||''});showToast('Essay added');
+      // Allow same num across different authors — no uniqueness check on num alone
+      await db.collection('essays').add({num,date,title,author,url,tags,myEssayMd,readCounts:{},ratings:{},hidden:false,createdAt:new Date().toISOString(),addedBy:currentUser?.email||''});showToast('Essay added');
     }
     closeModal('ov-essay');
   }catch(err){showToast('Error: '+err.message,'err');}
@@ -1831,39 +1693,35 @@ function renderPosts(){
   data.forEach((p,i)=>{
     const pMyCount=myReadCount(p);const pTotal=totalReadCount(p);
     const card=document.createElement('div');card.className='post-card';card.style.animationDelay=(i*0.02)+'s';
-    const tagsHtml=(p.tags||[]).map(t=>`<span class="post-tag">${t}</span>`).join('');
-    let h=`<div class="post-head"><span class="plat plat-${p.platform}">${PLBL[p.platform]||p.platform}</span>`;
+    const tagsHtml=(p.tags||[]).map(t=>`<span class="post-tag">${esc(t)}</span>`).join('');
+    let h=`<div class="post-head"><span class="plat plat-${esc(p.platform)}">${esc(PLBL[p.platform]||p.platform)}</span>`;
     h+=`<div style="margin-left:auto;display:flex;gap:3px;">`;
-    h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" style="width:28px;height:28px;" title="Rate"><span class="icon" style="font-size:14px;">grade</span></button>`;
-    if(pMyCount>0)h+=`<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.62rem;font-weight:700;color:var(--pri);font-family:'Manrope',sans-serif;">${pMyCount}×</span><button class="act-icon green" data-id="${p.id}" data-action="read" style="width:28px;height:28px;" title="${pMyCount}× read"><span class="icon fill" style="font-size:12px;">check_circle</span></button></div>`;
-    else h+=`<button class="act-icon" data-id="${p.id}" data-action="read" style="width:28px;height:28px;" title="Mark read"><span class="icon" style="font-size:14px;">radio_button_unchecked</span></button>`;
-    if(isEditable()){
-      h+=`<button class="act-icon" data-id="${p.id}" data-action="edit" style="width:28px;height:28px;" title="Edit"><span class="icon" style="font-size:14px;">edit</span></button>`;
-      h+=`<button class="act-icon danger" data-id="${p.id}" data-action="del" style="width:28px;height:28px;" title="Delete"><span class="icon" style="font-size:14px;">close</span></button>`;
-    }
+    h+=`<button class="act-icon" data-id="${p.id}" data-action="rate" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">grade</span></button>`;
+    if(pMyCount>0)h+=`<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.62rem;font-weight:700;color:var(--pri);">${pMyCount}×</span><button class="act-icon green" data-id="${p.id}" data-action="read" style="width:28px;height:28px;"><span class="icon fill" style="font-size:12px;">check_circle</span></button></div>`;
+    else h+=`<button class="act-icon" data-id="${p.id}" data-action="read" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">radio_button_unchecked</span></button>`;
+    if(isEditable()){h+=`<button class="act-icon" data-id="${p.id}" data-action="edit" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">edit</span></button>`;}
+    if(isOwner()){h+=`<button class="act-icon danger" data-id="${p.id}" data-action="del" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">close</span></button>`;}
     h+=`</div></div>`;
-    if(p.title)h+=`<div style="font-family:'Newsreader',serif;font-size:1rem;font-weight:700;color:var(--ink);">${p.title}</div>`;
-    h+=`<div class="post-author">${p.author}</div>`;
+    if(p.title)h+=`<div style="font-family:'Newsreader',serif;font-size:1rem;font-weight:700;color:var(--ink);">${esc(p.title)}</div>`;
+    h+=`<div class="post-author">${esc(p.author)}</div>`;
     if(tagsHtml)h+=`<div class="post-tags">${tagsHtml}</div>`;
-    h+=`<div class="post-content-preview" data-id="${p.id}">${p.content}</div>`;
-    h+=`<div class="post-stats"><span style="font-size:0.62rem;color:var(--ink-3);">${p.date||''}</span><span>📖 <strong>${pTotal}×</strong></span>`;
-    if(pMyCount>0)h+=`<span style="color:var(--amber);">👤 <strong style="color:var(--amber);">${pMyCount}×</strong></span>`;
+    h+=`<div class="post-content-preview">${esc(p.content)}</div>`;
+    h+=`<div class="post-stats"><span style="font-size:0.62rem;color:var(--ink-3);">${esc(p.date||'')}</span><span>📖 <strong>${pTotal}×</strong></span>`;
+    if(pMyCount>0)h+=`<span style="color:var(--amber);">👤 <strong>${pMyCount}×</strong></span>`;
     h+=`${starsHtml(p.ratings)}`;
-    if(p.url)h+=`<a href="${p.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="margin-left:auto;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:3px 9px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:2px;flex-shrink:0;"><span class="icon" style="font-size:11px;">north_east</span> Source</a>`;
+    if(p.url)h+=`<a href="${esc(p.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="margin-left:auto;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:3px 9px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:2px;flex-shrink:0;"><span class="icon" style="font-size:11px;">north_east</span> Source</a>`;
     h+=`</div>`;
     card.innerHTML=h;
-    // Click card to open detail (but not buttons)
     card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')){logActivity(p.id,'posts','open');openDetail(p.id,'posts');}});
     grid.appendChild(card);
   });
-
   grid.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',(ev)=>{
       ev.stopPropagation();
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditPost(id);
       else if(act==='del')delItem('posts',id);
-      else if(act==='rate'){logActivity(id,'posts','rate');openRateModal(id,'post');} // ← rate counts
+      else if(act==='rate'){logActivity(id,'posts','rate');openRateModal(id,'post');}
       else if(act==='read'){const item=posts.find(x=>x.id===id);if(item)handleMarkRead(id,'posts',item);}
     });
   });
@@ -1882,7 +1740,7 @@ function openEditPost(id){
   document.getElementById('pDate').value=p.date||'';document.getElementById('pAuthor').value=p.author;
   document.getElementById('pTitle').value=p.title||'';document.getElementById('pPlat').value=p.platform;
   document.getElementById('pContent').value=p.content;document.getElementById('pUrl').value=p.url||'';
-  document.getElementById('pTags').value=(p.tags||[]).join(', ');openModal('ov-post');
+  document.getElementById('pTags').value=(p.tags||[]).join(' ');openModal('ov-post');
 }
 async function savePost(){
   const date=document.getElementById('pDate').value.trim();
@@ -1891,7 +1749,7 @@ async function savePost(){
   const platform=document.getElementById('pPlat').value;
   const content=document.getElementById('pContent').value.trim();
   const url=document.getElementById('pUrl').value.trim();
-  const tags=document.getElementById('pTags').value.split(',').map(t=>t.trim()).filter(Boolean).map(t=>t.startsWith('#')?t:'#'+t);
+  const tags=parseTags(document.getElementById('pTags').value);
   if(!date||!author||!title||!content){showToast('Fill all required fields','err');return;}
   try{
     if(editPostId){
@@ -1920,37 +1778,38 @@ function renderReadings(){
   data.forEach((r,i)=>{
     const el=document.createElement('div');el.className='reading-entry';el.style.animationDelay=(i*0.02)+'s';
     const rMyCount=myReadCount(r);const rTotal=totalReadCount(r);
-    const tagsHtml=(r.tags||[]).map(t=>`<span class="reading-tag">${t}</span>`).join('');
-    let h=`<span class="rtype rtype-${r.type}">${RLBL[r.type]||r.type}</span>`;
+    const tagsHtml=(r.tags||[]).map(t=>`<span class="reading-tag">${esc(t)}</span>`).join('');
+    let h=`<span class="rtype rtype-${esc(r.type)}">${esc(RLBL[r.type]||r.type)}</span>`;
     h+=`<div class="reading-body">`;
-    if(r.title)h+=`<div class="reading-title-line">${r.title}</div>`;
-    h+=`<div class="reading-author-line">${r.author}${r.source?` via ${r.source}`:''}</div>`;
+    if(r.title)h+=`<div class="reading-title-line">${esc(r.title)}</div>`;
+    h+=`<div class="reading-author-line">${esc(r.author)}${r.source?` via ${esc(r.source)}`:''}</div>`;
     if(tagsHtml)h+=`<div class="reading-tags">${tagsHtml}</div>`;
-    h+=`<div class="reading-notes-preview">${r.content}</div>`;
+    h+=`<div class="reading-notes-preview">${esc(r.content)}</div>`;
     h+=`<div style="display:flex;align-items:center;gap:10px;font-size:0.65rem;color:var(--ink-3);">`;
-    h+=`<span>${r.date||''}</span><span>📖 <strong style="color:var(--pri)">${rTotal}×</strong></span>`;
+    h+=`<span>${esc(r.date||'')}</span><span>📖 <strong style="color:var(--pri)">${rTotal}×</strong></span>`;
     if(rMyCount>0)h+=`<span style="color:var(--amber);">👤 <strong>${rMyCount}×</strong></span>`;
     h+=`<div class="stars">${starsHtml(r.ratings)}</div><strong style="color:var(--pri)">${avgStr(r.ratings)}</strong></div>`;
     h+=`</div>`;
     h+=`<div class="reading-actions">`;
-    if(r.url)h+=`<a href="${r.url}" target="_blank" rel="noopener" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:5px 10px;background:#7c3aed;color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:3px;" onclick="event.stopPropagation()"><span class="icon" style="font-size:13px;">north_east</span> Source</a>`;
+    if(r.url)h+=`<a href="${esc(r.url)}" target="_blank" rel="noopener" style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:5px 10px;background:#7c3aed;color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:3px;" onclick="event.stopPropagation()"><span class="icon" style="font-size:13px;">north_east</span> Source</a>`;
     h+=`<div style="display:flex;gap:3px;margin-top:4px;">`;
-    if(rMyCount>0)h+=`<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.62rem;font-weight:700;color:var(--pri);font-family:'Manrope',sans-serif;">${rMyCount}×</span><button class="act-icon green" data-id="${r.id}" data-action="read" style="width:28px;height:28px;"><span class="icon fill" style="font-size:12px;">check_circle</span></button></div>`;
-    else h+=`<button class="act-icon" data-id="${r.id}" data-action="read" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">radio_button_unchecked</span></button>`;    h+=`<button class="act-icon" data-id="${r.id}" data-action="rate" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">grade</span></button>`;
-    if(isEditable()){h+=`<button class="act-icon" data-id="${r.id}" data-action="edit" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">edit</span></button>`;h+=`<button class="act-icon danger" data-id="${r.id}" data-action="del" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">close</span></button>`;}
+    if(rMyCount>0)h+=`<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:0.62rem;font-weight:700;color:var(--pri);">${rMyCount}×</span><button class="act-icon green" data-id="${r.id}" data-action="read" style="width:28px;height:28px;"><span class="icon fill" style="font-size:12px;">check_circle</span></button></div>`;
+    else h+=`<button class="act-icon" data-id="${r.id}" data-action="read" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">radio_button_unchecked</span></button>`;
+    h+=`<button class="act-icon" data-id="${r.id}" data-action="rate" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">grade</span></button>`;
+    if(isEditable())h+=`<button class="act-icon" data-id="${r.id}" data-action="edit" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">edit</span></button>`;
+    if(isOwner())h+=`<button class="act-icon danger" data-id="${r.id}" data-action="del" style="width:28px;height:28px;"><span class="icon" style="font-size:14px;">close</span></button>`;
     h+=`</div></div>`;
     el.innerHTML=h;
-    // Click to open detail
-el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a')){logActivity(r.id,'readings','open');openDetail(r.id,'readings');}});    list.appendChild(el);
+    el.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]')&&!ev.target.closest('a')){logActivity(r.id,'readings','open');openDetail(r.id,'readings');}});
+    list.appendChild(el);
   });
-
   list.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',(ev)=>{
       ev.stopPropagation();
       const id=btn.getAttribute('data-id'),act=btn.getAttribute('data-action');
       if(act==='edit')openEditReading(id);
       else if(act==='del')delItem('readings',id);
-      else if(act==='rate'){logActivity(id,'readings','rate');openRateModal(id,'reading');} // ← rate counts
+      else if(act==='rate'){logActivity(id,'readings','rate');openRateModal(id,'reading');}
       else if(act==='read'){const item=readings.find(x=>x.id===id);if(item)handleMarkRead(id,'readings',item);}
     });
   });
@@ -1969,7 +1828,7 @@ function openEditReading(id){
   document.getElementById('rDate').value=r.date||'';document.getElementById('rAuthor').value=r.author;
   document.getElementById('rSource').value=r.source||'';document.getElementById('rTitle').value=r.title||'';
   document.getElementById('rType').value=r.type;document.getElementById('rContent').value=r.content;
-  document.getElementById('rUrl').value=r.url||'';document.getElementById('rTags').value=(r.tags||[]).join(', ');
+  document.getElementById('rUrl').value=r.url||'';document.getElementById('rTags').value=(r.tags||[]).join(' ');
   openModal('ov-reading');
 }
 async function saveReading(){
@@ -1980,7 +1839,7 @@ async function saveReading(){
   const content=document.getElementById('rContent').value.trim();
   const source=document.getElementById('rSource').value.trim();
   const url=document.getElementById('rUrl').value.trim();
-  const tags=document.getElementById('rTags').value.split(',').map(t=>t.trim()).filter(Boolean).map(t=>t.startsWith('#')?t:'#'+t);
+  const tags=parseTags(document.getElementById('rTags').value);
   if(!date||!author||!title||!content){showToast('Fill all required fields','err');return;}
   try{
     if(editReadingId){
@@ -2006,29 +1865,27 @@ function renderMemories(){
   if(!data.length){list.innerHTML='<div style="text-align:center;padding:50px;color:var(--ink-3);font-style:italic;">No memories yet.</div>';return;}
   data.forEach((m,i)=>{
     const card=document.createElement('div');card.className='memory-card';card.style.animationDelay=(i*0.02)+'s';
-    const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${t}</span>`).join('');
+    const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${esc(t)}</span>`).join('');
     const mMyCount=myReadCount(m);const mTotal=totalReadCount(m);
     let h=`<div class="mem-num">Memory #${String(m.num||0).padStart(2,'0')}</div>`;
-    if(m.title)h+=`<div class="mem-title">${m.title}</div>`;
-    h+=`<div class="mem-meta">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+m.updatedAt:''}</div>`;
+    if(m.title)h+=`<div class="mem-title">${esc(m.title)}</div>`;
+    h+=`<div class="mem-meta">${esc(m.createdAt||'')}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+esc(m.updatedAt):''}</div>`;
     if(tagsHtml)h+=`<div class="mem-tags">${tagsHtml}</div>`;
-    h+=`<div class="mem-preview">${m.content}</div>`;
-    h+=`<div style="display:flex;align-items:center;gap:10px;font-size:0.65rem;color:var(--ink-3);margin-bottom:10px;">`;
-    h+=`<span>📖 <strong>${mTotal}×</strong></span>`;
+    h+=`<div class="mem-preview">${esc(m.content)}</div>`;
+    h+=`<div style="display:flex;align-items:center;gap:10px;font-size:0.65rem;color:var(--ink-3);margin-bottom:10px;"><span>📖 <strong>${mTotal}×</strong></span>`;
     if(mMyCount>0)h+=`<span style="color:var(--amber);">👤 <strong>${mMyCount}×</strong></span>`;
     h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong style="color:var(--amber)">${avgStr(m.ratings)}</strong></div>`;
     h+=`<div class="mem-actions">`;
     if(mMyCount>0)h+=`<button class="btn-sm" data-id="${m.id}" data-action="read" style="font-size:0.62rem;background:var(--pri);color:#fff;border-color:var(--pri);">✓ ${mMyCount}× Read</button>`;
     else h+=`<button class="btn-sm" data-id="${m.id}" data-action="read" style="font-size:0.62rem;">○ Mark Read</button>`;
     h+=`<button class="btn-sm" data-id="${m.id}" data-action="rate" style="font-size:0.62rem;">★ Rate</button>`;
-    if(isEditable()){h+=`<button class="btn-sm" data-id="${m.id}" data-action="edit" style="font-size:0.62rem;">✎ Edit</button>`;h+=`<button class="btn-sm" data-id="${m.id}" data-action="del" style="font-size:0.62rem;color:var(--err);">✕ Delete</button>`;}
+    if(isEditable())h+=`<button class="btn-sm" data-id="${m.id}" data-action="edit" style="font-size:0.62rem;">✎ Edit</button>`;
+    if(isOwner())h+=`<button class="btn-sm" data-id="${m.id}" data-action="del" style="font-size:0.62rem;color:var(--err);">✕ Delete</button>`;
     h+=`</div>`;
     card.innerHTML=h;
-    // Click card body (not buttons) → open detail overlay
     card.addEventListener('click',(ev)=>{if(!ev.target.closest('[data-action]'))openMemoryDetail(m.id);});
     list.appendChild(card);
   });
-
   list.querySelectorAll('[data-action]').forEach(btn=>{
     btn.addEventListener('click',(ev)=>{
       ev.stopPropagation();
@@ -2047,96 +1904,81 @@ function openMemoryDetail(id){
   const overlay=document.getElementById('detailOverlay');
   const content=document.getElementById('detailContent');
   document.getElementById('detailTitleBar').textContent=m.title||`Memory #${String(m.num||0).padStart(2,'0')}`;
-
   const myCount=myReadCount(m);const total=totalReadCount(m);
-  const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${t}</span>`).join('');
-
-  let h=`<div class="detail-header-block">`;
-  h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">`;
+  const tagsHtml=(m.tags||[]).map(t=>`<span class="mem-tag">${esc(t)}</span>`).join('');
+  let h=`<div class="detail-header-block"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">`;
   h+=`<span style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;padding:3px 9px;border-radius:var(--r-full);background:var(--amber-pale);color:var(--am-dark);border:1px solid var(--amber);">Memory #${String(m.num||0).padStart(2,'0')}</span>`;
-  h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${m.createdAt||''}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+m.updatedAt:''}</span>`;
-  h+=`</div>`;
-  if(m.title)h+=`<div class="detail-big-title">${m.title}</div>`;
+  h+=`<span style="font-size:0.65rem;color:var(--ink-3);">${esc(m.createdAt||'')}${m.updatedAt&&m.updatedAt!==m.createdAt?' · edited '+esc(m.updatedAt):''}</span></div>`;
+  if(m.title)h+=`<div class="detail-big-title">${esc(m.title)}</div>`;
   if(tagsHtml)h+=`<div class="mem-tags" style="margin-bottom:10px;">${tagsHtml}</div>`;
   h+=`</div>`;
-
   h+=`<div class="detail-actions-row">`;
-  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
-  else h+=`<button class="act-icon" id="detailReadBtn" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
-  h+=`<button class="act-icon" id="detailRateBtn" title="Rate"><span class="icon">grade</span></button>`;
-  if(isEditable()){h+=`<button class="act-icon" id="detailEditBtn" title="Edit in writer"><span class="icon">edit</span></button>`;h+=`<button class="act-icon danger" id="detailDelBtn" title="Delete"><span class="icon">close</span></button>`;}
+  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;gap:3px;"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
+  else h+=`<button class="act-icon" id="detailReadBtn"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
+  h+=`<button class="act-icon" id="detailRateBtn"><span class="icon">grade</span></button>`;
+  if(isEditable())h+=`<button class="act-icon" id="detailEditBtn"><span class="icon">edit</span></button>`;
+  if(isOwner())h+=`<button class="act-icon danger" id="detailDelBtn"><span class="icon">close</span></button>`;
   h+=`<div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--ink-3);">`;
   h+=`<span>📖 ${total}×</span>${myCount>0?`<span style="color:var(--amber);">👤 ${myCount}×</span>`:''}`;
-  h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong style="color:var(--amber)">${avgStr(m.ratings)}</strong>`;
-  h+=`</div></div>`;
-
-  // Full content — no clamp, full text with line breaks preserved
-  h+=`<div class="detail-body-text" style="white-space:pre-wrap;">${m.content}</div>`;
+  h+=`<div class="stars">${starsHtml(m.ratings)}</div><strong style="color:var(--amber)">${avgStr(m.ratings)}</strong></div></div>`;
+  h+=`<div class="detail-body-text" style="white-space:pre-wrap;">${esc(m.content)}</div>`;
   content.innerHTML=h;
-  overlay.classList.add('open');
-  overlay.scrollTop=0;
-
+  overlay.classList.add('open');overlay.scrollTop=0;
   document.getElementById('detailReadBtn')?.addEventListener('click',async()=>{await handleMarkRead(id,'memories',m);openMemoryDetail(id);});
   document.getElementById('detailRateBtn')?.addEventListener('click',()=>openRateModal(id,'memory'));
   document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');openWriter(id);});
   document.getElementById('detailDelBtn')?.addEventListener('click',()=>{if(confirm('Delete this memory permanently?')){overlay.classList.remove('open');delItem('memories',id);}});
-}            
-            
+}
+
 /* ═══ DETAIL OVERLAY (Posts & Readings) ═══ */
-function openDetail(id, col){
+function openDetail(id,col){
   const items=col==='posts'?posts:readings;
   const item=items.find(x=>x.id===id);if(!item)return;
   currentDetailId=id;currentDetailCol=col;
   const overlay=document.getElementById('detailOverlay');
   const content=document.getElementById('detailContent');
   document.getElementById('detailTitleBar').textContent=item.title||item.author||'Detail';
-
   const myCount=myReadCount(item);const total=totalReadCount(item);
-  const tagsHtml=(item.tags||[]).map(t=>`<span class="essay-tag">${t}</span>`).join('');
-
+  const tagsHtml=(item.tags||[]).map(t=>`<span class="essay-tag">${esc(t)}</span>`).join('');
   let h=`<div class="detail-header-block">`;
   if(col==='posts'){
-    h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="plat plat-${item.platform}">${PLBL[item.platform]}</span><span style="font-size:0.65rem;color:var(--ink-3);">${item.date||''}</span></div>`;
-    if(item.title)h+=`<div class="detail-big-title">${item.title}</div>`;
-    h+=`<div style="font-family:'Newsreader',serif;font-size:1.1rem;font-style:italic;color:var(--ink-2);margin-bottom:10px;">${item.author}</div>`;
+    h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="plat plat-${esc(item.platform)}">${esc(PLBL[item.platform])}</span><span style="font-size:0.65rem;color:var(--ink-3);">${esc(item.date||'')}</span></div>`;
+    if(item.title)h+=`<div class="detail-big-title">${esc(item.title)}</div>`;
+    h+=`<div style="font-family:'Newsreader',serif;font-size:1.1rem;font-style:italic;color:var(--ink-2);margin-bottom:10px;">${esc(item.author)}</div>`;
   } else {
-    h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="rtype rtype-${item.type}">${RLBL[item.type]}</span><span style="font-size:0.65rem;color:var(--ink-3);">${item.date||''}</span></div>`;
-    h+=`<div class="detail-big-title">${item.title||item.author}</div>`;
-    h+=`<div style="font-size:0.88rem;color:var(--ink-3);font-style:italic;margin-bottom:10px;">${item.author}${item.source?' via '+item.source:''}</div>`;
+    h+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="rtype rtype-${esc(item.type)}">${esc(RLBL[item.type])}</span><span style="font-size:0.65rem;color:var(--ink-3);">${esc(item.date||'')}</span></div>`;
+    h+=`<div class="detail-big-title">${esc(item.title||item.author)}</div>`;
+    h+=`<div style="font-size:0.88rem;color:var(--ink-3);font-style:italic;margin-bottom:10px;">${esc(item.author)}${item.source?' via '+esc(item.source):''}</div>`;
   }
   if(tagsHtml)h+=`<div class="essay-tags" style="margin-bottom:10px;">${tagsHtml}</div>`;
   h+=`</div>`;
-
   h+=`<div class="detail-actions-row">`;
-if(item.url)h+=`<a href="${item.url}" target="_blank" rel="noopener" onclick="logActivity('${id}','${col}','source')"  style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;font-family:'Manrope',sans-serif;gap:3px;" title="${myCount}× read"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
-  else h+=`<button class="act-icon" id="detailReadBtn" title="Mark as Read"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
-  h+=`<button class="act-icon" id="detailRateBtn" title="Rate"><span class="icon">grade</span></button>`;
-  if(isEditable()){h+=`<button class="act-icon" id="detailEditBtn" title="Edit"><span class="icon">edit</span></button>`;h+=`<button class="act-icon danger" id="detailDelBtn" title="Delete"><span class="icon">close</span></button>`;}
+  if(item.url)h+=`<a href="${esc(item.url)}" target="_blank" rel="noopener" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:7px 14px;background:var(--pri);color:#fff;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:4px;"><span class="icon" style="font-size:14px;">north_east</span> Source</a>`;
+  if(myCount>0)h+=`<button class="act-icon green" id="detailReadBtn" style="min-width:44px;font-size:0.7rem;font-weight:700;gap:3px;"><span class="icon fill" style="font-size:13px;">check_circle</span>${myCount}×</button>`;
+  else h+=`<button class="act-icon" id="detailReadBtn"><span class="icon" style="font-size:15px;">radio_button_unchecked</span></button>`;
+  h+=`<button class="act-icon" id="detailRateBtn"><span class="icon">grade</span></button>`;
+  if(isEditable())h+=`<button class="act-icon" id="detailEditBtn"><span class="icon">edit</span></button>`;
+  if(isOwner())h+=`<button class="act-icon danger" id="detailDelBtn"><span class="icon">close</span></button>`;
   h+=`<div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:0.7rem;color:var(--ink-3);">`;
   h+=`<span>📖 ${total}×</span>${myCount>0?`<span style="color:var(--amber);">👤 ${myCount}×</span>`:''}`;
-  h+=`<div class="stars">${starsHtml(item.ratings)}</div><strong style="color:var(--pri)">${avgStr(item.ratings)}</strong>`;
-  h+=`</div></div>`;
-
-  h+=`<div class="detail-body-text">${item.content}</div>`;
+  h+=`<div class="stars">${starsHtml(item.ratings)}</div><strong style="color:var(--pri)">${avgStr(item.ratings)}</strong></div></div>`;
+  h+=`<div class="detail-body-text">${esc(item.content)}</div>`;
   content.innerHTML=h;
-  overlay.classList.add('open');
-  overlay.scrollTop=0;
-
-  // Wire action buttons
+  overlay.classList.add('open');overlay.scrollTop=0;
   document.getElementById('detailReadBtn')?.addEventListener('click',async()=>{await handleMarkRead(id,col,item);openDetail(id,col);});
   document.getElementById('detailRateBtn')?.addEventListener('click',()=>{logActivity(id,col,'rate');openRateModal(id,col==='posts'?'post':'reading');});
   document.getElementById('detailEditBtn')?.addEventListener('click',()=>{overlay.classList.remove('open');if(col==='posts')openEditPost(id);else openEditReading(id);});
   document.getElementById('detailDelBtn')?.addEventListener('click',()=>{if(confirm('Remove this item permanently?')){overlay.classList.remove('open');delItem(col,id);}});
 }
-
 document.getElementById('btnDetailBack').addEventListener('click',()=>document.getElementById('detailOverlay').classList.remove('open'));
 
-/* ═══ MD VIEWER ═══ */
-function openMd(id,type){
+/* ═══ MD VIEWER — My Essay only, no analysis ═══ */
+function openMd(id){
   const e=essays.find(x=>x.id===id);if(!e)return;
-  const raw=type==='essay'?e.myEssayMd:e.analysisMd;
-  mdTitleCache=type==='essay'?`${e.title} — My Essay`:`${e.title} — Analysis`;
-  mdHtmlCache=safe(parseMd(raw||''));
+  const raw=e.myEssayMd;
+  if(!raw){showToast('No essay content yet','amber');return;}
+  mdTitleCache=`${e.title} — My Essay`;
+  mdHtmlCache=safe(parseMd(raw));
   document.getElementById('viewerTitleBar').textContent=mdTitleCache;
   document.getElementById('mdViewerBody').innerHTML=mdHtmlCache;
   document.getElementById('mdViewer').classList.add('open');
@@ -2144,10 +1986,10 @@ function openMd(id,type){
 document.getElementById('btnViewerBack').addEventListener('click',()=>document.getElementById('mdViewer').classList.remove('open'));
 document.getElementById('btnDlHtml')?.addEventListener('click',downloadHtml);
 function downloadHtml(){
-  const full=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${mdTitleCache}</title><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500&display=swap" rel="stylesheet"><style>body{font-family:'Manrope',sans-serif;max-width:720px;margin:0 auto;padding:48px 24px 100px;background:#faf9f5;color:#1b1c1a;line-height:1.85;}h1,h2,h3{font-family:'Newsreader',serif;}h1{font-size:2.1rem;font-style:italic;color:#003527;margin:0 0 22px;}h2{font-size:1.3rem;font-weight:700;border-bottom:1px solid #e3e2df;padding-bottom:5px;margin:30px 0 10px;}h3{font-size:1.05rem;font-style:italic;margin:22px 0 7px;}p{margin:0 0 13px;font-size:1rem;}blockquote{margin:22px 0;padding:14px 18px 14px 22px;background:#d1fae5;border-left:4px solid #003527;font-style:italic;border-radius:0 8px 8px 0;}a{color:#003527;}.obs-badge{display:inline-block;padding:1px 7px;background:#c9eade;border:1px solid rgba(0,53,39,.2);color:#003527;font-size:.76em;font-weight:700;border-radius:9999px;}ul,ol{padding-left:20px;margin:0 0 13px;}li{margin:4px 0;}strong{font-weight:700;}code{background:#efeeea;border:1px solid #e3e2df;padding:1px 5px;font-size:.83em;border-radius:4px;}hr{border:none;border-top:1px solid #e3e2df;margin:24px 0;}.md-footnotes{margin-top:44px;padding-top:18px;border-top:2px solid #e3e2df;font-size:.8rem;color:#707974;}.md-footnotes h4{font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;font-weight:700;}.fn-item{display:flex;gap:7px;margin:5px 0;}.fn-n{color:#003527;font-weight:700;min-width:18px;}</style></head><body>${mdHtmlCache}</body></html>`;
+  const full=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${esc(mdTitleCache)}</title><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500&display=swap" rel="stylesheet"><style>body{font-family:'Manrope',sans-serif;max-width:720px;margin:0 auto;padding:48px 24px 100px;background:#faf9f5;color:#1b1c1a;line-height:1.85;}h1,h2,h3{font-family:'Newsreader',serif;}h1{font-size:2.1rem;font-style:italic;color:#003527;margin:0 0 22px;}h2{font-size:1.3rem;font-weight:700;border-bottom:1px solid #e3e2df;padding-bottom:5px;margin:30px 0 10px;}h3{font-size:1.05rem;font-style:italic;margin:22px 0 7px;}p{margin:0 0 13px;font-size:1rem;}blockquote{margin:22px 0;padding:14px 18px 14px 22px;background:#d1fae5;border-left:4px solid #003527;font-style:italic;border-radius:0 8px 8px 0;}a{color:#003527;}.obs-badge{display:inline-block;padding:1px 7px;background:#c9eade;border:1px solid rgba(0,53,39,.2);color:#003527;font-size:.76em;font-weight:700;border-radius:9999px;}ul,ol{padding-left:20px;margin:0 0 13px;}li{margin:4px 0;}strong{font-weight:700;}code{background:#efeeea;border:1px solid #e3e2df;padding:1px 5px;font-size:.83em;border-radius:4px;}hr{border:none;border-top:1px solid #e3e2df;margin:24px 0;}table{width:100%;border-collapse:collapse;margin:18px 0;}th{background:#003527;color:#fff;padding:9px 14px;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;}td{padding:9px 14px;border-bottom:1px solid #e3e2df;vertical-align:top;}tr:nth-child(even) td{background:#f4f4f0;}.md-footnotes{margin-top:44px;padding-top:18px;border-top:2px solid #e3e2df;font-size:.8rem;color:#707974;}.md-footnotes h4{font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;font-weight:700;}.fn-item{display:flex;gap:7px;margin:5px 0;}.fn-n{color:#003527;font-weight:700;min-width:18px;}</style></head><body>${mdHtmlCache}</body></html>`;
   const blob=new Blob([full],{type:'text/html;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=mdTitleCache.replace(/[^\w\s-]/g,'_').replace(/\s+/g,'_')+'.html';a.click();showToast('HTML saved');
+  a.download=(mdTitleCache.replace(/[^\w\s-]/g,'_').replace(/\s+/g,'_'))+'.html';a.click();showToast('HTML saved');
 }
 
 /* ═══ MEMORY WRITER ═══ */
@@ -2161,9 +2003,12 @@ function openWriter(id){
   if(id){
     const m=memories.find(x=>x.id===id);if(!m)return;
     document.getElementById('writerHeading').textContent='Edit Memory #'+String(m.num).padStart(2,'0');
-    document.getElementById('wTitle').value=m.title||'';document.getElementById('wTags').value=(m.tags||[]).join(', ');document.getElementById('wText').value=m.content||'';
+    document.getElementById('wTitle').value=m.title||'';
+    document.getElementById('wTags').value=(m.tags||[]).join(' ');
+    document.getElementById('wText').value=m.content||'';
   } else {
-    document.getElementById('writerHeading').textContent='New Memory';['wTitle','wTags','wText'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('writerHeading').textContent='New Memory';
+    ['wTitle','wTags','wText'].forEach(id=>document.getElementById(id).value='');
   }
   document.getElementById('memWriter').classList.add('open');
   setTimeout(()=>document.getElementById('wText').focus(),100);
@@ -2171,7 +2016,7 @@ function openWriter(id){
 async function saveMemory(){
   const title=document.getElementById('wTitle').value.trim();
   const content=document.getElementById('wText').value.trim();
-  const tags=document.getElementById('wTags').value.split(',').map(t=>t.trim()).filter(Boolean).map(t=>t.startsWith('#')?t:'#'+t);
+  const tags=parseTags(document.getElementById('wTags').value);
   if(!content){showToast('Write something first','amber');return;}
   const now=new Date().toISOString().slice(0,10);
   try{
@@ -2190,12 +2035,10 @@ async function handleMarkRead(id,col,item){
   const myCount=myReadCount(item);
   if(myCount===0){
     await incrementReadCount(id,col);showToast('Reading #1 recorded');
-    // Update streak activity log
     await logActivity(id,col,'read');
   } else {
     pendingReadId=id;pendingReadCol=col;
     const typeName={essays:'essay',posts:'post',readings:'reading',memories:'memory'}[col]||'item';
-    document.getElementById('readAgainTitle').textContent='Read Again?';
     document.getElementById('readAgainMsg').innerHTML=`You've read this <strong>${typeName}</strong> <strong>${myCount} time${myCount===1?'':'s'}</strong> before. Did you read it again in full?`;
     openModal('ov-readagain');
   }
@@ -2205,28 +2048,21 @@ async function incrementReadCount(id,col){
   const key='readCounts.'+currentUser.email.replace(/\./g,'_');
   await db.collection(col).doc(id).update({[key]:firebase.firestore.FieldValue.increment(1)});
 }
-async function logActivity(id, col, actionType='view'){
+async function logActivity(id,col,actionType='view'){
   if(!currentUser)return;
   const today=new Date().toISOString().slice(0,10);
   const emailKey=currentUser.email.replace(/\./g,'_');
-  // Store: activity.YYYY-MM-DD.emailKey.col.actionType = count
-  // e.g. activity.2025-03-29.akrom_gmail_com.essays.read
-  const key=`activity__${today}__${emailKey}__${col}__${actionType}`;
-try{
-  await db.collection('activityLog').doc('global').set(
-    {[key]:firebase.firestore.FieldValue.increment(1)},
-    {merge:true}
-  );
-  // Cache in memory for streak computation without extra Firestore read
-  if(!window._activityLogCache) window._activityLogCache={};
-  window._activityLogCache[key]=(window._activityLogCache[key]||0)+1;
-  console.log('[activity] logged:', key);
-}catch(err){
-  console.error('[activity] write failed:', err);
-}
-  // Instantly refresh heatmap if Home tab is visible
-  const homeActive=document.getElementById('page-home')?.classList.contains('active');
-  if(homeActive) renderHeatmaps();
+  const docId=`${today}__${emailKey}`; // separate doc per user per day
+  const field=`${col}__${actionType}`;
+  try{
+    await db.collection('activityLog').doc(docId).set({[field]:firebase.firestore.FieldValue.increment(1),date:today,userKey:emailKey},{merge:true});
+    // Also maintain the flat key format for streak compatibility
+    const flatKey=`activity__${today}__${emailKey}__${col}__${actionType}`;
+    if(!window._activityLogCache)window._activityLogCache={};
+    window._activityLogCache[flatKey]=(window._activityLogCache[flatKey]||0)+1;
+    const homeActive=document.getElementById('page-home')?.classList.contains('active');
+    if(homeActive)renderHeatmaps();
+  }catch(err){console.error('[activity] write failed:',err);}
 }
 window.logActivity=logActivity;
 
@@ -2270,9 +2106,8 @@ document.getElementById('submitRateBtn')?.addEventListener('click',async()=>{
   const col=pendingRateType==='essay'?'essays':pendingRateType==='post'?'posts':pendingRateType==='reading'?'readings':'memories';
   try{
     const key='ratings.'+currentUser.email.replace(/\./g,'_');
-    await db.collection(col).doc(pendingRateId).update({[key]:pickedStar});     
-      logActivity(pendingRateId,col,'rate');     
-      showToast('Rating saved');
+    await db.collection(col).doc(pendingRateId).update({[key]:pickedStar});
+    logActivity(pendingRateId,col,'rate');showToast('Rating saved');
   }catch(e){showToast('Error saving rating','err');}
   pendingRateId=null;ratingConfirmed=false;closeModal('ov-rate');
 });
@@ -2283,195 +2118,90 @@ function renderAnalytics(){
   renderLeaderboard('lbEssays',computeLeaderboard(essays));
   renderLeaderboard('lbReadings',computeLeaderboard(readings));
   renderLeaderboard('lbPosts',computeLeaderboard(posts));
-  renderStreakLeaderboard('lbStreaks');
-  if(isOwner()) renderUserActivityLog();
+  if(isOwner())renderUserActivityLog();
 }
-
 async function renderUserActivityLog(){
   const section=document.getElementById('userActivitySection');
   const container=document.getElementById('userActivityLog');
   if(!section||!container)return;
   section.style.display='block';
   container.innerHTML=`<div style="font-size:0.78rem;color:var(--ink-3);font-style:italic;padding:8px 0;">Loading…</div>`;
-
-  let raw={};
+  let allDocs={};
   try{
-    const doc=await db.collection('activityLog').doc('global').get();
-    raw=doc.exists?doc.data()||{}:{};
-    window._activityLogCache=raw; // share with streak computation
-  }catch{
-    container.innerHTML='<div style="color:var(--err);font-size:0.8rem;padding:8px 0;">Could not load activity log.</div>';
-    return;
-  }
-
-  // Key format: activity.YYYY-MM-DD.emailKey.col.actionType = count
-  // Parse into: { emailKey -> { date -> { label -> count } } }
-  const tree={};
+    // New schema: one doc per user per day
+    const snap=await db.collection('activityLog').get();
+    snap.docs.forEach(doc=>{
+      const data=doc.data();
+      if(data.date&&data.userKey){
+        const key=`activity__${data.date}__${data.userKey}`;
+        Object.entries(data).forEach(([f,v])=>{
+          if(f==='date'||f==='userKey')return;
+          const parts=f.split('__');
+          if(parts.length===2){
+            const flatKey=`${key}__${parts[0]}__${parts[1]}`;
+            allDocs[flatKey]=(allDocs[flatKey]||0)+Number(v||0);
+          }
+        });
+      } else {
+        // Legacy single-doc flat keys
+        Object.entries(data).forEach(([k,v])=>{if(k.startsWith('activity__'))allDocs[k]=(allDocs[k]||0)+Number(v||0);});
+      }
+    });
+    window._activityLogCache=allDocs;
+  }catch{container.innerHTML='<div style="color:var(--err);font-size:0.8rem;padding:8px 0;">Could not load activity log.</div>';return;}
   const actionLabels={read:'Marked Read',rate:'Rated',open:'Opened',source:'Opened Source',analysis:'Viewed Analysis',view:'Viewed'};
   const colLabels={essays:'Essay',posts:'Post',readings:'Reading',memories:'Memory'};
-
-  Object.entries(raw).forEach(([key,cnt])=>{
+  const tree={};
+  Object.entries(allDocs).forEach(([key,cnt])=>{
     const parts=key.split('__');
-    // parts: [activity, YYYY-MM-DD, emailKey, col, actionType]
     if(parts.length<5||parts[0]!=='activity')return;
-    const date=parts[1];
-    const emailKey=parts[2];
-    const col=parts[3];
-    const actionType=parts[4];
+    const date=parts[1],emailKey=parts[2],col=parts[3],actionType=parts[4];
     const label=`${actionLabels[actionType]||actionType} (${colLabels[col]||col})`;
     if(!tree[emailKey])tree[emailKey]={};
     if(!tree[emailKey][date])tree[emailKey][date]={};
     tree[emailKey][date][label]=(tree[emailKey][date][label]||0)+Number(cnt||0);
   });
-
-  // Build last 7 days list
   const days=[];
-  for(let i=0;i<7;i++){
-    const d=new Date();d.setDate(d.getDate()-i);
-    days.push(d.toISOString().slice(0,10));
-  }
-
-  // Sort users by total activity in last 7 days desc
+  for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().slice(0,10));}
   const userOrder=Object.entries(tree).map(([emailKey,dates])=>{
     const total=days.reduce((s,d)=>s+Object.values(dates[d]||{}).reduce((a,v)=>a+v,0),0);
     return{emailKey,total};
   }).sort((a,b)=>b.total-a.total);
-
-  if(!userOrder.length){
-    container.innerHTML='<div class="empty-state" style="padding:16px;"><p>No activity logged yet. Activity records on every click: open, rate, read, source.</p></div>';
-    return;
-  }
-
+  if(!userOrder.length){container.innerHTML='<div class="empty-state" style="padding:16px;"><p>No activity logged yet.</p></div>';return;}
   let html='';
   userOrder.forEach(({emailKey})=>{
     const email=emailKey.replace(/_/g,'.');
     const user=allUsers.find(u=>u.email===email);
     const displayName=user?.name&&user.name!==email?user.name:email.split('@')[0];
     const weekTotal=days.reduce((s,d)=>s+Object.values(tree[emailKey]?.[d]||{}).reduce((a,v)=>a+v,0),0);
-
     html+=`<div style="margin-bottom:20px;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;">`;
-    // User header row
     html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg-2);border-bottom:1px solid var(--rule);">`;
-    html+=`<div><div style="font-size:0.85rem;font-weight:700;color:var(--ink);">${displayName}</div><div style="font-size:0.65rem;color:var(--ink-3);">${email}</div></div>`;
-    html+=`<div style="font-family:'Newsreader',serif;font-size:1.1rem;font-style:italic;color:var(--pri);">${weekTotal} actions this week</div>`;
-    html+=`</div>`;
-
-    // Date rows
+    html+=`<div><div style="font-size:0.85rem;font-weight:700;color:var(--ink);">${esc(displayName)}</div><div style="font-size:0.65rem;color:var(--ink-3);">${esc(email)}</div></div>`;
+    html+=`<div style="font-family:'Newsreader',serif;font-size:1.1rem;font-style:italic;color:var(--pri);">${weekTotal} actions this week</div></div>`;
     days.forEach(date=>{
       const dayData=tree[emailKey]?.[date]||{};
       const dayTotal=Object.values(dayData).reduce((s,v)=>s+v,0);
       const shortDate=new Date(date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
       const isToday=date===new Date().toISOString().slice(0,10);
-
-      html+=`<div style="padding:10px 16px;border-bottom:1px solid var(--rule);${isToday?'background:var(--pri-pale);':''}" >`;
+      html+=`<div style="padding:10px 16px;border-bottom:1px solid var(--rule);${isToday?'background:var(--pri-pale);':''}">`;
       html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${dayTotal?'8px':'0'};">`;
       html+=`<span style="font-size:0.7rem;font-weight:700;color:${isToday?'var(--pri)':'var(--ink-2)'};">${shortDate}${isToday?' · Today':''}</span>`;
-      if(!dayTotal){
-        html+=`<span style="font-size:0.68rem;color:var(--ink-4);font-style:italic;">no activity</span>`;
-      } else {
-        html+=`<span style="font-size:0.68rem;font-weight:700;color:var(--pri);">${dayTotal} total</span>`;
-      }
+      if(!dayTotal)html+=`<span style="font-size:0.68rem;color:var(--ink-4);font-style:italic;">no activity</span>`;
+      else html+=`<span style="font-size:0.68rem;font-weight:700;color:var(--pri);">${dayTotal} total</span>`;
       html+=`</div>`;
-
       if(dayTotal>0){
-        // Sort activity types by count desc
         const sorted=Object.entries(dayData).sort((a,b)=>b[1]-a[1]);
         html+=`<div style="display:flex;flex-direction:column;gap:4px;">`;
         sorted.forEach(([label,count])=>{
           const pct=Math.round(count/dayTotal*100);
-          html+=`<div style="display:flex;align-items:center;gap:8px;">`;
-          html+=`<div style="flex:1;font-size:0.72rem;color:var(--ink-2);">${label}</div>`;
-          html+=`<div style="width:80px;height:5px;background:var(--bg-3);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:var(--pri);border-radius:3px;"></div></div>`;
-          html+=`<div style="font-size:0.72rem;font-weight:700;color:var(--pri);min-width:24px;text-align:right;">${count}×</div>`;
-          html+=`</div>`;
+          html+=`<div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;font-size:0.72rem;color:var(--ink-2);">${esc(label)}</div><div style="width:80px;height:5px;background:var(--bg-3);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:var(--pri);border-radius:3px;"></div></div><div style="font-size:0.72rem;font-weight:700;color:var(--pri);min-width:24px;text-align:right;">${count}×</div></div>`;
         });
         html+=`</div>`;
       }
       html+=`</div>`;
     });
-    // Remove last border
-    html=html.replace(/border-bottom:1px solid var\(--rule\);">\s*$/, '">');
     html+=`</div>`;
   });
-
-  container.innerHTML=html;
-}
-
-async function renderUserActivityTable(){
-  const section=document.getElementById('userActivitySection');
-  const container=document.getElementById('userActivityTable');
-  if(!section||!container)return;
-  section.style.display='block';
-  container.innerHTML='<div style="font-size:0.78rem;color:var(--ink-3);font-style:italic;padding:8px 0;">Loading activity data…</div>';
-
-  // Fetch activityLog from Firestore
-  let actLog={};
-  try{
-    const doc=await db.collection('activityLog').doc('global').get();
-    if(doc.exists) actLog=doc.data()||{};
-  }catch(e){container.innerHTML='<div style="color:var(--err);font-size:0.8rem;">Could not load activity log.</div>';return;}
-
-  // actLog shape: { "activity.2025-03-01.user_email": count, ... }
-  // Parse into { emailKey -> { date -> count } }
-  const userDateMap={};
-  Object.entries(actLog).forEach(([key,cnt])=>{
-    const parts=key.split('.');
-    // key format: activity.YYYY-MM-DD.emailKey (emailKey may contain dots replaced by _)
-    if(parts.length<3||parts[0]!=='activity')return;
-    const date=parts[1];
-    const emailKey=parts.slice(2).join('.'); // rejoin in case email had dots
-    if(!userDateMap[emailKey])userDateMap[emailKey]={};
-    userDateMap[emailKey][date]=(userDateMap[emailKey][date]||0)+Number(cnt||0);
-  });
-
-  if(!Object.keys(userDateMap).length){
-    container.innerHTML='<div class="empty-state" style="padding:16px;"><p>No activity logged yet. Activity is recorded when users click source, open posts/readings, rate, or mark read.</p></div>';
-    return;
-  }
-
-  // Collect all dates, sort descending, take last 30 days
-  const allDates=[...new Set(Object.values(userDateMap).flatMap(d=>Object.keys(d)))].sort().reverse().slice(0,30);
-  const recentDates=allDates.slice(0,14); // show 14 days columns
-
-  // Build table
-  let html=`<div style="overflow-x:auto;">
-  <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
-    <thead>
-      <tr style="border-bottom:2px solid var(--rule);">
-        <th style="text-align:left;padding:8px 12px 8px 0;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);white-space:nowrap;min-width:140px;">User</th>
-        <th style="text-align:center;padding:8px 4px;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);">Total</th>`;
-  recentDates.forEach(d=>{
-    const short=d.slice(5); // MM-DD
-    html+=`<th style="text-align:center;padding:8px 4px;font-size:0.58rem;color:var(--ink-3);white-space:nowrap;">${short}</th>`;
-  });
-  html+=`</tr></thead><tbody>`;
-
-  // Sort users by total activity desc
-  const userRows=Object.entries(userDateMap).map(([emailKey,dates])=>{
-    const email=emailKey.replace(/_/g,'.');
-    const user=allUsers.find(u=>u.email===email);
-    const name=user?.name&&user.name!==email ? user.name : email.split('@')[0];
-    const total=Object.values(dates).reduce((s,v)=>s+v,0);
-    return{emailKey,email,name,dates,total};
-  }).sort((a,b)=>b.total-a.total);
-
-  userRows.forEach((row,ri)=>{
-    const rowBg=ri%2===0?'':'background:var(--bg-2);';
-    html+=`<tr style="${rowBg}border-bottom:1px solid var(--rule);">`;
-    html+=`<td style="padding:8px 12px 8px 0;white-space:nowrap;">
-      <div style="font-weight:700;color:var(--ink);font-size:0.78rem;">${row.name}</div>
-      <div style="color:var(--ink-3);font-size:0.62rem;">${row.email}</div>
-    </td>`;
-    html+=`<td style="text-align:center;padding:8px 4px;font-family:'Newsreader',serif;font-style:italic;color:var(--pri);font-size:0.9rem;">${row.total}</td>`;
-    recentDates.forEach(d=>{
-      const v=row.dates[d]||0;
-      const bg=v===0?'':v<=2?'background:rgba(0,53,39,0.12);':v<=5?'background:rgba(0,53,39,0.28);':'background:rgba(0,53,39,0.55);color:#fff;';
-      html+=`<td style="text-align:center;padding:6px 4px;border-radius:4px;${bg}font-weight:${v>0?'700':'400'};color:${v>0&&v>5?'#fff':'inherit'};">${v||'·'}</td>`;
-    });
-    html+=`</tr>`;
-  });
-  html+=`</tbody></table></div>`;
-  html+=`<div style="font-size:0.62rem;color:var(--ink-3);margin-top:10px;font-style:italic;">Showing last 14 days. Activity = any qualifying click (source, open, rate, read). Darker cell = more activity that day.</div>`;
   container.innerHTML=html;
 }
 
@@ -2479,20 +2209,14 @@ function computeLeaderboard(items){
   const userTotals={};
   items.forEach(item=>{
     const counts=item.readCounts;if(!counts)return;
-    Object.entries(counts).forEach(([emailKey,cnt])=>{
-      userTotals[emailKey]=(userTotals[emailKey]||0)+Number(cnt||0);
-    });
-  });  
-  return Object.entries(userTotals)
-    .map(([emailKey,total])=>{
-      const email=emailKey.replace(/_/g,'.');
-      const user=allUsers.find(u=>u.email===email);
-      return{emailKey,email,name:user?.name||email,total};
-    })
-    .filter(x=>x.total>0)
-    .sort((a,b)=>b.total-a.total);
+    Object.entries(counts).forEach(([emailKey,cnt])=>{userTotals[emailKey]=(userTotals[emailKey]||0)+Number(cnt||0);});
+  });
+  return Object.entries(userTotals).map(([emailKey,total])=>{
+    const email=emailKey.replace(/_/g,'.');
+    const user=allUsers.find(u=>u.email===email);
+    return{emailKey,email,name:user?.name||email,total};
+  }).filter(x=>x.total>0).sort((a,b)=>b.total-a.total);
 }
-
 function renderLeaderboard(elId,data){
   const el=document.getElementById(elId);if(!el)return;
   if(!data.length){el.innerHTML='<div class="empty-state" style="padding:16px;"><p>No data yet.</p></div>';return;}
@@ -2500,25 +2224,9 @@ function renderLeaderboard(elId,data){
   const rankClass=['gold','silver','bronze'];
   data.slice(0,5).forEach((u,i)=>{
     const item=document.createElement('div');item.className='leaderboard-item';
-    // Only show email below if name is different from email
-    const nameLine=u.name&&u.name!==u.email ? u.name : u.email.split('@')[0];
-    const subLine=u.name&&u.name!==u.email ? u.email : '';
-    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${nameLine}${subLine?`<div class="lb-sub">${subLine}</div>`:''}</div><div class="lb-val">${u.total}×</div>`;
-    el.appendChild(item);
-  });
-}
-
-function renderStreakLeaderboard(elId){
-  const el=document.getElementById(elId);if(!el)return;
-  const streaks=computeStreaks();
-  if(!streaks.length){el.innerHTML='<div class="empty-state" style="padding:16px;"><p>No streak data yet.</p></div>';return;}
-  el.innerHTML='';
-  const rankClass=['gold','silver','bronze'];
-  streaks.slice(0,5).forEach((s,i)=>{
-    const item=document.createElement('div');item.className='leaderboard-item';
-    const nameLine=s.name&&s.name!==s.email ? s.name : s.email.split('@')[0];
-    const subLine=s.name&&s.name!==s.email ? s.email : '';
-    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${nameLine}${subLine?`<div class="lb-sub">${subLine}</div>`:''}</div><div class="lb-val">🔥 ${s.streak}d</div>`;
+    const nameLine=u.name&&u.name!==u.email?u.name:u.email.split('@')[0];
+    const subLine=u.name&&u.name!==u.email?u.email:'';
+    item.innerHTML=`<div class="lb-rank${i<3?' '+rankClass[i]:''}">${i+1}</div><div class="lb-name">${esc(nameLine)}${subLine?`<div class="lb-sub">${esc(subLine)}</div>`:''}</div><div class="lb-val">${u.total}×</div>`;
     el.appendChild(item);
   });
 }
@@ -2526,7 +2234,6 @@ function renderStreakLeaderboard(elId){
 /* ═══ SETTINGS ═══ */
 function renderSettings(){
   if(userRole!=='owner')return;
-  // Pending requests
   const pl=document.getElementById('pendingList');const pc=document.getElementById('pendingCount');
   pc.textContent=requests.length?`(${requests.length})`:'';
   if(!requests.length){pl.innerHTML='<div class="empty-state"><span class="icon">inbox</span><p>No pending requests</p></div>';}
@@ -2534,7 +2241,7 @@ function renderSettings(){
     pl.innerHTML='';
     requests.forEach(r=>{
       const item=document.createElement('div');item.className='request-item';
-      item.innerHTML=`<div class="req-user-info"><div class="req-user-name">${r.name||r.email}</div><div class="req-user-email">${r.email}</div></div><span class="req-time">${(r.requestedAt||'').slice(0,10)}</span><button class="btn-approve" data-id="${r.id}" data-email="${r.email}" data-name="${r.name||r.email}" data-action="approve">Approve</button><button class="btn-reject" data-id="${r.id}" data-action="reject">Reject</button>`;
+      item.innerHTML=`<div class="req-user-info"><div class="req-user-name">${esc(r.name||r.email)}</div><div class="req-user-email">${esc(r.email)}</div></div><span class="req-time">${(r.requestedAt||'').slice(0,10)}</span><button class="btn-approve" data-id="${r.id}" data-email="${esc(r.email)}" data-name="${esc(r.name||r.email)}" data-action="approve">Approve</button><button class="btn-reject" data-id="${r.id}" data-action="reject">Reject</button>`;
       pl.appendChild(item);
     });
     pl.querySelectorAll('[data-action]').forEach(btn=>{
@@ -2552,14 +2259,13 @@ function renderSettings(){
       });
     });
   }
-  // Admins
   const al=document.getElementById('adminList');
   if(!admins.length){al.innerHTML='<div class="empty-state"><span class="icon">group</span><p>No admins yet</p></div>';}
   else{
     al.innerHTML='';
     admins.forEach(a=>{
       const item=document.createElement('div');item.className='request-item';
-      item.innerHTML=`<div class="req-user-info"><div class="req-user-name">${a.name||a.email}</div><div class="req-user-email">${a.email}</div></div><span class="req-time">Since ${(a.approvedAt||'').slice(0,10)}</span><button class="btn-revoke" data-email="${a.id}">Revoke</button>`;
+      item.innerHTML=`<div class="req-user-info"><div class="req-user-name">${esc(a.name||a.email)}</div><div class="req-user-email">${esc(a.email)}</div></div><span class="req-time">Since ${(a.approvedAt||'').slice(0,10)}</span><button class="btn-revoke" data-email="${esc(a.id)}">Revoke</button>`;
       al.appendChild(item);
     });
     al.querySelectorAll('.btn-revoke').forEach(btn=>{
@@ -2571,7 +2277,6 @@ function renderSettings(){
       });
     });
   }
-  // All readers
   const rl=document.getElementById('readerList');const rc=document.getElementById('readerCount');
   const adminEmails=admins.map(a=>a.email);
   const readers=allUsers.filter(u=>u.email!==OWNER&&!adminEmails.includes(u.email)).sort((a,b)=>(b.lastSeen||'').localeCompare(a.lastSeen||''));
@@ -2582,12 +2287,11 @@ function renderSettings(){
     readers.forEach(u=>{
       const hasPending=requests.some(r=>r.email===u.email);
       const item=document.createElement('div');item.className='reader-item';
-      item.innerHTML=`<div class="req-user-info" style="flex:1;"><div class="req-user-name">${u.name||u.email}</div><div class="req-user-email">${u.email}</div></div>${hasPending?'<span class="badge badge-new" style="font-size:0.56rem;">Pending</span>':''}<span class="reader-role-badge">Reader</span><span class="req-time">${(u.lastSeen||'').slice(0,10)}</span>`;
+      item.innerHTML=`<div class="req-user-info" style="flex:1;"><div class="req-user-name">${esc(u.name||u.email)}</div><div class="req-user-email">${esc(u.email)}</div></div>${hasPending?'<span class="badge badge-new" style="font-size:0.56rem;">Pending</span>':''}<span class="reader-role-badge">Reader</span><span class="req-time">${(u.lastSeen||'').slice(0,10)}</span>`;
       rl.appendChild(item);
     });
   }
 }
-
 function setupReaderSettings(){
   const statusEl=document.getElementById('readerRequestStatus');
   const btn=document.getElementById('btnSettingsRequestAccess');
@@ -2608,8 +2312,6 @@ function setupReaderSettings(){
     }catch(err){newBtn.disabled=false;newBtn.style.opacity='1';newBtn.textContent='Request Admin Access';showToast('Error: '+err.message,'err');}
   });
 }
-
-/* ═══ RESET READ COUNTS ═══ */
 document.getElementById('btnResetReadings')?.addEventListener('click',async function(){
   if(!isOwner())return;
   if(!confirm('Reset ALL read counts across Essays, Posts, Readings and Memories to zero?\n\nRatings and all content stay untouched. This cannot be undone.'))return;
@@ -2636,34 +2338,34 @@ function copyClip(text,lbl){
 function fallbackCopy(text,lbl){const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0;';document.body.appendChild(t);t.select();try{document.execCommand('copy');showToast(lbl+' copied');}catch{showToast('Copy failed','err');}document.body.removeChild(t);}
 
 document.getElementById('btnExportEssays')?.addEventListener('click',()=>{
-  // Export only currently visible/filtered data
-  const q=(document.getElementById('essaySearch')?.value||'').toLowerCase();
   let data=essays.slice();
   if(userRole==='reader')data=data.filter(e=>!e.hidden);
-  if(q)data=data.filter(e=>String(e.num).includes(q)||e.title.toLowerCase().includes(q)||(e.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  const q=(document.getElementById('essaySearch')?.value||'').toLowerCase();
+  if(q)data=data.filter(e=>String(e.num).includes(q)||(e.title||'').toLowerCase().includes(q)||(e.tags||[]).some(t=>t.toLowerCase().includes(q)));
   if(eFilter==='read')data=data.filter(e=>iReadIt(e));
   if(eFilter==='unread')data=data.filter(e=>!iReadIt(e));
   if(activeETag)data=data.filter(e=>(e.tags||[]).includes(activeETag));
+  if(activeEAuthor)data=data.filter(e=>e.author===activeEAuthor);
   data=sortItems(data,eSort,eDir);
   if(!data.length){showToast('No essays to export');return;}
-  const rows=data.map(e=>{const a=avg(e.ratings);return{'Title':e.title,'Date':e.date||'','Type':'Essay','Author':e.author||'','No.':e.num,'Tags':(e.tags||[]).join(' '),'Link':e.url,'Total Reads':totalReadCount(e),'My Reads':myReadCount(e),'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
+  const rows=data.map(e=>{const a=avg(e.ratings);return{'Title':e.title,'Date':e.date||'','Author':e.author||'','No.':e.num,'Tags':(e.tags||[]).join(' '),'Link':e.url,'Total Reads':totalReadCount(e),'My Reads':myReadCount(e),'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
   copyClip(toTsv(rows),'Essays');
 });
 document.getElementById('btnExportPosts')?.addEventListener('click',()=>{
-  const q=(document.getElementById('postSearch')?.value||'').toLowerCase();
   let data=posts.slice();
-  if(q)data=data.filter(p=>(p.author||'').toLowerCase().includes(q)||(p.title||'').toLowerCase().includes(q)||(p.content||'').toLowerCase().includes(q)||(p.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  const q=(document.getElementById('postSearch')?.value||'').toLowerCase();
+  if(q)data=data.filter(p=>(p.author||'').toLowerCase().includes(q)||(p.title||'').toLowerCase().includes(q));
   if(pFilter!=='all')data=data.filter(p=>p.platform===pFilter);
   if(activePTag)data=data.filter(p=>(p.tags||[]).includes(activePTag));
   data=sortItems(data,pSort,pDir);
   if(!data.length){showToast('No posts to export');return;}
-  const rows=data.map(p=>{const a=avg(p.ratings);return{'Title':p.title||p.author,'Date':p.date||'','Type':'Post / '+PLBL[p.platform],'Author':p.author,'Platform':PLBL[p.platform]||p.platform,'Tags':(p.tags||[]).join(' '),'Content':p.content,'Link':p.url||'','Avg Rating':isNaN(a)?'':a.toFixed(1)};});
+  const rows=data.map(p=>{const a=avg(p.ratings);return{'Title':p.title||p.author,'Date':p.date||'','Author':p.author,'Platform':PLBL[p.platform]||p.platform,'Tags':(p.tags||[]).join(' '),'Content':p.content,'Link':p.url||'','Avg Rating':isNaN(a)?'':a.toFixed(1)};});
   copyClip(toTsv(rows),'Posts');
 });
 document.getElementById('btnExportReadings')?.addEventListener('click',()=>{
-  const q=(document.getElementById('readingSearch')?.value||'').toLowerCase();
   let data=readings.slice();
-  if(q)data=data.filter(r=>(r.author||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||(r.title||'').toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  const q=(document.getElementById('readingSearch')?.value||'').toLowerCase();
+  if(q)data=data.filter(r=>(r.author||'').toLowerCase().includes(q)||(r.title||'').toLowerCase().includes(q));
   if(rFilter!=='all')data=data.filter(r=>r.type===rFilter);
   if(activeRTag)data=data.filter(r=>(r.tags||[]).includes(activeRTag));
   data=sortItems(data,rSort,rDir);
@@ -2672,47 +2374,96 @@ document.getElementById('btnExportReadings')?.addEventListener('click',()=>{
   copyClip(toTsv(rows),'Readings');
 });
 document.getElementById('btnExportMems')?.addEventListener('click',()=>{
-  const q=(document.getElementById('memSearch')?.value||'').toLowerCase();
   let data=memories.slice();
-  if(q)data=data.filter(m=>(m.title||'').toLowerCase().includes(q)||(m.content||'').toLowerCase().includes(q)||(m.tags||[]).some(t=>t.toLowerCase().includes(q)));
+  const q=(document.getElementById('memSearch')?.value||'').toLowerCase();
+  if(q)data=data.filter(m=>(m.title||'').toLowerCase().includes(q)||(m.content||'').toLowerCase().includes(q));
   if(activeMTag)data=data.filter(m=>(m.tags||[]).includes(activeMTag));
   data=sortItems(data,mSort,mDir);
   if(!data.length){showToast('No memories','amber');return;}
-  const rows=data.map(m=>{const a=avg(m.ratings);return{'Title':m.title||'','Date':m.createdAt||'','Type':'Memory','Tags':(m.tags||[]).join(' '),'Content':m.content,'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
+  const rows=data.map(m=>{const a=avg(m.ratings);return{'Title':m.title||'','Date':m.createdAt||'','Tags':(m.tags||[]).join(' '),'Content':m.content,'Avg Rating':isNaN(a)?'':a.toFixed(1)};});
   copyClip(toTsv(rows),'Memories');
 });
 
-/* ═══ MARKDOWN PARSER ═══ */
+/* ═══ MARKDOWN PARSER — with TABLE support ═══ */
 function parseMd(raw){
-  if(!raw)return'';let md=raw;
+  if(!raw)return'';
+  let md=raw;
+  // Footnote definitions
   const fnDefs={};let fnCount=0;const fnList=[];
   md=md.replace(/^\[\^([\w]+)\]:\s*(.+)$/gm,(_,id,txt)=>{fnDefs[id]=txt;return'';});
   md=md.replace(/\[\^([\w]+)\]/g,(_,id)=>{fnCount++;fnList.push({id,n:fnCount});return`<sup class="fn-ref">[${fnCount}]</sup>`;});
+  // Obsidian wikilinks
   md=md.replace(/\[\[([^\]]+)\]\]/g,(_,t)=>`<span class="obs-badge">${t}</span>`);
+  // Blockquotes (callout style)
   md=md.replace(/^>\s*\[!quote\][^\n]*\n((?:>.*\n?)*)/gim,(_,body)=>`<blockquote>${body.replace(/^>\s?/gm,'').trim()}</blockquote>\n`);
   md=md.replace(/^((?:>[^\n]*\n?)+)/gm,block=>`<blockquote>${block.replace(/^>\s?/gm,'').trim()}</blockquote>\n`);
+
+  // ── TABLES ──
+  // Match GFM table blocks: header row | separator row | data rows
+  md=md.replace(/((?:\|[^\n]+\|\n)+)/gm,(tableBlock)=>{
+    const lines=tableBlock.trim().split('\n').filter(l=>l.trim());
+    if(lines.length<2)return tableBlock;
+    // Check if line 2 is a separator (|---|---|)
+    const isSep=line=>/^\|[\s|:\-]+\|$/.test(line.trim());
+    if(!isSep(lines[1]))return tableBlock;
+    const parseRow=line=>line.trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+    const headers=parseRow(lines[0]);
+    const dataRows=lines.slice(2).map(parseRow);
+    let tbl='<table><thead><tr>';
+    headers.forEach(h=>{tbl+=`<th>${h}</th>`;});
+    tbl+='</tr></thead><tbody>';
+    dataRows.forEach(row=>{
+      tbl+='<tr>';
+      row.forEach(cell=>{tbl+=`<td>${cell}</td>`;});
+      tbl+='</tr>';
+    });
+    tbl+='</tbody></table>';
+    return tbl;
+  });
+
+  // Headings
   md=md.replace(/^### (.+)$/gm,'<h3>$1</h3>');
   md=md.replace(/^## (.+)$/gm,'<h2>$1</h2>');
   md=md.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  // Inline
   md=md.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
   md=md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   md=md.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  md=md.replace(/__(.+?)__/g,'<strong>$1</strong>');md=md.replace(/_(.+?)_/g,'<em>$1</em>');
+  md=md.replace(/__(.+?)__/g,'<strong>$1</strong>');
+  md=md.replace(/_(.+?)_/g,'<em>$1</em>');
   md=md.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // Links
   md=md.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
   md=md.replace(/(^|[\s,])(https?:\/\/[^\s<"]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');
-  md=md.replace(/(^|\s)(#[a-zA-Z0-9_\u0400-\u04FF]+)/g,'$1<span class="obs-badge">$2</span>');
+  // Hashtags — but NOT inside already-rendered HTML tags or table cells
+  // Only badge standalone hashtag words not inside < >
+  md=md.replace(/(?<![<\w])(#[a-zA-Z0-9_\u0400-\u04FF]+)/g,'<span class="obs-badge">$1</span>');
+  // Lists
   md=md.replace(/^[-*+] (.+)$/gm,'<li>$1</li>');
   md=md.replace(/(<li>[\s\S]*?<\/li>\n?)+/g,m=>`<ul>${m}</ul>`);
   md=md.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
   md=md.replace(/^---$/gm,'<hr>');
-  md=md.replace(/\n{2,}/g,'\n</p><p>');
-  md='<p>'+md+'</p>';
-  ['blockquote','ul','h1','h2','h3','hr'].forEach(tag=>{
-    md=md.replace(new RegExp(`<p>(<${tag}[ >])`,'g'),'$1');
-    md=md.replace(new RegExp(`(<\\/${tag}>)<\\/p>`,'g'),'$1');
+  // Paragraphs — skip wrapping lines that are already block elements
+  const blockTags=['blockquote','ul','h1','h2','h3','hr','table','thead','tbody','tr','th','td'];
+  const blockRe=new RegExp(`^<(${blockTags.join('|')})[\\s>]|^</(${blockTags.join('|')})>`);
+  const lines2=md.split('\n');
+  const out=[];
+  let inP=false;
+  lines2.forEach(line=>{
+    if(blockRe.test(line.trim())){
+      if(inP){out.push('</p>');inP=false;}
+      out.push(line);
+    } else if(line.trim()===''){
+      if(inP){out.push('</p>');inP=false;}
+    } else {
+      if(!inP){out.push('<p>');inP=true;}
+      out.push(line);
+    }
   });
+  if(inP)out.push('</p>');
+  md=out.join('\n');
   md=md.replace(/<p>\s*<\/p>/g,'');
+  // Footnotes
   let fnHtml='';
   if(fnList.length){
     fnHtml='<div class="md-footnotes"><h4>Sources & References</h4>';
@@ -2735,7 +2486,7 @@ function showToast(msg,type=''){
   clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* ═══ STAT CARD NAVIGATION ═══ */
+/* ═══ STAT CARD NAV ═══ */
 document.querySelectorAll('.stat-card[data-goto]').forEach(card=>{
   card.addEventListener('click',()=>switchTab(card.getAttribute('data-goto')));
 });
