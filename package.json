@@ -1,0 +1,28 @@
+{
+  "name": "chashma-library",
+  "version": "1.0.0",
+  "description": "Chashma Personal Library - A static HTML site for organizing essays, posts, readings, and memories",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akrom-quantum/chashma_library.git"
+  },
+  "keywords": [
+    "library",
+    "personal",
+    "essays",
+    "readings"
+  ],
+  "author": "Abdinabiyev Akrom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akrom-quantum/chashma_library/issues"
+  },
+  "homepage": "https://github.com/akrom-quantum/chashma_library#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
