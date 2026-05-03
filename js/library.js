@@ -172,10 +172,10 @@
     if (!el) return;
     const tags = [...new Set(items.flatMap(i => i.tags ?? []))].sort();
     el.innerHTML = [
-      `<button class="tag-pill ${!activeTag?'active':''}" data-tag="">All</button>`,
-      ...tags.map(t => `<button class="tag-pill ${activeTag===t?'active':''}" data-tag="${esc(t)}">${esc(t)}</button>`),
+      `<button class="htag ${!activeTag?'active':''}" data-tag="">All</button>`,
+      ...tags.map(t => `<button class="htag ${activeTag===t?'active':''}" data-tag="${esc(t)}">${esc(t)}</button>`),
     ].join('');
-    qsa('.tag-pill', el).forEach(btn => {
+    qsa('.htag', el).forEach(btn => {
       btn.addEventListener('click', () => { setTag(btn.dataset.tag || null); render(); });
     });
   }
@@ -250,23 +250,40 @@
     });
 
     el.innerHTML = '';
-    // Render series groups first
+
+    // Build render queue: series groups and standalone items ordered by min order value
+    const queue = [];
     Object.entries(seriesMap).forEach(([series, arr]) => {
-      const grp = document.createElement('div');
-      grp.className = 'series-group';
-      grp.innerHTML = `
-        <div class="series-hdr" role="button" tabindex="0">
-          <span class="material-symbols-outlined series-chevron">expand_more</span>
-          <span class="series-name">${esc(series)}</span>
-          <span class="series-count">${arr.length}</span>
-        </div>
-        <div class="series-body"></div>`;
-      const body = qs('.series-body', grp);
-      arr.forEach((t,i) => body.appendChild(buildTxtCard(t,i)));
-      qs('.series-hdr', grp).addEventListener('click', () => grp.classList.toggle('collapsed'));
-      el.appendChild(grp);
+      const minOrder = Math.min(...arr.map(t => t.order ?? Infinity));
+      queue.push({ type: 'series', series, arr, minOrder });
     });
-    standalone.forEach((t,i) => el.appendChild(buildTxtCard(t,i)));
+    standalone.forEach(t => queue.push({ type: 'item', item: t, minOrder: t.order ?? Infinity }));
+    queue.sort((a, b) => {
+      if (a.minOrder !== b.minOrder) return a.minOrder - b.minOrder;
+      const ad = toDate(a.type==='item' ? a.item.createdAt : a.arr[0]?.createdAt) ?? 0;
+      const bd = toDate(b.type==='item' ? b.item.createdAt : b.arr[0]?.createdAt) ?? 0;
+      return ad < bd ? -1 : ad > bd ? 1 : 0;
+    });
+
+    queue.forEach((entry, i) => {
+      if (entry.type === 'series') {
+        const grp = document.createElement('div');
+        grp.className = 'series-group';
+        grp.innerHTML = `
+          <div class="series-hdr" role="button" tabindex="0">
+            <span class="material-symbols-outlined series-chevron">expand_more</span>
+            <span class="series-name">${esc(entry.series)}</span>
+            <span class="series-count">${entry.arr.length}</span>
+          </div>
+          <div class="series-body"></div>`;
+        const body = qs('.series-body', grp);
+        entry.arr.forEach((t, j) => body.appendChild(buildTxtCard(t, j)));
+        qs('.series-hdr', grp).addEventListener('click', () => grp.classList.toggle('collapsed'));
+        el.appendChild(grp);
+      } else {
+        el.appendChild(buildTxtCard(entry.item, i));
+      }
+    });
 
     if (!items.length) el.innerHTML = '<p class="empty-state">No texts match your filters.</p>';
   }
@@ -926,7 +943,16 @@ ${mdHtmlCache}
       else if (sortKey==='reads') { av=myRC(a); bv=myRC(b); }
       else if (sortKey==='rating') { av=myRating(a); bv=myRating(b); }
       else { av=0; bv=0; }
-      if (av<bv) return -dir; if (av>bv) return dir; return 0;
+      if (av<bv) return -dir;
+      if (av>bv) return dir;
+      // tiebreak: items with explicit order before those without; then by createdAt asc
+      if (sortKey==='order') {
+        const aHas = a.order != null, bHas = b.order != null;
+        if (aHas !== bHas) return aHas ? -1 : 1;
+      }
+      const ad = toDate(a.createdAt) ?? 0;
+      const bd = toDate(b.createdAt) ?? 0;
+      return ad < bd ? -1 : ad > bd ? 1 : 0;
     });
   }
 

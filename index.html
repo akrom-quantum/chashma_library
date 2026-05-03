@@ -196,55 +196,99 @@
 
         <!-- Texts Sub-page -->
         <div class="lib-sub" id="libTexts" hidden>
-          <div class="lib-controls" id="txtControls"></div>
+          <div class="lib-hdr-row">
+            <div>
+              <h1 class="page-title">Texts</h1>
+              <p class="page-desc">Essays, articles, posts — curated reading.</p>
+            </div>
+            <button class="btn btn-pri editable-only" id="btnAddText">+ Add Text</button>
+          </div>
+          <div id="txtUB"></div>
+          <div class="ctrl">
+            <div class="sbox">
+              <span class="material-symbols-outlined">search</span>
+              <input id="txtSearch" type="text" placeholder="Search texts…">
+            </div>
+            <div class="fgrp">
+              <button class="fp active" data-tf="all">All</button>
+              <button class="fp" data-tf="essay">Essay</button>
+              <button class="fp" data-tf="substack">Substack</button>
+              <button class="fp" data-tf="twitter">Twitter</button>
+              <button class="fp" data-tf="article">Article</button>
+            </div>
+            <select id="txtAuthorF" class="sort-sel"></select>
+            <select id="txtSort" class="sort-sel">
+              <option value="order">Order</option>
+              <option value="date">Date added</option>
+              <option value="title">Title</option>
+              <option value="reads">Reads</option>
+              <option value="rating">Rating</option>
+            </select>
+            <button class="sort-dir" id="txtDir" data-dir="1">↑</button>
+          </div>
+          <div class="tag-strip" id="txtTagStrip"></div>
           <div class="lib-list" id="textsList"></div>
         </div>
 
-        <div class="page-hdr">
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:11px;flex-wrap:wrap">
-        <div>
-          <h1 class="page-title">Texts</h1>
-          <p class="page-desc">Essays, articles, posts — curated reading.</p>
-        </div>
-          <!-- ADD THIS -->
-            <button class="btn btn-pri editable-only" id="btnAddText">+ Add Text</button>
-          </div>
-        </div>
-        
         <!-- Videos Sub-page -->
         <div class="lib-sub" id="libVideos" hidden>
-          <div class="lib-controls" id="vidControls"></div>
-          <div class="lib-list" id="videosGrid"></div>
+          <div class="lib-hdr-row">
+            <div>
+              <h1 class="page-title">Videos</h1>
+              <p class="page-desc">Curated visual knowledge.</p>
+            </div>
+            <button class="btn btn-pri editable-only" id="btnAddVid">+ Add Video</button>
+          </div>
+          <div id="vidUB"></div>
+          <div class="ctrl">
+            <div class="sbox">
+              <span class="material-symbols-outlined">search</span>
+              <input id="vidSearch" type="text" placeholder="Search videos…">
+            </div>
+            <select id="vidSort" class="sort-sel">
+              <option value="date">Date added</option>
+              <option value="title">Title</option>
+              <option value="reads">Watched</option>
+              <option value="rating">Rating</option>
+            </select>
+            <button class="sort-dir" id="vidDir" data-dir="1">↑</button>
+          </div>
+          <div class="tag-strip" id="vidTagStrip"></div>
+          <div class="vid-grid" id="videosGrid"></div>
         </div>
-
-        <div class="page-hdr">
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:11px;flex-wrap:wrap">
-    <div>
-      <h1 class="page-title">Videos</h1>
-      <p class="page-desc">Curated visual knowledge.</p>
-    </div>
-    <!-- ADD THIS -->
-    <button class="btn btn-pri editable-only" id="btnAddVid">+ Add Video</button>
-  </div>
-</div>
 
         <!-- Mental Models Sub-page -->
         <div class="lib-sub" id="libModels" hidden>
-          <div class="lib-controls" id="modelControls"></div>
+          <div class="lib-hdr-row">
+            <div>
+              <h1 class="page-title">Mental Models</h1>
+              <p class="page-desc">Frameworks for thinking clearly.</p>
+            </div>
+            <button class="btn btn-pri editable-only" id="btnAddModel">+ Add Model</button>
+          </div>
+          <div class="ctrl">
+            <div class="sbox">
+              <span class="material-symbols-outlined">search</span>
+              <input id="modelSearch" type="text" placeholder="Search models…">
+            </div>
+            <div class="fgrp">
+              <button class="fp active" data-mf="all">All</button>
+              <button class="fp" data-mf="clear">Clear</button>
+              <button class="fp" data-mf="deep">Deep</button>
+            </div>
+            <select id="modelFieldF" class="sort-sel">
+              <option value="">All fields</option>
+            </select>
+            <datalist id="fieldDl"></datalist>
+            <select id="modelSort" class="sort-sel">
+              <option value="order">Order</option>
+              <option value="title">Title</option>
+            </select>
+            <button class="sort-dir" id="modelDir" data-dir="1">↑</button>
+          </div>
           <div class="lib-list" id="modelsList"></div>
         </div>
 
-        <div class="page-hdr">
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:11px;flex-wrap:wrap">
-    <div>
-      <h1 class="page-title">Mental Models</h1>
-      <p class="page-desc">Frameworks for thinking clearly.</p>
-    </div>
-    <!-- ADD THIS -->
-    <button class="btn btn-pri editable-only" id="btnAddModel">+ Add Model</button>
-  </div>
-</div>
-        
       </section><!-- /#page-library -->
 
 

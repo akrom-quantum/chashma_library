@@ -536,6 +536,8 @@
 
 .main-area { flex: 1; }
 
+.hidden { display: none !important; }
+
 .page { display: none; }
 .page.active {
   display:    block;
@@ -543,6 +545,34 @@
   max-width:  1000px;
   margin:     0 auto;
   animation:  fadeUp .2s ease both;
+}
+
+/* Library page: subnav at top, content padded inside lib-sub */
+#page-library.active {
+  padding-top:    0;
+  padding-bottom: 0;
+  max-width:      none;
+}
+
+#page-library .lib-subnav {
+  margin-left:  -32px;
+  margin-right: -32px;
+}
+
+#page-library .lib-sub.active {
+  padding:   24px 32px 100px;
+  max-width: 1000px;
+  margin:    0 auto;
+}
+
+@media (max-width: 900px) {
+  #page-library .lib-subnav { margin-left: -20px; margin-right: -20px; }
+  #page-library .lib-sub.active { padding: 20px 20px 80px; }
+}
+
+@media (max-width: 600px) {
+  #page-library .lib-subnav { margin-left: -14px; margin-right: -14px; }
+  #page-library .lib-sub.active { padding: 14px 14px 80px; }
 }
 
 @media (max-width: 900px) { .page.active { padding: 20px 20px 80px; } }
@@ -819,7 +849,65 @@
 .lib-tab.active .lib-cnt { background: var(--pri-pale); color: var(--pri); }
 
 .lib-sub { display: none; }
-.lib-sub.active { display: block; padding-top: 20px; }
+.lib-sub.active { display: block; padding-top: 24px; }
+
+.btn {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           5px;
+  padding:       6px 14px;
+  font-size:     0.68rem;
+  font-weight:   700;
+  border-radius: var(--r-full);
+  border:        1px solid var(--rule);
+  background:    var(--bg-2);
+  color:         var(--ink-3);
+  cursor:        pointer;
+  transition:    background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  white-space:   nowrap;
+}
+
+.btn:hover { border-color: var(--ink-3); color: var(--ink); }
+
+.btn-pri {
+  background:   var(--pri);
+  border-color: var(--pri);
+  color:        #ffffff;
+}
+
+.btn-pri:hover { background: var(--pri-2); border-color: var(--pri-2); }
+
+.btn-ghost {
+  background:   transparent;
+  border-color: var(--rule);
+  color:        var(--ink-3);
+}
+
+.btn-ghost:hover { background: var(--bg-2); color: var(--ink); }
+
+.lib-hdr-row {
+  display:         flex;
+  align-items:     flex-end;
+  justify-content: space-between;
+  gap:             12px;
+  flex-wrap:       wrap;
+  margin-bottom:   20px;
+}
+
+.page-title {
+  font-family:    'Newsreader', Georgia, serif;
+  font-size:      1.8rem;
+  font-weight:    700;
+  color:          var(--pri);
+  letter-spacing: -0.01em;
+  line-height:    1.15;
+}
+
+.page-desc {
+  font-size:  0.76rem;
+  color:      var(--ink-3);
+  margin-top: 3px;
+}
 
 
 /* ─────────────────────────────────────────────────────────────
