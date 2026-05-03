@@ -2,7 +2,6 @@
    firebase-init.js — Chashma: The Archive
    Initializes Firebase app, exposes db + auth as window globals.
 ════════════════════════════════════════════════════════════════ */
-
 const firebaseConfig = {
   apiKey:            'AIzaSyDr6Ff7QsmtEOmE-AtAWmTOOYWO8Nf4Dnk',
   authDomain:        'chashma-akrom.firebaseapp.com',
@@ -13,15 +12,14 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 window.auth = firebase.auth();
 window.db   = firebase.firestore();
 
-// Offline persistence — silent fail (e.g. multiple tabs or private mode)
+// Offline persistence — silent fail (multiple tabs or private mode)
 db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
 
 // Keep auth session across browser restarts
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
 
-// Global owner UID — set by auth.js after sign-in
+// Global owner email — set by auth.js after sign-in
 window.OWNER = '';
