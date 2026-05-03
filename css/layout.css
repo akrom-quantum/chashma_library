@@ -1,0 +1,1036 @@
+/* ═══════════════════════════════════════════════════════════════
+   layout.css — Chashma: The Archive
+   Structural layout only. No card internals, no modal content.
+   Requires css/tokens.css.
+════════════════════════════════════════════════════════════════ */
+
+
+/* ───────────────────────────────────────────────────────────────
+   1. AUTH SCREEN
+──────────────────────────────────────────────────────────────── */
+
+#authScreen {
+  position:        fixed;
+  inset:           0;
+  background:      var(--pri-2);
+  z-index:         9000;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         24px 16px;
+}
+
+.auth-wrap {
+  max-width: 400px;
+  width:     100%;
+}
+
+/* Brand block */
+.auth-brand {
+  text-align:    center;
+  margin-bottom: 28px;
+}
+
+.auth-brand-name {
+  display:     block;
+  font-family: 'Newsreader', Georgia, serif;
+  font-size:   2.8rem;
+  font-style:  italic;
+  font-weight: 500;
+  color:       #ecfdf5;
+  line-height: 1.1;
+}
+
+.auth-brand-sub {
+  display:        block;
+  font-size:      0.6rem;
+  font-weight:    600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color:          #6ee7b7;
+  margin-top:     4px;
+}
+
+.auth-brand-tagline {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style:  italic;
+  font-size:   1rem;
+  color:       rgba(209, 250, 229, .6);
+  margin-top:  10px;
+}
+
+/* Card */
+.auth-card {
+  background:    rgba(255, 255, 255, .07);
+  border:        1px solid rgba(255, 255, 255, .10);
+  border-radius: var(--r-xl);
+  overflow:      hidden;
+}
+
+/* Tabs */
+.auth-tabs {
+  display:       flex;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.auth-tab {
+  flex:           1;
+  padding:        13px 0;
+  font-size:      0.68rem;
+  font-weight:    700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color:          rgba(209, 250, 229, .45);
+  transition:     color var(--t-fast), background var(--t-fast);
+}
+
+.auth-tab.active {
+  color:      #ecfdf5;
+  background: rgba(255, 255, 255, .05);
+}
+
+/* Panels */
+.auth-panel {
+  display: none;
+  padding: 24px;
+}
+
+.auth-panel.active {
+  display: block;
+}
+
+/* Inputs inside auth */
+.auth-panel input {
+  display:          block;
+  width:            100%;
+  background:       rgba(255, 255, 255, .07);
+  border:           1px solid rgba(255, 255, 255, .12);
+  border-radius:    var(--r-md);
+  padding:          10px 13px;
+  color:            #ecfdf5;
+  font-size:        0.82rem;
+  margin-bottom:    10px;
+  outline:          none;
+  transition:       border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.auth-panel input::placeholder {
+  color: rgba(209, 250, 229, .35);
+}
+
+.auth-panel input:focus {
+  border-color: #6ee7b7;
+  box-shadow:   0 0 0 3px rgba(110, 231, 183, .15);
+}
+
+/* Primary auth button */
+.btn-auth {
+  display:        block;
+  width:          100%;
+  padding:        11px;
+  background:     #6ee7b7;
+  color:          var(--pri-2);
+  font-size:      0.76rem;
+  font-weight:    800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border-radius:  var(--r-md);
+  margin-bottom:  12px;
+  transition:     transform var(--t-fast), background var(--t-fast);
+}
+
+.btn-auth:hover {
+  transform: translateY(-1px);
+}
+
+/* Divider */
+.auth-divider {
+  display:        flex;
+  align-items:    center;
+  gap:            10px;
+  margin-bottom:  12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content:    '';
+  flex:       1;
+  height:     1px;
+  background: rgba(209, 250, 229, .15);
+}
+
+.auth-divider span {
+  font-size:      0.58rem;
+  font-weight:    600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color:          rgba(209, 250, 229, .30);
+  white-space:    nowrap;
+}
+
+/* Google button */
+.btn-google {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             9px;
+  width:           100%;
+  padding:         10px;
+  background:      #ffffff;
+  color:           #1f2937;
+  font-size:       0.76rem;
+  font-weight:     600;
+  border-radius:   var(--r-md);
+  margin-bottom:   12px;
+  transition:      background var(--t-fast);
+}
+
+.btn-google:hover {
+  background: #f3f4f6;
+}
+
+/* Error text */
+.auth-err {
+  font-size:    0.7rem;
+  color:        #fca5a5;
+  min-height:   18px;
+  margin-top:   2px;
+}
+
+/* Note text */
+.auth-note {
+  text-align:  center;
+  font-size:   0.6rem;
+  color:       rgba(110, 231, 183, .45);
+  margin-top:  10px;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   2. LOADING SCREEN
+──────────────────────────────────────────────────────────────── */
+
+#loadingScreen {
+  position:        fixed;
+  inset:           0;
+  background:      var(--pri-2);
+  z-index:         8999;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             14px;
+}
+
+.load-logo {
+  font-family:  'Newsreader', Georgia, serif;
+  font-size:    2.2rem;
+  font-style:   italic;
+  font-weight:  400;
+  color:        #ecfdf5;
+  line-height:  1;
+}
+
+.load-bar-wrap {
+  width:    100px;
+  height:   2px;
+  overflow: hidden;
+}
+
+.load-bar {
+  width:      100%;
+  height:     100%;
+  background: #6ee7b7;
+  animation:  lp 1.4s ease-in-out infinite;
+}
+
+.load-txt {
+  font-size:      0.58rem;
+  font-weight:    700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color:          #6ee7b7;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   3. APP SHELL
+──────────────────────────────────────────────────────────────── */
+
+#appShell {
+  display:        none;
+  flex-direction: column;
+  min-height:     100vh;
+}
+
+#appShell.visible {
+  display: flex;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   4. ACCESS BANNER
+──────────────────────────────────────────────────────────────── */
+
+#accessBanner {
+  display:     none;
+  flex-wrap:   wrap;
+  align-items: center;
+  gap:         10px;
+  padding:     9px 22px;
+  background:  var(--pri-2);
+  color:       #ffffff;
+  font-size:   0.72rem;
+}
+
+#accessBanner.visible {
+  display: flex;
+}
+
+.btn-ban-req {
+  padding:       5px 14px;
+  background:    #ffffff;
+  color:         var(--pri-2);
+  font-size:     0.68rem;
+  font-weight:   700;
+  border-radius: var(--r-full);
+  transition:    opacity var(--t-fast);
+}
+
+.btn-ban-req:hover {
+  opacity: .85;
+}
+
+.btn-ban-dis {
+  padding:       5px 14px;
+  background:    transparent;
+  color:         #ffffff;
+  font-size:     0.68rem;
+  font-weight:   600;
+  border:        1px solid rgba(255, 255, 255, .35);
+  border-radius: var(--r-full);
+  transition:    opacity var(--t-fast);
+}
+
+.btn-ban-dis:hover {
+  opacity: .7;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   5. TOPBAR
+──────────────────────────────────────────────────────────────── */
+
+.topbar {
+  height:        var(--topbar-h);
+  background:    var(--card);
+  border-bottom: 1px solid var(--rule);
+  position:      sticky;
+  top:           0;
+  z-index:       200;
+  display:       flex;
+  align-items:   center;
+  padding:       0 20px;
+  gap:           6px;
+  box-shadow:    var(--sh-xs);
+  flex-shrink:   0;
+}
+
+.topbar-brand {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size:   1.35rem;
+  font-style:  italic;
+  font-weight: 500;
+  color:       var(--pri);
+  cursor:      pointer;
+  transition:  opacity var(--t-fast);
+  flex-shrink: 0;
+}
+
+.topbar-brand:hover {
+  opacity: .7;
+}
+
+/* Desktop nav */
+.topbar-nav {
+  display:         flex;
+  gap:             1px;
+  flex:            1;
+  justify-content: center;
+}
+
+.nav-tab {
+  padding:        7px 13px;
+  font-size:      0.66rem;
+  font-weight:    700;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color:          var(--ink-3);
+  border-radius:  var(--r-md);
+  transition:     color var(--t-fast), background var(--t-fast);
+}
+
+.nav-tab:hover {
+  background: var(--bg-2);
+  color:      var(--ink);
+}
+
+.nav-tab.active {
+  color:      var(--pri);
+  background: var(--pri-pale);
+}
+
+/* Right cluster */
+.topbar-right {
+  display:     flex;
+  align-items: center;
+  gap:         5px;
+  flex-shrink: 0;
+}
+
+/* Day counter */
+#dayCtr {
+  display:       flex;
+  align-items:   center;
+  padding:       4px 11px;
+  font-size:     0.6rem;
+  font-weight:   700;
+  color:         var(--ink-3);
+  background:    var(--bg-2);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-full);
+}
+
+.dn {
+  font-family:  'Newsreader', Georgia, serif;
+  font-size:    0.9rem;
+  font-style:   italic;
+  font-weight:  400;
+  color:        var(--pri);
+  margin-left:  4px;
+}
+
+/* Icon button */
+.icon-btn {
+  width:           33px;
+  height:          33px;
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           var(--ink-3);
+  position:        relative;
+  transition:      background var(--t-fast), color var(--t-fast);
+  flex-shrink:     0;
+}
+
+.icon-btn:hover {
+  background: var(--bg-2);
+  color:      var(--ink);
+}
+
+/* Notification badge */
+#notifBadge {
+  position:        absolute;
+  top:             3px;
+  right:           3px;
+  width:           13px;
+  height:          13px;
+  border-radius:   50%;
+  background:      var(--err);
+  color:           #ffffff;
+  font-size:       0.5rem;
+  font-weight:     800;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  line-height:     1;
+}
+
+/* Profile avatar */
+#profileAv {
+  width:         31px;
+  height:        31px;
+  border-radius: 50%;
+  border:        2px solid var(--pri-pale);
+  background:    var(--sec-cont);
+  cursor:        pointer;
+  overflow:      hidden;
+  flex-shrink:   0;
+  transition:    border-color var(--t-fast);
+}
+
+#profileAv:hover {
+  border-color: var(--pri);
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   6. DROPDOWNS
+──────────────────────────────────────────────────────────────── */
+
+/* Generic dropdown shell */
+.dropdown {
+  position:      absolute;
+  top:           calc(100% + 7px);
+  right:         0;
+  background:    var(--card);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow:    var(--sh-md);
+  z-index:       300;
+  min-width:     210px;
+  animation:     dIn .16s ease both;
+}
+
+.dropdown.hidden {
+  display: none;
+}
+
+/* Profile dropdown internals */
+.profile-wrap {
+  position: relative;
+}
+
+#profileDd {
+  padding: 16px;
+}
+
+.dd-head {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            6px;
+  padding-bottom: 12px;
+  border-bottom:  1px solid var(--rule);
+  margin-bottom:  8px;
+  text-align:     center;
+}
+
+.dd-av {
+  width:         44px;
+  height:        44px;
+  border-radius: 50%;
+  background:    var(--sec-cont);
+  border:        2px solid var(--pri-pale);
+  overflow:      hidden;
+}
+
+.dd-name {
+  font-size:   0.8rem;
+  font-weight: 700;
+  color:       var(--ink);
+}
+
+.dd-role {
+  font-size:      0.58rem;
+  font-weight:    700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color:          var(--pri);
+}
+
+.dd-streak {
+  font-size:   0.65rem;
+  color:       var(--ink-3);
+}
+
+.dd-item {
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  padding:       8px 10px;
+  border-radius: var(--r-sm);
+  font-size:     0.76rem;
+  color:         var(--ink-2);
+  cursor:        pointer;
+  transition:    background var(--t-fast), color var(--t-fast);
+}
+
+.dd-item:hover {
+  background: var(--bg-2);
+  color:      var(--ink);
+}
+
+.dd-div {
+  height:     1px;
+  background: var(--rule);
+  margin:     6px 0;
+}
+
+/* Notification wrap + panel */
+.notif-wrap {
+  position: relative;
+}
+
+#notifPanel {
+  position:      absolute;
+  top:           calc(100% + 7px);
+  right:         0;
+  width:         290px;
+  background:    var(--card);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow:    var(--sh-md);
+  z-index:       300;
+  animation:     dIn .16s ease both;
+  overflow:      hidden;
+}
+
+#notifPanel.hidden {
+  display: none;
+}
+
+.notif-hdr {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         12px 14px;
+  border-bottom:   1px solid var(--rule);
+  font-size:       0.65rem;
+  font-weight:     700;
+  letter-spacing:  .08em;
+  text-transform:  uppercase;
+  color:           var(--ink-3);
+}
+
+#notifClr {
+  font-size:  0.6rem;
+  font-weight: 600;
+  color:      var(--pri);
+  transition: opacity var(--t-fast);
+}
+
+#notifClr:hover {
+  opacity: .7;
+}
+
+#notifList {
+  max-height:  320px;
+  overflow-y:  auto;
+}
+
+.notif-item {
+  display:     flex;
+  align-items: flex-start;
+  gap:         10px;
+  padding:     10px 14px;
+  cursor:      pointer;
+  transition:  background var(--t-fast);
+}
+
+.notif-item:hover {
+  background: var(--bg-2);
+}
+
+.notif-dot {
+  width:         7px;
+  height:        7px;
+  border-radius: 50%;
+  background:    var(--pri);
+  flex-shrink:   0;
+  margin-top:    5px;
+}
+
+.notif-txt {
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+}
+
+.notif-title {
+  font-size:   0.72rem;
+  font-weight: 600;
+  color:       var(--ink);
+}
+
+.notif-sub {
+  font-size: 0.63rem;
+  color:     var(--ink-3);
+}
+
+.notif-empty {
+  padding:   24px 14px;
+  text-align: center;
+  font-size:  0.7rem;
+  color:      var(--ink-4);
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   7. PAGES
+──────────────────────────────────────────────────────────────── */
+
+.main-area {
+  flex: 1;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.page-inner {
+  padding:    26px 22px 80px;
+  max-width:  1100px;
+  margin:     0 auto;
+}
+
+.page-hdr {
+  margin-bottom: 22px;
+}
+
+.page-title {
+  font-family:    'Newsreader', Georgia, serif;
+  font-size:      2.1rem;
+  font-weight:    700;
+  color:          var(--pri);
+  letter-spacing: -.02em;
+  line-height:    1.15;
+}
+
+.page-desc {
+  font-size:  0.76rem;
+  color:      var(--ink-3);
+  margin-top: 4px;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   8. LIBRARY SUB-NAV
+──────────────────────────────────────────────────────────────── */
+
+.lib-subnav {
+  display:       flex;
+  border-bottom: 1px solid var(--rule);
+  background:    var(--card);
+  padding:       0 22px;
+  position:      sticky;
+  top:           var(--topbar-h);
+  z-index:       100;
+  box-shadow:    var(--sh-xs);
+  gap:           2px;
+}
+
+.lib-tab {
+  display:        flex;
+  align-items:    center;
+  gap:            6px;
+  padding:        12px 14px;
+  font-size:      0.66rem;
+  font-weight:    700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color:          var(--ink-3);
+  border-bottom:  2px solid transparent;
+  margin-bottom:  -1px;
+  transition:     color var(--t-fast), border-color var(--t-fast);
+}
+
+.lib-tab:hover {
+  color: var(--ink);
+}
+
+.lib-tab.active {
+  color:              var(--pri);
+  border-bottom-color: var(--pri);
+}
+
+/* Count badge inside lib-tab */
+.lib-cnt {
+  font-size:     0.52rem;
+  font-weight:   800;
+  padding:       2px 6px;
+  border-radius: var(--r-full);
+  background:    var(--bg-3);
+  color:         var(--ink-3);
+  line-height:   1.4;
+  transition:    background var(--t-fast), color var(--t-fast);
+}
+
+.lib-tab.active .lib-cnt {
+  background: var(--pri-pale);
+  color:      var(--pri);
+}
+
+.lib-sub {
+  display: none;
+}
+
+.lib-sub.active {
+  display: block;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   9. CONTROLS BAR
+──────────────────────────────────────────────────────────────── */
+
+.ctrl {
+  background:    var(--card);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding:       13px 17px;
+  margin-bottom: 13px;
+  box-shadow:    var(--sh-xs);
+}
+
+.ctrl-row {
+  display:       flex;
+  align-items:   center;
+  gap:           7px;
+  flex-wrap:     wrap;
+  margin-bottom: 9px;
+}
+
+.ctrl-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Search box */
+.sbox {
+  flex:          1;
+  min-width:     150px;
+  display:       flex;
+  align-items:   center;
+  gap:           7px;
+  background:    var(--bg-2);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-full);
+  padding:       6px 12px;
+  transition:    border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.sbox:focus-within {
+  border-color: var(--pri);
+  box-shadow:   0 0 0 3px var(--pri-glow);
+}
+
+.sbox input {
+  border:     none;
+  background: transparent;
+  font-size:  0.76rem;
+  color:      var(--ink);
+  outline:    none;
+  width:      100%;
+}
+
+.sbox input::placeholder {
+  color: var(--ink-4);
+}
+
+/* Filter group */
+.fgrp {
+  display:       flex;
+  gap:           2px;
+  background:    var(--bg-2);
+  padding:       3px;
+  border-radius: var(--r-full);
+}
+
+.fp {
+  padding:        5px 11px;
+  font-size:      0.6rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color:          var(--ink-3);
+  border-radius:  var(--r-full);
+  transition:     background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.fp:hover {
+  color: var(--ink);
+}
+
+.fp.active {
+  background: var(--card);
+  color:      var(--pri);
+  box-shadow: var(--sh-xs);
+}
+
+/* Sort select + direction */
+.sort-sel {
+  font-size:     0.72rem;
+  color:         var(--ink-2);
+  background:    var(--bg-2);
+  border:        1px solid var(--rule);
+  border-radius: var(--r-full);
+  padding:       5px 10px;
+  outline:       none;
+  cursor:        pointer;
+}
+
+.sort-dir {
+  width:           28px;
+  height:          28px;
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--bg-2);
+  border:          1px solid var(--rule);
+  color:           var(--ink-3);
+  transition:      color var(--t-fast), background var(--t-fast);
+  flex-shrink:     0;
+}
+
+.sort-dir:hover {
+  background: var(--bg-3);
+  color:      var(--ink);
+}
+
+/* Tag strip */
+.tag-strip {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       5px;
+  align-items: center;
+}
+
+.htag {
+  padding:       4px 10px;
+  font-size:     0.6rem;
+  font-weight:   700;
+  border-radius: var(--r-full);
+  border:        1px solid var(--rule);
+  background:    var(--bg-2);
+  color:         var(--ink-3);
+  cursor:        pointer;
+  transition:    border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+}
+
+.htag:hover {
+  border-color: var(--pri);
+  color:        var(--pri);
+}
+
+.htag.active {
+  background:   var(--sec-cont);
+  border-color: var(--pri);
+  color:        var(--pri);
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   10. MOBILE NAV
+──────────────────────────────────────────────────────────────── */
+
+.mobile-nav {
+  display:        none;
+  position:       fixed;
+  bottom:         0;
+  left:           0;
+  right:          0;
+  background:     var(--card);
+  border-top:     1px solid var(--rule);
+  z-index:        200;
+  justify-content: space-around;
+  padding:        6px 0 max(8px, env(safe-area-inset-bottom));
+}
+
+.mn-item {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            2px;
+  padding:        4px 12px;
+  font-size:      0.48rem;
+  font-weight:    700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color:          var(--ink-3);
+  transition:     color var(--t-fast);
+}
+
+.mn-item.active {
+  color: var(--pri);
+}
+
+.mn-item .icon {
+  font-size: 19px;
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   11. TOAST
+──────────────────────────────────────────────────────────────── */
+
+.toast {
+  position:       fixed;
+  bottom:         18px;
+  right:          18px;
+  background:     var(--ink);
+  color:          var(--bg);
+  font-size:      0.65rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding:        10px 16px;
+  border-radius:  0 var(--r-md) var(--r-md) 0;
+  border-left:    3px solid var(--pri);
+  z-index:        9999;
+  max-width:      300px;
+  opacity:        0;
+  transform:      translateY(6px);
+  transition:
+    opacity  var(--t-base),
+    transform var(--t-base);
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity:        1;
+  transform:      translateY(0);
+  pointer-events: auto;
+}
+
+.toast.amber {
+  border-left-color: var(--amber);
+}
+
+.toast.err {
+  border-left-color: var(--err);
+}
+
+
+/* ───────────────────────────────────────────────────────────────
+   12. RESPONSIVE
+──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+
+  .topbar-nav {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: flex;
+  }
+
+  .page-inner {
+    padding: 14px 13px 70px;
+  }
+
+  #dayCtr {
+    display: none;
+  }
+
+  .lib-subnav {
+    padding: 0 13px;
+  }
+
+  .lib-tab {
+    padding: 10px 11px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .vid-grid {
+    grid-template-columns: 1fr;
+  }
+}
