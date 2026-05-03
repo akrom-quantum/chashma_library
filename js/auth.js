@@ -1,163 +1,263 @@
 /* ============================================================
-   auth-fix.css — paste these overrides at the END of layout.css
-   or add as a separate <link> after layout.css in index.html
+   auth.js — Chashma: The Archive
    ============================================================ */
 
-/* Auth screen — always on top, always interactive */
-#authScreen {
-  position:        fixed;
-  inset:           0;
-  z-index:         9000;
-  pointer-events:  all;
-  display:         flex;          /* flex when visible */
-  align-items:     center;
-  justify-content: center;
-  background:      var(--pri-2);
-  padding:         24px 16px;
-}
+(() => {
+  const $ = id => document.getElementById(id);
 
-/* When hidden attribute is set, override display */
-#authScreen[hidden] {
-  display: none !important;
-}
+  /* ── Show / Hide (HTML attribute, not class) ─────────────── */
+  function show(id) { const el = $(id); if (el) { el.removeAttribute('hidden'); el.style.display = ''; } }
+  function hide(id) { const el = $(id); if (el) { el.setAttribute('hidden', ''); el.style.display = 'none'; } }
 
-/* Auth panels — hidden by default, shown when .active */
-.auth-panel {
-  display: none;
-}
+  /* ── Initial state ───────────────────────────────────────── */
+  hide('authScreen');
+  hide('appShell');
+  show('loadingScreen');
 
-.auth-panel.active {
-  display: block;
-}
+  /* ── Tab switching ───────────────────────────────────────── */
+  function setTab(tab) {
+    document.querySelectorAll('[data-auth]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.auth === tab);
+    });
+    $('panelSignin')?.classList.toggle('active', tab === 'signin');
+    $('panelSignup')?.classList.toggle('active', tab === 'signup');
+  }
 
-/* Auth tabs — active state */
-.auth-tab.active {
-  color:      #ecfdf5;
-  background: rgba(255, 255, 255, .08);
-  border-bottom: 2px solid #6ee7b7;
-}
+  document.querySelectorAll('[data-auth]').forEach(btn => {
+    btn.addEventListener('click', () => setTab(btn.dataset.auth));
+  });
 
-/* Inputs — ensure clickable, visible, full width */
-.auth-panel input {
-  display:       block;
-  width:         100%;
-  background:    rgba(255, 255, 255, .10);
-  border:        1px solid rgba(255, 255, 255, .18);
-  border-radius: 8px;
-  padding:       11px 14px;
-  color:         #ecfdf5;
-  font-size:     0.9rem;
-  margin-bottom: 11px;
-  outline:       none;
-  pointer-events: all;
-  cursor:        text;
-  transition:    border-color .15s ease, box-shadow .15s ease;
-  -webkit-appearance: none;
-}
+  setTab('signin'); // default
 
-.auth-panel input::placeholder {
-  color: rgba(209, 250, 229, .45);
-}
+  /* ── Errors ──────────────────────────────────────────────── */
+  const ERRORS = {
+    'auth/user-not-found':       'No account with this email.',
+    'auth/wrong-password':       'Wrong password.',
+    'auth/invalid-email':        'Invalid email.',
+    'auth/too-many-requests':    'Too many attempts. Try again later.',
+    'auth/invalid-credential':   'Incorrect email or password.',
+    'auth/email-already-in-use': 'Account already exists.',
+    'auth/weak-password':        'Password must be at least 6 characters.',
+    'fill':                      'Please fill in all fields.',
+  };
 
-.auth-panel input:focus {
-  border-color: #6ee7b7;
-  box-shadow:   0 0 0 3px rgba(110, 231, 183, .2);
-}
+  function showErr(elId, code) {
+    const el = $(elId);
+    if (el) el.textContent = ERRORS[code] || 'Something went wrong.';
+  }
+  function clearErr(elId) {
+    const el = $(elId); if (el) el.textContent = '';
+  }
 
-/* Buttons inside auth */
-.auth-panel button {
-  display:        block;
-  width:          100%;
-  padding:        11px;
-  border-radius:  8px;
-  font-size:      0.78rem;
-  font-weight:    700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  cursor:         pointer;
-  margin-bottom:  10px;
-  transition:     opacity .15s ease, transform .15s ease;
-}
+  /* ── Email Sign In ───────────────────────────────────────── */
+  $('btnSignIn')?.addEventListener('click', async () => {
+    clearErr('siErr');
+    const email = $('siEmail')?.value.trim();
+    const pass  = $('siPass')?.value;
+    if (!email || !pass) { showErr('siErr', 'fill'); return; }
+    try {
+      await window.auth.signInWithEmailAndPassword(email, pass);
+    } catch (err) { showErr('siErr', err.code); }
+  });
 
-.auth-panel button:hover {
-  opacity:   .9;
-  transform: translateY(-1px);
-}
+  /* ── Email Sign Up ───────────────────────────────────────── */
+  $('btnSignUp')?.addEventListener('click', async () => {
+    clearErr('suErr');
+    const name  = $('suName')?.value.trim();
+    const email = $('suEmail')?.value.trim();
+    const pass  = $('suPass')?.value;
+    if (!name)               { $('suErr').textContent = 'Name is required.';           return; }
+    if (!email)              { $('suErr').textContent = 'Email is required.';          return; }
+    if (!pass||pass.length<6){ $('suErr').textContent = 'Password: min 6 characters.'; return; }
+    try {
+      const cred = await window.auth.createUserWithEmailAndPassword(email, pass);
+      await cred.user.updateProfile({ displayName: name });
+    } catch (err) { showErr('suErr', err.code); }
+  });
 
-/* Primary sign in / sign up button */
-#btnSignIn,
-#btnSignUp {
-  background: #6ee7b7;
-  color:      #064e3b;
-  border:     none;
-}
+  /* ── Google — REDIRECT (no popup, works everywhere) ─────── */
+  async function googleSignIn() {
+    try {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await window.auth.signInWithRedirect(provider);
+    } catch (err) { console.error('Google redirect:', err); }
+  }
 
-/* Google buttons */
-#btnGoogle,
-#btnGoogle2 {
-  background: #ffffff;
-  color:      #1f2937;
-  border:     none;
-  display:    flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
+  $('btnGoogle')?.addEventListener('click',  googleSignIn);
+  $('btnGoogle2')?.addEventListener('click', googleSignIn);
+  window.googleSignIn = googleSignIn;
 
-/* Error text */
-.auth-err {
-  font-size:  0.72rem;
-  color:      #fca5a5;
-  min-height: 18px;
-  margin-top: -4px;
-  margin-bottom: 8px;
-}
+  // Handle return from Google redirect
+  window.auth.getRedirectResult().catch(err => console.error('Redirect result:', err));
 
-/* Auth card */
-.auth-card {
-  background:    rgba(255, 255, 255, .08);
-  border:        1px solid rgba(255, 255, 255, .12);
-  border-radius: 16px;
-  overflow:      hidden;
-  width:         100%;
-}
+  /* ── Sign Out ────────────────────────────────────────────── */
+  $('btnSignOut')?.addEventListener('click', async () => {
+    if (window.unsubs) {
+      Object.values(window.unsubs).forEach(fn => { if (typeof fn === 'function') fn(); });
+      window.unsubs = {};
+    }
+    window.closeDrops?.();
+    await window.auth.signOut();
+  });
 
-/* Auth tabs row */
-.auth-tabs {
-  display:       flex;
-  border-bottom: 1px solid rgba(255, 255, 255, .10);
-}
+  /* ── Determine Role ──────────────────────────────────────── */
+  async function determineRole(user) {
+    if (!window.OWNER) {
+      try {
+        const cfg = await window.db.collection('config').doc('app').get();
+        window.OWNER = cfg.data()?.ownerEmail || '';
+      } catch (_) {}
+    }
+    if (user.email === window.OWNER) return 'owner';
+    try {
+      const adminDoc = await window.db.collection('admins').doc(user.email).get();
+      if (adminDoc.exists) return 'admin';
+    } catch (_) {}
+    return 'reader';
+  }
 
-.auth-tab {
-  flex:           1;
-  padding:        13px 0;
-  font-size:      0.7rem;
-  font-weight:    700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color:          rgba(209, 250, 229, .5);
-  background:     none;
-  border:         none;
-  border-bottom:  2px solid transparent;
-  cursor:         pointer;
-  transition:     color .15s ease, background .15s ease;
-}
+  /* ── Auth State ──────────────────────────────────────────── */
+  window.auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.currentUser = null;
+      window.userRole    = null;
+      showAuthScreen();
+      return;
+    }
 
-/* Panel padding */
-.auth-panel {
-  padding: 22px;
-}
+    window.currentUser = user;
 
-/* Loading screen — on top until dismissed */
-#loadingScreen {
-  z-index: 8999;
-}
+    try {
+      const cfg = await window.db.collection('config').doc('app').get();
+      if (cfg.exists && cfg.data()?.ownerEmail) window.OWNER = cfg.data().ownerEmail;
+    } catch (_) {}
 
-#loadingScreen[hidden] {
-  display: none !important;
-}
+    const role = await determineRole(user);
+    window.userRole = role;
 
-/* App shell */
-#appShell[hidden] {
-  display: none !important;
-}
+    // Upsert user doc
+    const ek      = (user.email || '').replace(/\./g, '_');
+    const userRef = window.db.collection('users').doc(ek);
+    const now     = firebase.firestore.FieldValue.serverTimestamp();
+
+    try {
+      const snap = await userRef.get();
+      if (!snap.exists) {
+        await userRef.set({
+          joinedAt: now, lastSeen: now,
+          name: user.displayName || '', email: user.email || '',
+          photoURL: user.photoURL || '', role,
+        });
+        const fresh = await userRef.get();
+        window.userJoinDate = fresh.data()?.joinedAt?.toDate?.() || new Date();
+      } else {
+        await userRef.update({
+          lastSeen: now,
+          name:     user.displayName || snap.data().name     || '',
+          email:    user.email       || snap.data().email    || '',
+          photoURL: user.photoURL    || snap.data().photoURL || '',
+        });
+        window.userJoinDate = snap.data()?.joinedAt?.toDate?.() || new Date();
+      }
+    } catch (err) {
+      console.error('User doc error:', err);
+      window.userJoinDate = new Date();
+    }
+
+    showApp(user);
+    window.setupListeners?.();
+    window.loadNotifs?.();
+
+    // Access banner
+    if (role === 'reader' && !localStorage.getItem('chashma_ban_dismissed')) {
+      try {
+        const reqSnap = await window.db.collection('accessRequests')
+          .where('email', '==', user.email).where('status', '==', 'pending').get();
+        if (reqSnap.empty) show('accessBanner');
+      } catch (_) { show('accessBanner'); }
+    }
+  });
+
+  /* ── Show Auth ───────────────────────────────────────────── */
+  function showAuthScreen() {
+    hide('appShell');
+    hide('loadingScreen');
+    show('authScreen');
+    // Force clickability
+    const auth = $('authScreen');
+    if (auth) {
+      auth.style.zIndex        = '9000';
+      auth.style.pointerEvents = 'all';
+    }
+  }
+
+  /* ── Show App ────────────────────────────────────────────── */
+  function showApp(user) {
+    hide('authScreen');
+    hide('loadingScreen');
+    show('appShell');
+    $('appShell')?.classList.add('visible');
+
+    const ICON = `<span class="material-symbols-outlined">person</span>`;
+    [$('profileAv'), $('ddAv')].forEach(el => {
+      if (!el) return;
+      el.innerHTML = user.photoURL
+        ? `<img src="${user.photoURL}" alt="avatar" referrerpolicy="no-referrer">`
+        : ICON;
+    });
+
+    const ddName = $('ddName'); if (ddName) ddName.textContent = user.displayName || user.email || 'User';
+    const ddRole = $('ddRole'); if (ddRole) ddRole.textContent = window.userRole || 'reader';
+
+    const canEdit = window.userRole === 'owner' || window.userRole === 'admin';
+    document.querySelectorAll('.editable-only').forEach(el =>
+      el.classList.toggle('hidden', !canEdit)
+    );
+
+    const ownerSet  = $('ownerSet');  if (ownerSet)  ownerSet.style.display  = window.userRole === 'owner'  ? '' : 'none';
+    const readerSet = $('readerSet'); if (readerSet) readerSet.style.display = window.userRole === 'reader' ? '' : 'none';
+    if (window.userRole === 'reader') window.setupReaderSettings?.();
+
+    updateDayCtr();
+    window.switchTab?.('home');
+  }
+
+  /* ── Day Counter ─────────────────────────────────────────── */
+  function updateDayCtr() {
+    const joined = window.userJoinDate;
+    if (!joined) return;
+    const days   = Math.floor((Date.now() - joined.getTime()) / 86_400_000);
+    const dayNum = $('dayNum'); if (dayNum) dayNum.textContent = days;
+    const ddStreak = $('ddStreak');
+    if (ddStreak) ddStreak.innerHTML =
+      `<span class="material-symbols-outlined">local_fire_department</span>` +
+      `<span>${days} day${days !== 1 ? 's' : ''}</span>`;
+  }
+
+  /* ── Access Banner ───────────────────────────────────────── */
+  $('btnBanDis')?.addEventListener('click', () => {
+    hide('accessBanner');
+    localStorage.setItem('chashma_ban_dismissed', '1');
+  });
+
+  $('btnBanReq')?.addEventListener('click', async () => {
+    hide('accessBanner');
+    const user = window.currentUser;
+    if (!user) return;
+    try {
+      await window.db.collection('accessRequests').add({
+        uid: user.uid, name: user.displayName || '',
+        email: user.email || '', photoURL: user.photoURL || '',
+        status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      window.showToast?.('Access request sent!');
+    } catch (_) { window.showToast?.('Failed to send request.', 'err'); }
+  });
+
+  /* ── Exports ─────────────────────────────────────────────── */
+  window.showAuth     = showAuthScreen;
+  window.showApp      = showApp;
+  window.updateDayCtr = updateDayCtr;
+
+})();
