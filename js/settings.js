@@ -37,24 +37,27 @@
     ];
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // THEME
-  // ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════════════════
+function applyTheme(t) {
+  const theme = (t === 'dark') ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('ch_theme', theme); } catch(e) {}
+  const icon = theme === 'dark' ? '☀️' : '🌙';
+  document.querySelectorAll('#themeBtn, #setThemeBtn').forEach(btn => {
+    if (btn) btn.textContent = icon;
+  });
+}
 
-  function applyTheme(t) {
-    const theme = (t === 'dark') ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
-    U.lsS('ch_theme', theme);
+// Init theme immediately — no Utils dependency, read localStorage directly
+(function() {
+  var saved;
+  try { saved = localStorage.getItem('ch_theme'); } catch(e) {}
+  applyTheme(saved || 'light');
+})();
 
-    const icon = theme === 'dark' ? '☀️' : '🌙';
-    document.querySelectorAll('#themeBtn, #setThemeBtn').forEach(btn => {
-      if (btn) btn.textContent = icon;
-    });
-  }
-
-  // Init theme immediately
-  applyTheme(U.lsG('ch_theme') || 'light');
-
+   
   // ═══════════════════════════════════════════════════════════════════════════
   // TOAST
   // ═══════════════════════════════════════════════════════════════════════════
