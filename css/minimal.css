@@ -329,20 +329,20 @@
 
 /* Profile avatar */
 #profileAv {
-  width:         30px;
-  height:        30px;
-  border-radius: var(--r-sm);
-  border:        1px solid var(--rule);
-  background:    var(--bg-2);
+  width:         31px;
+  height:        31px;
+  border-radius: 50%;
+  border:        2px solid var(--pri-pale);
+  background:    var(--sec-cont);
   cursor:        pointer;
   overflow:      hidden;
   flex-shrink:   0;
   transition:    border-color var(--t-fast);
 }
 
-#profileAv:hover { border-color: var(--ink-3); }
-#profileAv img { width: 100%; height: 100%; object-fit: cover; }
-
+#profileAv:hover {
+  border-color: var(--pri);
+}
 
 /* ─────────────────────────────────────────────────────────────
    DROPDOWNS
