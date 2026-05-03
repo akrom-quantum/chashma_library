@@ -6,8 +6,11 @@
 
 (() => {
   /* ── Initial loading state ───────────────────────────────── */
-  document.getElementById('authScreen')?.classList.add('hidden');
-  document.getElementById('loadingScreen')?.classList.remove('hidden');
+  //document.getElementById('authScreen')?.classList.add('hidden');
+  //document.getElementById('loadingScreen')?.classList.remove('hidden');
+   
+// loadingScreen has no 'hidden' attr in HTML, so just leave it visible
+// authScreen already has 'hidden' attr set in HTML — nothing to do here
 
   /* ── Helpers (local shortcuts) ───────────────────────────── */
   const $   = id => document.getElementById(id);
@@ -24,10 +27,14 @@
       document.querySelectorAll('[data-auth]').forEach(b =>
         b.classList.toggle('active', b.dataset.auth === target)
       );
-      $('panelSignin')?.classList.toggle('hidden', target !== 'signin');
-      $('panelSignup')?.classList.toggle('hidden', target !== 'signup');
+      $('panelSignin')?.classList.toggle('hidden', target === 'signin');
+      $('panelSignup')?.classList.toggle('hidden', target === 'signup');
     });
   });
+
+   // Set Sign In as default active tab + panel
+   document.querySelector('[data-auth="signin"]')?.classList.add('active');
+   $('panelSignin')?.classList.add('active');
 
   /* ── 2. SIGN IN ──────────────────────────────────────────── */
   const SIGNIN_ERRORS = {
@@ -224,16 +231,18 @@
 
   /* ── 8. SHOW AUTH ────────────────────────────────────────── */
   function showAuth() {
-    $('authScreen')?.classList.remove('hidden');
-    $('loadingScreen')?.classList.add('hidden');
-    $('appShell')?.classList.remove('visible');
-  }
+  $('authScreen')?.removeAttribute('hidden');
+  $('loadingScreen')?.setAttribute('hidden', '');
+  $('appShell')?.setAttribute('hidden', '');
+  $('appShell')?.classList.remove('visible');
+  }  
 
   /* ── 9. SHOW APP ─────────────────────────────────────────── */
   function showApp(user) {
-    $('authScreen')?.classList.add('hidden');
-    $('loadingScreen')?.classList.add('hidden');
-    $('appShell')?.classList.add('visible');
+  $('authScreen')?.setAttribute('hidden', '');
+  $('loadingScreen')?.setAttribute('hidden', '');
+  $('appShell')?.removeAttribute('hidden');
+  $('appShell')?.classList.add('visible');
 
     const PERSON_ICON = `<span class="material-symbols-outlined">person</span>`;
     [$('profileAv'), $('ddAv')].forEach(el => {
