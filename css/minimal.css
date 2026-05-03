@@ -541,8 +541,8 @@
 .page { display: none; }
 .page.active {
   display:    block;
-  padding:    32px 32px 100px;
-  max-width:  1000px;
+  padding:    20px 20px 80px;
+  max-width:  960px;
   margin:     0 auto;
   animation:  fadeUp .2s ease both;
 }
@@ -555,28 +555,28 @@
 }
 
 #page-library .lib-subnav {
-  margin-left:  -32px;
-  margin-right: -32px;
+  margin-left:  -20px;
+  margin-right: -20px;
 }
 
 #page-library .lib-sub.active {
-  padding:   24px 32px 100px;
-  max-width: 1000px;
+  padding:   16px 20px 80px;
+  max-width: 1280px;
   margin:    0 auto;
 }
 
 @media (max-width: 900px) {
-  #page-library .lib-subnav { margin-left: -20px; margin-right: -20px; }
-  #page-library .lib-sub.active { padding: 20px 20px 80px; }
+  #page-library .lib-subnav { margin-left: -16px; margin-right: -16px; }
+  #page-library .lib-sub.active { padding: 14px 16px 80px; }
 }
 
 @media (max-width: 600px) {
-  #page-library .lib-subnav { margin-left: -14px; margin-right: -14px; }
-  #page-library .lib-sub.active { padding: 14px 14px 80px; }
+  #page-library .lib-subnav { margin-left: -12px; margin-right: -12px; }
+  #page-library .lib-sub.active { padding: 12px 12px 80px; }
 }
 
-@media (max-width: 900px) { .page.active { padding: 20px 20px 80px; } }
-@media (max-width: 600px) { .page.active { padding: 14px 14px 80px; } }
+@media (max-width: 900px) { .page.active { padding: 16px 16px 80px; } }
+@media (max-width: 600px) { .page.active { padding: 12px 12px 80px; } }
 
 
 /* ─────────────────────────────────────────────────────────────
@@ -1159,25 +1159,81 @@
 
 .vid-grid, .lib-grid {
   display:               grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap:                   12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap:                   16px;
+}
+
+@media (max-width: 600px) {
+  .vid-grid { grid-template-columns: 1fr; }
 }
 
 .vid-card {
-  border:        1px solid var(--rule);
+  background:    var(--card);
   border-radius: var(--r-lg);
   overflow:      hidden;
-  transition:    border-color var(--t-base), box-shadow var(--t-base);
+  transition:    box-shadow var(--t-base), transform var(--t-base);
   animation:     fadeUp .2s ease both;
 }
 
-.vid-card:hover { border-color: var(--ink-3); box-shadow: var(--sh-sm); }
+.vid-card:hover { box-shadow: var(--sh-md); transform: translateY(-2px); }
+
+/* 16:9 thumbnail */
+.vid-thumb {
+  display:         block;
+  width:           100%;
+  aspect-ratio:    16 / 9;
+  overflow:        hidden;
+  background:      #000;
+  position:        relative;
+  text-decoration: none;
+}
+
+.vid-thumb img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  display:    block;
+  transition: transform .3s ease;
+}
+
+.vid-card:hover .vid-thumb img { transform: scale(1.03); }
+
+.vid-play-icon {
+  position:        absolute;
+  inset:           0;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      rgba(0,0,0,0);
+  transition:      background .2s;
+  color:           #fff;
+  opacity:         0;
+}
+
+.vid-card:hover .vid-play-icon {
+  background: rgba(0,0,0,.35);
+  opacity:    1;
+}
+
+.vid-play-icon .material-symbols-outlined { font-size: 48px; }
+
+.vid-thumb-placeholder {
+  width:           100%;
+  height:          100%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--bg-3);
+  color:           var(--ink-4);
+}
+
+.vid-thumb-placeholder .material-symbols-outlined { font-size: 40px; }
 
 .vid-channel { font-size: 0.58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
-.vid-title   { font-family: 'Newsreader', Georgia, serif; font-size: 0.92rem; font-weight: 600; color: var(--ink); line-height: 1.35; margin-bottom: 6px; cursor: pointer; }
+.vid-title   { font-size: 0.88rem; font-weight: 600; color: var(--ink); line-height: 1.4; margin-bottom: 4px; }
 .vid-title:hover { color: var(--pri); }
 
-.vid-info { padding: 12px 14px 10px; }
+.vid-info { padding: 10px 12px 8px; }
 
 .vid-person {
   font-size:     0.56rem; font-weight: 700;

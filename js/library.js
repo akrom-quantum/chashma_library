@@ -107,8 +107,8 @@
   /* ── YouTube thumbnail ───────────────────────────────────── */
   function ytThumb(url) {
     if (!url) return '';
-    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-    return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : '';
+    const m = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
+    return m ? `https://img.youtube.com/vi/${m[1]}/mqdefault.jpg` : '';
   }
 
   /* ── Tag strip builder ───────────────────────────────────── */
@@ -251,8 +251,8 @@
         <p class="txt-title">${esc(t.title)}</p>
         ${(t.tags??[]).length ? `<div class="txt-tags">${(t.tags??[]).map(tag=>`<span class="tag-chip">${esc(tag)}</span>`).join('')}</div>` : ''}
         <div class="card-actions">
-          ${t.link ? `<button class="act-btn" title="Open source" data-act="link">
-            <span class="material-symbols-outlined">open_in_new</span></button>` : ''}
+          ${t.link ? `<a class="act-btn" href="${esc(t.link)}" target="_blank" rel="noopener noreferrer" title="Open source" data-act="link">
+            <span class="material-symbols-outlined">open_in_new</span></a>` : ''}
           <button class="act-btn ${t.notes?'':'dim'}" title="Notes" data-act="notes">
             <span class="material-symbols-outlined">description</span></button>
           <button class="act-btn read-toggle" title="${read?'Mark unread':'Mark read'}" data-act="read">
@@ -271,9 +271,9 @@
     card.addEventListener('click', e => {
       const btn = e.target.closest('[data-act]');
       if (!btn) return;
-      e.stopPropagation();
       const act = btn.dataset.act;
-      if (act === 'link')  { window.open(t.link,'_blank'); window.logAct?.('texts',t.id,'link'); }
+      if (act === 'link')  { window.logAct?.('texts',t.id,'link'); return; } // anchor handles navigation
+      e.stopPropagation();
       if (act === 'notes') { t.notes ? openMdViewer(t.id) : null; }
       if (act === 'read')  { toggleRead(t.id,'texts'); }
       if (act === 'rate')  { openRateModal(t.id,'texts'); }
@@ -434,11 +434,12 @@ ${mdHtmlCache}
     card.dataset.id = v.id;
 
     card.innerHTML = `
-      <div class="vid-thumb" role="button" tabindex="0">
+      <a class="vid-thumb" href="${esc(v.link||'#')}" target="_blank" rel="noopener noreferrer" tabindex="0">
         ${thumb
-          ? `<img src="${esc(thumb)}" alt="${esc(v.title)}" loading="lazy">`
+          ? `<img src="${esc(thumb)}" alt="${esc(v.title)}">`
           : `<div class="vid-thumb-placeholder"><span class="material-symbols-outlined">play_circle</span></div>`}
-      </div>
+        <div class="vid-play-icon"><span class="material-symbols-outlined">play_circle</span></div>
+      </a>
       <div class="vid-info">
         <p class="vid-title">${esc(v.title)}</p>
         ${v.channel ? `<span class="vid-channel">${esc(v.channel)}</span>` : ''}
@@ -458,18 +459,9 @@ ${mdHtmlCache}
         </div>
       </div>`;
 
+    // Log watch when thumbnail link is clicked
     qs('.vid-thumb', card).addEventListener('click', () => {
-      if (v.link) {
-        window.open(v.link,'_blank');
-        window.logAct?.('videos',v.id,'watch');
-        // Prompt rate after watching
-        setTimeout(() => { if (!myRating(v)) openRateModal(v.id,'videos'); }, 1500);
-      }
-    });
-
-    qs('.vid-title', card).addEventListener('click', e => {
-      e.stopPropagation();
-      openDetail(v.id,'videos');
+      window.logAct?.('videos', v.id, 'watch');
     });
 
     card.addEventListener('click', e => {
