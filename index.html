@@ -401,7 +401,7 @@
   ════════════════════════════════════════════ -->
 
   <!-- Add / Edit Text -->
-  <div id="ov-text" class="modal-ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-text-title">
+  <div id="ov-text" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="ov-text-title">
     <div class="modal">
       <div class="mhead">
         <span id="ov-text-title">Add Text</span>
@@ -430,7 +430,7 @@
   </div><!-- /#ov-text -->
 
   <!-- Add / Edit Video -->
-  <div id="ov-video" class="modal-ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-video-title">
+  <div id="ov-video" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="ov-video-title">
     <div class="modal">
       <div class="mhead">
         <span id="ov-video-title">Add Video</span>
@@ -456,7 +456,7 @@
   </div><!-- /#ov-video -->
 
   <!-- Add / Edit Mental Model -->
-  <div id="ov-model" class="modal-ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-model-title">
+  <div id="ov-model" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="ov-model-title">
     <div class="modal">
       <div class="mhead">
         <span id="ov-model-title">Add Mental Model</span>
@@ -481,26 +481,40 @@
   </div><!-- /#ov-model -->
 
   <!-- Star Rating Modal -->
-  <div id="ov-rate" class="modal-ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-rate-title">
+  <div id="ov-rate" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="ov-rate-title">
     <div class="modal">
       <div class="mhead">
         <span id="ov-rate-title">Rate</span>
         <button class="modal-close" aria-label="Close">&times;</button>
       </div>
-      <div class="mbody"></div>
+      <div class="mbody">
+        <p id="ratePrompt" style="font-size:0.85rem;font-style:italic;color:var(--ink-2);margin-bottom:16px;"></p>
+        <div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;">
+          <button class="star-btn" data-value="1">★</button>
+          <button class="star-btn" data-value="2">★</button>
+          <button class="star-btn" data-value="3">★</button>
+          <button class="star-btn" data-value="4">★</button>
+          <button class="star-btn" data-value="5">★</button>
+        </div>
+      </div>
       <div class="mfoot"></div>
     </div>
   </div><!-- /#ov-rate -->
 
   <!-- Read Again Confirmation Modal -->
-  <div id="ov-ra" class="modal-ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-ra-title">
+  <div id="ov-ra" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="ov-ra-title">
     <div class="modal">
       <div class="mhead">
         <span id="ov-ra-title">Read Again?</span>
         <button class="modal-close" aria-label="Close">&times;</button>
       </div>
-      <div class="mbody"></div>
-      <div class="mfoot"></div>
+      <div class="mbody">
+        <p style="font-size:0.85rem;color:var(--ink-2);">You've read this <strong id="raCount">1</strong> time(s). Log another read?</p>
+      </div>
+      <div class="mfoot">
+        <button class="btn btn-ghost" id="raNo">No</button>
+        <button class="btn btn-pri"   id="raYes">Yes, log read</button>
+      </div>
     </div>
   </div><!-- /#ov-ra -->
 

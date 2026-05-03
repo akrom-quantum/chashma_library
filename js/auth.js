@@ -140,33 +140,36 @@
     const userRef = window.db.collection('users').doc(ek);
     const now     = firebase.firestore.FieldValue.serverTimestamp();
 
-    try {
-      const snap = await userRef.get();
+    // Show app immediately — don't wait for user doc upsert
+    showApp(user);
+    window.setupListeners?.();
+    window.loadNotifs?.();
+
+    // User doc upsert in background (non-blocking)
+    userRef.get().then(snap => {
       if (!snap.exists) {
-        await userRef.set({
+        return userRef.set({
           joinedAt: now, lastSeen: now,
           name: user.displayName || '', email: user.email || '',
           photoURL: user.photoURL || '', role,
+        }).then(() => userRef.get()).then(fresh => {
+          window.userJoinDate = fresh.data()?.joinedAt?.toDate?.() || new Date();
+          window.updateDayCtr?.();
         });
-        const fresh = await userRef.get();
-        window.userJoinDate = fresh.data()?.joinedAt?.toDate?.() || new Date();
       } else {
-        await userRef.update({
+        window.userJoinDate = snap.data()?.joinedAt?.toDate?.() || new Date();
+        window.updateDayCtr?.();
+        return userRef.update({
           lastSeen: now,
           name:     user.displayName || snap.data().name     || '',
           email:    user.email       || snap.data().email    || '',
           photoURL: user.photoURL    || snap.data().photoURL || '',
         });
-        window.userJoinDate = snap.data()?.joinedAt?.toDate?.() || new Date();
       }
-    } catch (err) {
+    }).catch(err => {
       console.error('User doc error:', err);
-      window.userJoinDate = new Date();
-    }
-
-    showApp(user);
-    window.setupListeners?.();
-    window.loadNotifs?.();
+      if (!window.userJoinDate) { window.userJoinDate = new Date(); window.updateDayCtr?.(); }
+    });
 
     // Access banner
     if (role === 'reader' && !localStorage.getItem('chashma_ban_dismissed')) {

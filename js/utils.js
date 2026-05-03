@@ -311,6 +311,16 @@ window.Utils = (() => {
       return `<blockquote>${inner}</blockquote>`;
     });
 
+    // ── Task lists (must run before unordered lists)
+    s = s.replace(/((?:^[ \t]*[-*+] \[[ xX]\] .+\n?)+)/gm, block => {
+      const items = block.trim().split('\n').map(line => {
+        const done = /^[ \t]*[-*+] \[[xX]\]/.test(line);
+        const text = line.replace(/^[ \t]*[-*+] \[[ xX]\] /, '').trim();
+        return `<li class="task-item"><input type="checkbox" class="task-cb" disabled${done?' checked':''}><span class="${done?'task-done':''}">${text}</span></li>`;
+      }).join('');
+      return `<ul style="list-style:none;padding-left:0;">${items}</ul>`;
+    });
+
     // ── Unordered lists
     s = s.replace(/((?:^[ \t]*[-*+] .+\n?)+)/gm, block => {
       const items = block.trim().split('\n').map(line =>
@@ -355,6 +365,7 @@ window.Utils = (() => {
     s = s.replace(/\*(.+?)\*/g,         '<em>$1</em>');
     s = s.replace(/~~(.+?)~~/g,          '<del>$1</del>');
     s = s.replace(/_(.+?)_/g,            '<em>$1</em>');
+    s = s.replace(/==(.+?)==/g,          '<mark>$1</mark>');
 
     // ── Restore code spans
     s = s.replace(/\x00CODE(\d+)\x00/g, (_, i) => codeStash[+i]);

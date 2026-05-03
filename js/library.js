@@ -89,71 +89,9 @@
     } catch(e) { window.showToast?.('Failed to update read status.'); }
   }
 
-  /* ── Star rating modal ───────────────────────────────────── */
+  /* ── Star rating — delegate to settings.js ──────────────── */
   function openRateModal(id, colName) {
-    const arr   = window[colName] ?? [];
-    const item  = arr.find(x => x.id === id);
-    if (!item)  return;
-    const cur   = myRating(item);
-
-    // Build modal
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay rate-overlay';
-    overlay.innerHTML = `
-      <div class="modal-box rate-box">
-        <p class="rate-title">Rate: <em>${esc(item.title)}</em></p>
-        <div class="star-row" id="starRow">
-          ${[1,2,3,4,5].map(n=>`
-            <button class="star-btn ${n<=cur?'active':''}" data-v="${n}">★</button>
-          `).join('')}
-        </div>
-        <div class="rate-actions">
-          <button class="btn-ghost" id="rateClear">Clear</button>
-          <button class="btn-pri"   id="rateSave">Save</button>
-        </div>
-      </div>`;
-
-    document.body.appendChild(overlay);
-    let selected = cur;
-
-    const stars = qsa('.star-btn', overlay);
-    stars.forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        stars.forEach(s => s.classList.toggle('active', +s.dataset.v <= +btn.dataset.v));
-      });
-      btn.addEventListener('click', () => { selected = +btn.dataset.v; });
-    });
-    overlay.querySelector('#starRow').addEventListener('mouseleave', () => {
-      stars.forEach(s => s.classList.toggle('active', +s.dataset.v <= selected));
-    });
-
-    const close = () => overlay.remove();
-    overlay.querySelector('#rateClear').addEventListener('click', async () => {
-      await _saveRating(id, colName, null);
-      close();
-    });
-    overlay.querySelector('#rateSave').addEventListener('click', async () => {
-      await _saveRating(id, colName, selected || null);
-      close();
-    });
-    overlay.addEventListener('click', e => { if (e.target===overlay) close(); });
-  }
-
-  async function _saveRating(id, colName, val) {
-    const key = myEk();
-    const update = val === null
-      ? { [`ratings.${key}`]: firebase.firestore.FieldValue.delete() }
-      : { [`ratings.${key}`]: val };
-    try {
-      await window.db.doc(`${colName}/${id}`).update(update);
-      const arr  = window[colName] ?? [];
-      const item = arr.find(x => x.id === id);
-      if (item) {
-        if (!item.ratings) item.ratings = {};
-        if (val === null) delete item.ratings[key];
-        else item.ratings[key] = val;
-      }
-    } catch(e) { window.showToast?.('Failed to save rating.'); }
+    window.openRateModal?.(id, colName);
   }
 
   /* ── Delete helper ───────────────────────────────────────── */
@@ -427,7 +365,7 @@
   function openMdViewer(id) {
     const t = (window.texts??[]).find(x=>x.id===id);
     if (!t) return;
-    const html = window.parseMd?.(t.notes ?? '') ?? `<pre>${esc(t.notes??'')}</pre>`;
+    const html = window.Utils?.parseMd(t.notes ?? '') ?? `<pre>${esc(t.notes??'')}</pre>`;
     mdHtmlCache  = html;
     mdTitleCache = t.title ?? 'Notes';
     const body = $('mdBody');
@@ -692,7 +630,7 @@ ${mdHtmlCache}
     }
 
     const html = m.content
-      ? (window.parseMdWiki?.(m.content, window.models??[]) ?? window.parseMd?.(m.content) ?? `<pre>${esc(m.content)}</pre>`)
+      ? (window.Utils?.parseMdWiki(m.content, window.models??[]) ?? window.Utils?.parseMd(m.content) ?? `<pre>${esc(m.content)}</pre>`)
       : '';
 
     const header = $('modelVHeader');
@@ -925,9 +863,9 @@ ${mdHtmlCache}
     const content = $('detContent');
     if (content) {
       if (colName==='videos' && item.summary) {
-        content.innerHTML = `<div class="md-body">${window.parseMd?.(item.summary)??esc(item.summary)}</div>`;
+        content.innerHTML = `<div class="md-body">${window.Utils?.parseMd(item.summary)??esc(item.summary)}</div>`;
       } else if (colName==='texts' && item.notes) {
-        content.innerHTML = `<div class="md-body">${window.parseMd?.(item.notes)??esc(item.notes)}</div>`;
+        content.innerHTML = `<div class="md-body">${window.Utils?.parseMd(item.notes)??esc(item.notes)}</div>`;
       } else if (colName==='memories' && item.content) {
         content.innerHTML = `<pre class="mem-content">${esc(item.content)}</pre>`;
       } else {

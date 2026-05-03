@@ -1489,6 +1489,44 @@
 
 .obs-badge { background: var(--pri-pale); color: var(--pri); border-radius: var(--r-full); display: inline-block; padding: 1px 8px; font-size: .8em; font-weight: 700; }
 
+/* Obsidian callouts */
+.callout { border-left: 3px solid var(--pri); border-radius: 0 var(--r-md) var(--r-md) 0; padding: 10px 14px; margin: 14px 0; background: var(--pri-pale); }
+.callout-note    { border-color: #3b82f6; background: #eff6ff; }
+.callout-info    { border-color: #06b6d4; background: #ecfeff; }
+.callout-tip     { border-color: #10b981; background: #ecfdf5; }
+.callout-success { border-color: #10b981; background: #ecfdf5; }
+.callout-warning { border-color: #f59e0b; background: #fffbeb; }
+.callout-caution { border-color: #f59e0b; background: #fffbeb; }
+.callout-danger  { border-color: #ef4444; background: #fef2f2; }
+.callout-failure { border-color: #ef4444; background: #fef2f2; }
+.callout-error   { border-color: #ef4444; background: #fef2f2; }
+.callout-example { border-color: #8b5cf6; background: #f5f3ff; }
+.callout-quote   { border-color: #6b7280; background: var(--bg-2); }
+.callout-abstract{ border-color: #06b6d4; background: #ecfeff; }
+.callout-summary { border-color: #06b6d4; background: #ecfeff; }
+[data-theme="dark"] .callout-note    { background: rgba(59,130,246,.12); }
+[data-theme="dark"] .callout-tip,
+[data-theme="dark"] .callout-success { background: rgba(16,185,129,.12); }
+[data-theme="dark"] .callout-warning { background: rgba(245,158,11,.12); }
+[data-theme="dark"] .callout-danger,
+[data-theme="dark"] .callout-error   { background: rgba(239,68,68,.12); }
+[data-theme="dark"] .callout-example { background: rgba(139,92,246,.12); }
+[data-theme="dark"] .callout-quote   { background: var(--bg-3); }
+
+/* Obsidian highlight ==text== */
+.md-body mark { background: #fef08a; color: #713f12; border-radius: 2px; padding: 1px 3px; }
+[data-theme="dark"] .md-body mark { background: #713f12; color: #fef08a; }
+
+/* Task lists */
+.md-body .task-item { list-style: none; display: flex; align-items: flex-start; gap: 6px; }
+.md-body .task-cb   { margin-top: 3px; flex-shrink: 0; accent-color: var(--pri); }
+.md-body .task-done { text-decoration: line-through; color: var(--ink-4); }
+
+/* Star rating buttons */
+.star-btn { font-size: 1.6rem; color: var(--ink-4); background: none; border: none; cursor: pointer; transition: color .15s, transform .1s; line-height: 1; padding: 2px; }
+.star-btn.active, .star-btn.hover { color: #f59e0b; }
+.star-btn:hover { transform: scale(1.15); }
+
 
 /* ─────────────────────────────────────────────────────────────
    INSIGHTS
