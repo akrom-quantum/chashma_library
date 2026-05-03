@@ -356,14 +356,43 @@
   <div id="memWriter" hidden aria-label="Memory writer" role="dialog" aria-modal="true"></div>
 
   <!-- Markdown Viewer Overlay -->
-  <div id="mdViewer" hidden aria-label="Markdown viewer" role="dialog" aria-modal="true"></div>
+  <div id="mdViewer" aria-label="Markdown viewer" role="dialog" aria-modal="true">
+    <header class="overlay-topbar">
+      <button class="btn-back" id="btnMdBack">
+        <span class="material-symbols-outlined">arrow_back</span>Back
+      </button>
+      <span id="mdTitle" class="overlay-title"></span>
+      <button class="act-btn" id="btnDlHtml" title="Download as HTML">
+        <span class="material-symbols-outlined">download</span>
+      </button>
+    </header>
+    <div id="mdBody" class="overlay-body md-body"></div>
+  </div>
 
   <!-- Detail Overlay (videos / texts / memories) -->
-  <div id="detOverlay" hidden aria-label="Detail view" role="dialog" aria-modal="true"></div>
+  <div id="detOverlay" aria-label="Detail view" role="dialog" aria-modal="true">
+    <header class="overlay-topbar">
+      <button class="btn-back" id="btnDetBack">
+        <span class="material-symbols-outlined">arrow_back</span>Back
+      </button>
+      <div id="detHeader" style="flex:1;overflow:hidden;padding:0 8px;"></div>
+      <div id="detActs" style="display:flex;gap:4px;flex-shrink:0;"></div>
+    </header>
+    <div id="detStats" style="padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--rule);font-size:0.68rem;"></div>
+    <div id="detContent" class="overlay-body"></div>
+  </div>
 
   <!-- Mental Model Viewer -->
-  <div id="modelViewer" hidden aria-label="Mental model viewer" role="dialog" aria-modal="true">
-    <nav id="modelNav" class="model-breadcrumb" aria-label="Model navigation"></nav>
+  <div id="modelViewer" aria-label="Mental model viewer" role="dialog" aria-modal="true">
+    <header class="overlay-topbar">
+      <button class="btn-back" id="btnModelBack">
+        <span class="material-symbols-outlined">arrow_back</span>Back
+      </button>
+      <div id="modelVHeader" style="flex:1;overflow:hidden;"></div>
+      <div id="modelVActs" style="flex-shrink:0;"></div>
+    </header>
+    <nav id="modelNav" class="model-breadcrumb hidden" aria-label="Model navigation"></nav>
+    <div id="modelVBody" class="overlay-body md-body"></div>
   </div>
 
 
@@ -385,13 +414,18 @@
         <input type="text"   id="tTitle"  placeholder="Title" />
         <input type="url"    id="tLink"   placeholder="Link" />
         <select id="tPlat">
-          <option value="">Platform…</option>
+          <option value="article">Article</option>
+          <option value="essay">Essay</option>
+          <option value="substack">Substack</option>
+          <option value="twitter">Twitter</option>
         </select>
         <input type="text" id="tSeries" placeholder="Series" />
         <input type="text" id="tTags"   placeholder="Tags (comma-separated)" />
         <textarea id="tNotes" placeholder="Notes…"></textarea>
       </div>
-      <div class="mfoot"></div>
+      <div class="mfoot">
+        <button class="btn btn-pri" id="btnSaveTxt">Save</button>
+      </div>
     </div>
   </div><!-- /#ov-text -->
 
@@ -407,6 +441,7 @@
         <div id="vThumbWrap">
           <img id="vThumbPrev" src="" alt="Thumbnail preview" />
         </div>
+        <input type="hidden" id="vThumb" />
         <input type="text" id="vTitle"   placeholder="Title" />
         <input type="text" id="vChannel" placeholder="Channel" />
         <input type="text" id="vPersons" placeholder="Persons featured" />
@@ -414,7 +449,9 @@
         <textarea id="vSummary" placeholder="Summary…"></textarea>
         <input type="text" id="vTags"    placeholder="Tags (comma-separated)" />
       </div>
-      <div class="mfoot"></div>
+      <div class="mfoot">
+        <button class="btn btn-pri" id="btnSaveVid">Save</button>
+      </div>
     </div>
   </div><!-- /#ov-video -->
 
@@ -437,7 +474,9 @@
         </select>
         <textarea id="mContent" placeholder="Model content (Markdown)…"></textarea>
       </div>
-      <div class="mfoot"></div>
+      <div class="mfoot">
+        <button class="btn btn-pri" id="btnSaveModel">Save</button>
+      </div>
     </div>
   </div><!-- /#ov-model -->
 

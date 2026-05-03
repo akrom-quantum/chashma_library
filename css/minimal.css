@@ -1034,16 +1034,18 @@
 
 .txt-card:hover .item-order { color: var(--pri); }
 
+.txt-body { flex: 1; min-width: 0; }
+
 .txt-title {
   font-family:   'Newsreader', Georgia, serif;
-  font-size:     1.05rem;
+  font-size:     1.18rem;
   font-weight:   600;
   color:         var(--ink);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   line-height:   1.35;
 }
 
-.txt-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.txt-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
 .txt-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
 
 /* Platform badges */

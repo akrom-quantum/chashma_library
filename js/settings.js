@@ -69,7 +69,7 @@
   }
 
   function _bindModals() {
-    document.querySelectorAll('[id^="close"][id$="M"], [id^="cancel"][id$="M"]')
+    document.querySelectorAll('[id^="close"][id$="M"], [id^="cancel"][id$="M"], .modal-close')
       .forEach(btn => {
         btn.addEventListener('click', () => {
           const ov = btn.closest('.modal-ov, .overlay');

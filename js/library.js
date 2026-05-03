@@ -68,14 +68,21 @@
     const key  = myEk();
     const cur  = item.readCounts?.[key] ?? 0;
     const next = cur > 0 ? 0 : 1;
+    const today = todayStr();
+    const update = { [`readCounts.${key}`]: next };
+    if (next > 0) {
+      update[`readDates.${key}.${today}`] = firebase.firestore.FieldValue.increment(1);
+    }
     try {
-      await window.db.doc(`${colName}/${id}`).update({
-        [`readCounts.${key}`]: next,
-      });
+      await window.db.doc(`${colName}/${id}`).update(update);
       if (!item.readCounts) item.readCounts = {};
       item.readCounts[key] = next;
+      if (next > 0) {
+        if (!item.readDates) item.readDates = {};
+        if (!item.readDates[key]) item.readDates[key] = {};
+        item.readDates[key][today] = (item.readDates[key][today] ?? 0) + 1;
+      }
       window.logAct?.(colName, id, next > 0 ? 'read' : 'unread');
-      // Re-render whichever section owns this collection
       if (colName === 'texts')   renderTexts();
       if (colName === 'videos')  renderVideos();
       if (colName === 'models')  renderModels();
@@ -298,28 +305,28 @@
 
     card.innerHTML = `
       <span class="item-order">${esc(orderLbl)}</span>
-      <div class="txt-meta">
-        <span class="type-badge ${esc(pm.cls)}">${esc(pm.label)}</span>
-        ${t.author ? `<span class="author-badge">${esc(t.author)}</span>` : ''}
-        ${(t.tags??[]).map(tag=>`<span class="tag-chip">${esc(tag)}</span>`).join('')}
-      </div>
-      <p class="txt-title">${esc(t.title)}</p>
-      <div class="card-actions">
-        ${t.link ? `<button class="act-btn" title="Open source" data-act="link">
-          <span class="material-symbols-outlined">open_in_new</span></button>` : ''}
-        <button class="act-btn ${t.notes?'':'dim'}" title="Notes" data-act="notes">
-          <span class="material-symbols-outlined">description</span></button>
-        <button class="act-btn read-toggle" title="${read?'Mark unread':'Mark read'}" data-act="read">
-          <span class="material-symbols-outlined">${read?'check_circle':'radio_button_unchecked'}</span>
-        </button>
-        <button class="act-btn" title="Rate" data-act="rate">
-          <span class="material-symbols-outlined">star</span></button>
-        ${isOwner() ? `<button class="act-btn" title="${t.hidden?'Show':'Hide'}" data-act="hide">
-          <span class="material-symbols-outlined">${t.hidden?'visibility':'visibility_off'}</span></button>` : ''}
-        ${isEdit()  ? `<button class="act-btn" title="Edit" data-act="edit">
-          <span class="material-symbols-outlined">edit</span></button>` : ''}
-        ${isOwner() ? `<button class="act-btn danger" title="Delete" data-act="del">
-          <span class="material-symbols-outlined">delete</span></button>` : ''}
+      <div class="txt-body">
+        <div class="txt-meta">
+          <span class="type-badge ${esc(pm.cls)}">${esc(pm.label)}</span>
+          ${t.author ? `<span class="author-badge">${esc(t.author)}</span>` : ''}
+        </div>
+        <p class="txt-title">${esc(t.title)}</p>
+        ${(t.tags??[]).length ? `<div class="txt-tags">${(t.tags??[]).map(tag=>`<span class="tag-chip">${esc(tag)}</span>`).join('')}</div>` : ''}
+        <div class="card-actions">
+          ${t.link ? `<button class="act-btn" title="Open source" data-act="link">
+            <span class="material-symbols-outlined">open_in_new</span></button>` : ''}
+          <button class="act-btn ${t.notes?'':'dim'}" title="Notes" data-act="notes">
+            <span class="material-symbols-outlined">description</span></button>
+          <button class="act-btn read-toggle" title="${read?'Mark unread':'Mark read'}" data-act="read">
+            <span class="material-symbols-outlined">${read?'check_circle':'radio_button_unchecked'}</span>
+          </button>
+          <button class="act-btn" title="Rate" data-act="rate">
+            <span class="material-symbols-outlined">star</span></button>
+          ${isEdit()  ? `<button class="act-btn" title="Edit" data-act="edit">
+            <span class="material-symbols-outlined">edit</span></button>` : ''}
+          ${isOwner() ? `<button class="act-btn danger" title="Delete" data-act="del">
+            <span class="material-symbols-outlined">delete</span></button>` : ''}
+        </div>
       </div>`;
 
     // Action handlers
@@ -364,14 +371,14 @@
   function openAddTxt() {
     editTxtId = null;
     _fillTxtModal({});
-    window.openModal?.('txtModal');
+    window.openModal?.('ov-text');
   }
   function openEditTxt(id) {
     editTxtId = id;
     const t = (window.texts??[]).find(x=>x.id===id);
     if (!t) return;
     _fillTxtModal(t);
-    window.openModal?.('txtModal');
+    window.openModal?.('ov-text');
   }
   function _fillTxtModal(t) {
     _v('tDate',   t.date   ?? todayStr());
@@ -409,7 +416,7 @@
         const ref = await window.db.collection('texts').add(data);
         (window.texts = window.texts??[]).push({ id: ref.id, ...data });
       }
-      window.closeModal?.('txtModal');
+      window.closeModal?.('ov-text');
       renderTexts();
     } catch(e) { window.showToast?.('Save failed.'); }
   }
@@ -545,14 +552,14 @@ ${mdHtmlCache}
   function openAddVid() {
     editVidId = null;
     _fillVidModal({});
-    window.openModal?.('vidModal');
+    window.openModal?.('ov-video');
   }
   function openEditVid(id) {
     editVidId = id;
     const v = (window.videos??[]).find(x=>x.id===id);
     if (!v) return;
     _fillVidModal(v);
-    window.openModal?.('vidModal');
+    window.openModal?.('ov-video');
   }
   function _fillVidModal(v) {
     _v('vLink',    v.link    ?? '');
@@ -595,7 +602,7 @@ ${mdHtmlCache}
         const ref=await window.db.collection('videos').add(data);
         (window.videos=window.videos??[]).push({id:ref.id,...data});
       }
-      window.closeModal?.('vidModal');
+      window.closeModal?.('ov-video');
       renderVideos();
     } catch(e) { window.showToast?.('Save failed.'); }
   }
@@ -765,14 +772,14 @@ ${mdHtmlCache}
     editModelId = null;
     const maxOrder = Math.max(0, ...(window.models??[]).map(m=>m.order??0));
     _fillModelModal({ order: maxOrder+1 });
-    window.openModal?.('modelModal');
+    window.openModal?.('ov-model');
   }
   function openEditModel(id) {
     editModelId = id;
     const m = (window.models??[]).find(x=>x.id===id);
     if (!m) return;
     _fillModelModal(m);
-    window.openModal?.('modelModal');
+    window.openModal?.('ov-model');
   }
   function _fillModelModal(m) {
     _v('mOrder',  m.order ?? '');
@@ -818,7 +825,7 @@ ${mdHtmlCache}
         const ref=await window.db.collection('models').add(data);
         (window.models=window.models??[]).push({id:ref.id,...data});
       }
-      window.closeModal?.('modelModal');
+      window.closeModal?.('ov-model');
       renderModels();
     } catch(e) { window.showToast?.('Save failed.'); }
   }
@@ -1015,8 +1022,6 @@ ${mdHtmlCache}
 
   /* ── Init ────────────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', _bindControls);
-  // Also bind immediately in case DOM is already ready
-  if (document.readyState !== 'loading') _bindControls();
 
    // ── ADD BUTTON BINDINGS ──
 document.addEventListener('DOMContentLoaded', function() {

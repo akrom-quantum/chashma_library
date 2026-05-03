@@ -173,7 +173,7 @@ function renderPage (tab) {
     case 'settings': if (window.renderSettings) window.renderSettings(); break;
     case 'library': {
       const lib = activeLibTab() || 'texts';
-      window.renderLibSub(lib);
+      switchLib(lib);
       break;
     }
   }
