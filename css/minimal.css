@@ -1101,6 +1101,11 @@
 .series-name  { font-size: 0.72rem; font-weight: 700; color: var(--ink-3); flex: 1; }
 .series-count { font-size: 0.62rem; color: var(--ink-4); }
 
+.series-chevron { font-size: 1.1rem; color: var(--ink-4); transition: transform 0.2s ease; }
+.series-body    { transition: none; }
+.series-group.collapsed .series-body    { display: none; }
+.series-group.collapsed .series-chevron { transform: rotate(-90deg); }
+
 /* Unread banner */
 .ub {
   background:    var(--pri-pale);
