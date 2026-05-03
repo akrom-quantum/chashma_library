@@ -992,6 +992,17 @@ ${mdHtmlCache}
   // Also bind immediately in case DOM is already ready
   if (document.readyState !== 'loading') _bindControls();
 
+   // ── ADD BUTTON BINDINGS ──
+document.addEventListener('DOMContentLoaded', function() {
+  const btnAddText  = document.getElementById('btnAddText');
+  const btnAddVid   = document.getElementById('btnAddVid');
+  const btnAddModel = document.getElementById('btnAddModel');
+
+  if (btnAddText)  btnAddText.addEventListener('click',  openAddTxt);
+  if (btnAddVid)   btnAddVid.addEventListener('click',   openAddVid);
+  if (btnAddModel) btnAddModel.addEventListener('click', openAddModel);
+});
+   
   /* ── Exports ─────────────────────────────────────────────── */
   window.renderTexts      = renderTexts;
   window.renderVideos     = renderVideos;
