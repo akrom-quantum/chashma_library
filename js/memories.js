@@ -43,16 +43,6 @@
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  // ─── FIRESTORE ACCESS ─────────────────────────────────────────────────────
-
-  let _fs = null;
-  async function fs() {
-    if (_fs) return _fs;
-    const m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    _fs = m;
-    return m;
-  }
-
   // ─── TAG STRIP ────────────────────────────────────────────────────────────
 
   function buildTagStrip(baseItems) {
@@ -257,7 +247,7 @@
   function ensureOverlay() {
     if (_detOverlay) return _detOverlay;
     _detOverlay = document.createElement('div');
-    _detOverlay.id = 'detOverlay';
+    _detOverlay.id = 'mem-det-ov';
     _detOverlay.className = 'det-overlay';
     _detOverlay.innerHTML =
       `<div class="det-panel">` +
@@ -319,8 +309,7 @@
     const m = (window.memories || []).find(x => x.id === id);
     if (!m || !docOwner(m)) return;
     try {
-      const { doc, updateDoc } = await fs();
-      await updateDoc(doc(window.db, 'memories', id), { private: !m.private });
+      await window.db.collection('memories').doc(id).update({ private: !m.private });
       m.private = !m.private;
       window.showToast?.(m.private ? 'Memory set to private.' : 'Memory is now public.');
       window.logAct?.('toggle_private', { id, private: m.private });
@@ -336,8 +325,7 @@
   async function deleteMem(id) {
     if (!confirm('Delete this memory? This cannot be undone.')) return;
     try {
-      const { doc, deleteDoc } = await fs();
-      await deleteDoc(doc(window.db, 'memories', id));
+      await window.db.collection('memories').doc(id).delete();
       window.memories = (window.memories || []).filter(x => x.id !== id);
       window.showToast?.('Memory deleted.');
       window.logAct?.('delete_memory', { id });
@@ -396,11 +384,11 @@
     const tags = U.parseTags(tagsRaw);
 
     try {
-      const { collection, doc, addDoc, updateDoc, serverTimestamp } = await fs();
+      const now = firebase.firestore.FieldValue.serverTimestamp();
 
       if (editMemId) {
-        await updateDoc(doc(window.db, 'memories', editMemId), {
-          title, content, tags, updatedAt: serverTimestamp(),
+        await window.db.collection('memories').doc(editMemId).update({
+          title, content, tags, updatedAt: now,
         });
         const m = (window.memories || []).find(x => x.id === editMemId);
         if (m) Object.assign(m, { title, content, tags, updatedAt: new Date() });
@@ -409,14 +397,14 @@
       } else {
         const maxNum = (window.memories || []).reduce((mx, m) => Math.max(mx, m.num || 0), 0);
         const num    = maxNum + 1;
-        const ref    = await addDoc(collection(window.db, 'memories'), {
+        const ref    = await window.db.collection('memories').add({
           title, content, tags, num,
           private:    isPriv,
           authorId:   window.currentUser?.uid || '',
           ratings:    {},
           readCounts: {},
-          createdAt:  serverTimestamp(),
-          updatedAt:  serverTimestamp(),
+          createdAt:  now,
+          updatedAt:  now,
         });
         window.memories = window.memories || [];
         window.memories.push({

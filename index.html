@@ -294,8 +294,26 @@
 
       <!-- ── Memories Page ── -->
       <section id="page-memories" class="page" aria-label="Memories" hidden>
-        <div class="mem-controls"></div>
-        <div id="memList"></div>
+        <div class="mem-controls">
+          <input id="memSearch" class="mem-search" type="search" placeholder="Search memories…" autocomplete="off">
+          <select id="memSort" class="mem-sort">
+            <option value="num">By number</option>
+            <option value="date">By date</option>
+            <option value="title">By title</option>
+          </select>
+          <button id="memDir" class="btn-ghost mem-dir-btn" title="Toggle sort direction">↑</button>
+          <div style="flex:1"></div>
+          <button id="btnExportMem" class="btn-ghost editable-only" title="Export as TSV">
+            <span class="material-symbols-outlined">download</span>
+          </button>
+          <button id="btnNewMem" class="btn-primary editable-only" title="New memory">
+            <span class="material-symbols-outlined">add</span> New
+          </button>
+        </div>
+        <div id="memTagStrip" class="mem-tag-strip" style="display:none">
+          <div id="memTagRow" class="mem-tag-row"></div>
+        </div>
+        <div class="mem-timeline"></div>
       </section><!-- /#page-memories -->
 
 
@@ -353,7 +371,21 @@
   ════════════════════════════════════════════ -->
 
   <!-- Memory Writer Overlay -->
-  <div id="memWriter" hidden aria-label="Memory writer" role="dialog" aria-modal="true"></div>
+  <div id="memWriter" class="mem-writer-ov" aria-label="Memory writer" role="dialog" aria-modal="true">
+    <div class="mem-writer-panel">
+      <h3 class="writer-heading">New Memory</h3>
+      <input id="writerTitle" class="mem-writer-input" type="text" placeholder="Title (optional)">
+      <textarea id="writerContent" class="mem-writer-textarea" placeholder="Write your memory…" rows="10"></textarea>
+      <input id="writerTags" class="mem-writer-input" type="text" placeholder="Tags (comma separated)">
+      <label class="mem-writer-private">
+        <input id="writerPrivate" type="checkbox"> Private
+      </label>
+      <div class="mem-writer-footer">
+        <button id="btnDiscardMem" class="btn-ghost">Discard</button>
+        <button id="btnSaveMem" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Markdown Viewer Overlay -->
   <div id="mdViewer" aria-label="Markdown viewer" role="dialog" aria-modal="true">

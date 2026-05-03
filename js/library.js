@@ -428,7 +428,7 @@ ${mdHtmlCache}
 
   function buildVidCard(v, idx) {
     const read  = myRC(v) > 0;
-    const thumb = v.thumbnailUrl || ytThumb(v.link);
+    const thumb = ytThumb(v.link) || v.thumbnailUrl;
     const card  = document.createElement('div');
     card.className = `vid-card ${read?'read':''}`;
     card.dataset.id = v.id;
@@ -499,7 +499,7 @@ ${mdHtmlCache}
     _v('vSeries',  v.series  ?? '');
     _v('vSummary', v.summary ?? '');
     _v('vTags',    (v.tags??[]).join(', '));
-    if (v.thumbnailUrl) _v('vThumb', v.thumbnailUrl);
+    _v('vThumb', v.thumbnailUrl ?? '');
   }
 
   // Auto-fill thumbnail on link blur
@@ -626,17 +626,18 @@ ${mdHtmlCache}
       : '';
 
     const header = $('modelVHeader');
-    if (header) header.innerHTML = `
+    if (header) header.innerHTML = `<span class="overlay-title">${esc(m.title)}</span>`;
+
+    const body = $('modelVBody');
+    if (body) body.innerHTML = `
       <div class="mv-meta">
         <span class="type-badge badge-${esc(m.type??'clear')}">${esc(m.type??'Clear')}</span>
         ${m.field ? `<span class="field-badge">${esc(m.field)}</span>` : ''}
         ${m.order!=null ? `<span class="mv-order">#${m.order}</span>` : ''}
       </div>
-      <h2 class="mv-title">${esc(m.title)}</h2>
-      ${m.description ? `<p class="mv-desc"><em>${esc(m.description)}</em></p>` : ''}`;
-
-    const body = $('modelVBody');
-    if (body) body.innerHTML = html || '<p class="mv-empty">No content yet.</p>';
+      ${m.description ? `<p class="mv-desc"><em>${esc(m.description)}</em></p>` : ''}
+      ${html || '<p class="mv-empty">No content yet.</p>'}
+    `;
 
     // Wire wikilinks
     if (body) {
