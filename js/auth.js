@@ -1,321 +1,163 @@
 /* ============================================================
-   auth.js — Chashma Authentication & Session Management
-   Depends on: window.db, window.auth, window.OWNER, window.Utils
-   Exports:    window.showAuth, window.showApp, window.updateDayCtr
+   auth-fix.css — paste these overrides at the END of layout.css
+   or add as a separate <link> after layout.css in index.html
    ============================================================ */
 
-(() => {
-  /* ── Initial loading state ───────────────────────────────── */
-  //document.getElementById('authScreen')?.classList.add('hidden');
-  //document.getElementById('loadingScreen')?.classList.remove('hidden');
-   
-// loadingScreen has no 'hidden' attr in HTML, so just leave it visible
-// authScreen already has 'hidden' attr set in HTML — nothing to do here
+/* Auth screen — always on top, always interactive */
+#authScreen {
+  position:        fixed;
+  inset:           0;
+  z-index:         9000;
+  pointer-events:  all;
+  display:         flex;          /* flex when visible */
+  align-items:     center;
+  justify-content: center;
+  background:      var(--pri-2);
+  padding:         24px 16px;
+}
 
-  /* ── Helpers (local shortcuts) ───────────────────────────── */
-  const $   = id => document.getElementById(id);
-  const lsS = (k, v) => localStorage.setItem(k, v);
-  const lsG = k => localStorage.getItem(k);
+/* When hidden attribute is set, override display */
+#authScreen[hidden] {
+  display: none !important;
+}
 
-  /** Convert email to Firestore-safe key: dots → underscores */
-  const emailKey = email => (email || '').replace(/\./g, '_');
+/* Auth panels — hidden by default, shown when .active */
+.auth-panel {
+  display: none;
+}
 
-  /* ── 1. AUTH TAB SWITCHING ───────────────────────────────── */
-  document.querySelectorAll('[data-auth]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.auth;
-      document.querySelectorAll('[data-auth]').forEach(b =>
-        b.classList.toggle('active', b.dataset.auth === target)
-      );
-      $('panelSignin')?.classList.toggle('hidden', target === 'signin');
-      $('panelSignup')?.classList.toggle('hidden', target === 'signup');
-    });
-  });
+.auth-panel.active {
+  display: block;
+}
 
-   // Set Sign In as default active tab + panel
-   document.querySelector('[data-auth="signin"]')?.classList.add('active');
-   $('panelSignin')?.classList.add('active');
+/* Auth tabs — active state */
+.auth-tab.active {
+  color:      #ecfdf5;
+  background: rgba(255, 255, 255, .08);
+  border-bottom: 2px solid #6ee7b7;
+}
 
-  /* ── 2. SIGN IN ──────────────────────────────────────────── */
-  const SIGNIN_ERRORS = {
-    'auth/user-not-found':     'No account found with this email.',
-    'auth/wrong-password':     'Incorrect password. Please try again.',
-    'auth/invalid-email':      'Please enter a valid email address.',
-    'auth/too-many-requests':  'Too many attempts. Try again later or reset your password.',
-    'auth/invalid-credential': 'Incorrect email or password.',
-  };
+/* Inputs — ensure clickable, visible, full width */
+.auth-panel input {
+  display:       block;
+  width:         100%;
+  background:    rgba(255, 255, 255, .10);
+  border:        1px solid rgba(255, 255, 255, .18);
+  border-radius: 8px;
+  padding:       11px 14px;
+  color:         #ecfdf5;
+  font-size:     0.9rem;
+  margin-bottom: 11px;
+  outline:       none;
+  pointer-events: all;
+  cursor:        text;
+  transition:    border-color .15s ease, box-shadow .15s ease;
+  -webkit-appearance: none;
+}
 
-  $('btnSignIn')?.addEventListener('click', async () => {
-    const email = $('siEmail')?.value.trim();
-    const pass  = $('siPass')?.value;
-    const errEl = $('siErr');
-    if (errEl) errEl.textContent = '';
-    if (!email || !pass) {
-      if (errEl) errEl.textContent = 'Please fill in all fields.';
-      return;
-    }
-    try {
-      await window.auth.signInWithEmailAndPassword(email, pass);
-    } catch (err) {
-      if (errEl)
-        errEl.textContent = SIGNIN_ERRORS[err.code] || 'Sign in failed. Please try again.';
-    }
-  });
+.auth-panel input::placeholder {
+  color: rgba(209, 250, 229, .45);
+}
 
-  /* ── 3. SIGN UP ──────────────────────────────────────────── */
-  $('btnSignUp')?.addEventListener('click', async () => {
-    const name  = $('suName')?.value.trim();
-    const email = $('suEmail')?.value.trim();
-    const pass  = $('suPass')?.value;
-    const errEl = $('suErr');
-    if (errEl) errEl.textContent = '';
+.auth-panel input:focus {
+  border-color: #6ee7b7;
+  box-shadow:   0 0 0 3px rgba(110, 231, 183, .2);
+}
 
-    if (!name)               { if (errEl) errEl.textContent = 'Display name is required.'; return; }
-    if (!email)              { if (errEl) errEl.textContent = 'Email is required.'; return; }
-    if (!pass || pass.length < 6) {
-      if (errEl) errEl.textContent = 'Password must be at least 6 characters.';
-      return;
-    }
+/* Buttons inside auth */
+.auth-panel button {
+  display:        block;
+  width:          100%;
+  padding:        11px;
+  border-radius:  8px;
+  font-size:      0.78rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor:         pointer;
+  margin-bottom:  10px;
+  transition:     opacity .15s ease, transform .15s ease;
+}
 
-    try {
-      const cred = await window.auth.createUserWithEmailAndPassword(email, pass);
-      await cred.user.updateProfile({ displayName: name });
-    } catch (err) {
-      const msg = {
-        'auth/email-already-in-use': 'An account with this email already exists.',
-        'auth/invalid-email':        'Please enter a valid email address.',
-        'auth/weak-password':        'Password is too weak.',
-      }[err.code] || 'Sign up failed. Please try again.';
-      if (errEl) errEl.textContent = msg;
-    }
-  });
+.auth-panel button:hover {
+  opacity:   .9;
+  transform: translateY(-1px);
+}
 
-  /* ── 4. GOOGLE SIGN IN ───────────────────────────────────── */
-  async function googleSignIn() {
-    try {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      await window.auth.signInWithPopup(provider);
-    } catch (err) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        console.error('Google sign-in error:', err);
-        window.showToast?.('Google sign-in failed. Please try again.', 'err');
-      }
-    }
-  }
+/* Primary sign in / sign up button */
+#btnSignIn,
+#btnSignUp {
+  background: #6ee7b7;
+  color:      #064e3b;
+  border:     none;
+}
 
-  $('btnGoogle')?.addEventListener('click', googleSignIn);
-  $('btnGoogle2')?.addEventListener('click', googleSignIn);
-  window.googleSignIn = googleSignIn;
+/* Google buttons */
+#btnGoogle,
+#btnGoogle2 {
+  background: #ffffff;
+  color:      #1f2937;
+  border:     none;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 
-  /* ── 5. SIGN OUT ─────────────────────────────────────────── */
-  $('btnSignOut')?.addEventListener('click', async () => {
-    if (window.unsubs && typeof window.unsubs === 'object') {
-      Object.values(window.unsubs).forEach(unsub => {
-        if (typeof unsub === 'function') unsub();
-      });
-      window.unsubs = {};
-    }
-    window.closeDrops?.();
-    await window.auth.signOut();
-  });
+/* Error text */
+.auth-err {
+  font-size:  0.72rem;
+  color:      #fca5a5;
+  min-height: 18px;
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
 
-  /* ── 6. DETERMINE ROLE ───────────────────────────────────── */
-  async function determineRole(user) {
-    let ownerEmail = window.OWNER;
-    if (!ownerEmail) {
-      try {
-        const configDoc = await window.db.collection('config').doc('app').get();
-        ownerEmail = configDoc.data()?.ownerEmail || '';
-        window.OWNER = ownerEmail;
-      } catch (_) {}
-    }
+/* Auth card */
+.auth-card {
+  background:    rgba(255, 255, 255, .08);
+  border:        1px solid rgba(255, 255, 255, .12);
+  border-radius: 16px;
+  overflow:      hidden;
+  width:         100%;
+}
 
-    // Check owner by email
-    if (user.email && user.email === ownerEmail) {
-      window.userRole = 'owner';
-      return 'owner';
-    }
+/* Auth tabs row */
+.auth-tabs {
+  display:       flex;
+  border-bottom: 1px solid rgba(255, 255, 255, .10);
+}
 
-    // Check admins collection — keyed by email
-    try {
-      const adminDoc = await window.db.collection('admins').doc(user.email).get();
-      if (adminDoc.exists) {
-        window.userRole = 'admin';
-        return 'admin';
-      }
-    } catch (_) {}
+.auth-tab {
+  flex:           1;
+  padding:        13px 0;
+  font-size:      0.7rem;
+  font-weight:    700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color:          rgba(209, 250, 229, .5);
+  background:     none;
+  border:         none;
+  border-bottom:  2px solid transparent;
+  cursor:         pointer;
+  transition:     color .15s ease, background .15s ease;
+}
 
-    window.userRole = 'reader';
-    return 'reader';
-  }
+/* Panel padding */
+.auth-panel {
+  padding: 22px;
+}
 
-  /* ── 7. AUTH STATE CHANGE ────────────────────────────────── */
-  window.auth.onAuthStateChanged(async user => {
-    if (!user) {
-      window.currentUser = null;
-      window.userRole    = null;
-      setTimeout(() => {
-        if (!window.currentUser) showAuth();
-      }, 600);
-      return;
-    }
+/* Loading screen — on top until dismissed */
+#loadingScreen {
+  z-index: 8999;
+}
 
-    window.currentUser = user;
+#loadingScreen[hidden] {
+  display: none !important;
+}
 
-    // Fetch OWNER email from config
-    try {
-      const configDoc = await window.db.collection('config').doc('app').get();
-      if (configDoc.exists && configDoc.data()?.ownerEmail) {
-        window.OWNER = configDoc.data().ownerEmail;
-      }
-    } catch (_) {}
-
-    const role = await determineRole(user);
-
-    // Users doc keyed by email (dots → underscores) to match Firestore rules
-    const ek      = emailKey(user.email);
-    const userRef = window.db.collection('users').doc(ek);
-
-    try {
-      const userDoc = await userRef.get();
-      const now     = firebase.firestore.FieldValue.serverTimestamp();
-
-      if (!userDoc.exists) {
-        await userRef.set({
-          joinedAt: now,
-          lastSeen: now,
-          name:     user.displayName || '',
-          email:    user.email       || '',
-          photoURL: user.photoURL    || '',
-          role,
-        });
-        const fresh = await userRef.get();
-        window.userJoinDate = fresh.data()?.joinedAt?.toDate?.() || new Date();
-      } else {
-        await userRef.update({
-          lastSeen: now,
-          name:     user.displayName || userDoc.data().name     || '',
-          email:    user.email       || userDoc.data().email    || '',
-          photoURL: user.photoURL    || userDoc.data().photoURL || '',
-        });
-        window.userJoinDate = userDoc.data()?.joinedAt?.toDate?.() || new Date();
-      }
-    } catch (err) {
-      console.error('User doc error:', err);
-      window.userJoinDate = new Date();
-    }
-
-    showApp(user);
-    window.setupListeners?.();
-    window.loadNotifs?.();
-
-    // Access banner for readers
-    if (role === 'reader') {
-      const DISMISS_KEY = 'chashma_ban_dismissed';
-      if (!lsG(DISMISS_KEY)) {
-        try {
-          const reqSnap = await window.db
-            .collection('accessRequests')
-            .where('email', '==', user.email)
-            .where('status', '==', 'pending')
-            .get();
-          if (reqSnap.empty) {
-            $('accessBanner')?.classList.remove('hidden');
-          }
-        } catch (_) {
-          $('accessBanner')?.classList.remove('hidden');
-        }
-      }
-    }
-  });
-
-  /* ── 8. SHOW AUTH ────────────────────────────────────────── */
-  function showAuth() {
-  $('authScreen')?.removeAttribute('hidden');
-  $('loadingScreen')?.setAttribute('hidden', '');
-  $('appShell')?.setAttribute('hidden', '');
-  $('appShell')?.classList.remove('visible');
-  }  
-
-  /* ── 9. SHOW APP ─────────────────────────────────────────── */
-  function showApp(user) {
-  $('authScreen')?.setAttribute('hidden', '');
-  $('loadingScreen')?.setAttribute('hidden', '');
-  $('appShell')?.removeAttribute('hidden');
-  $('appShell')?.classList.add('visible');
-
-    const PERSON_ICON = `<span class="material-symbols-outlined">person</span>`;
-    [$('profileAv'), $('ddAv')].forEach(el => {
-      if (!el) return;
-      el.innerHTML = user.photoURL
-        ? `<img src="${user.photoURL}" alt="avatar" referrerpolicy="no-referrer">`
-        : PERSON_ICON;
-    });
-
-    const ddName = $('ddName');
-    if (ddName) ddName.textContent = user.displayName || user.email || 'User';
-    const ddRole = $('ddRole');
-    if (ddRole) ddRole.textContent = window.userRole || 'reader';
-
-    const canEdit = window.userRole === 'owner' || window.userRole === 'admin';
-    document.querySelectorAll('.editable-only').forEach(el =>
-      el.classList.toggle('hidden', !canEdit)
-    );
-
-    $('ownerSet')?.classList.toggle('hidden', window.userRole !== 'owner');
-    $('readerSet')?.classList.toggle('hidden', window.userRole !== 'reader');
-    if (window.userRole === 'reader') window.setupReaderSettings?.();
-
-    updateDayCtr();
-    window.switchTab?.('home');
-  }
-
-  /* ── 10. DAY COUNTER ─────────────────────────────────────── */
-  function updateDayCtr() {
-    const joined   = window.userJoinDate;
-    const dayNum   = $('dayNum');
-    const ddStreak = $('ddStreak');
-    if (!joined) return;
-
-    const days = Math.floor((Date.now() - joined.getTime()) / 86_400_000);
-    if (dayNum) dayNum.textContent = days;
-    if (ddStreak) {
-      ddStreak.innerHTML =
-        `<span class="material-symbols-outlined">local_fire_department</span>` +
-        `<span>${days} day${days !== 1 ? 's' : ''}</span>`;
-    }
-  }
-
-  /* ── 11. ACCESS BANNER ───────────────────────────────────── */
-  const DISMISS_KEY = 'chashma_ban_dismissed';
-
-  $('btnBanDis')?.addEventListener('click', () => {
-    $('accessBanner')?.classList.add('hidden');
-    lsS(DISMISS_KEY, '1');
-  });
-
-  $('btnBanReq')?.addEventListener('click', async () => {
-    $('accessBanner')?.classList.add('hidden');
-    const user = window.currentUser;
-    if (!user) return;
-    try {
-      await window.db.collection('accessRequests').add({
-        uid:       user.uid,
-        name:      user.displayName || '',
-        email:     user.email       || '',
-        photoURL:  user.photoURL    || '',
-        status:    'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-      window.showToast?.('Access request sent! The owner will review it shortly.');
-    } catch (err) {
-      console.error('Access request failed:', err);
-      window.showToast?.('Failed to send request. Please try again.', 'err');
-    }
-  });
-
-  /* ── Exports ─────────────────────────────────────────────── */
-  window.showAuth     = showAuth;
-  window.showApp      = showApp;
-  window.updateDayCtr = updateDayCtr;
-})();
+/* App shell */
+#appShell[hidden] {
+  display: none !important;
+}
