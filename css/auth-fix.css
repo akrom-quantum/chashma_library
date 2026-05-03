@@ -1,0 +1,163 @@
+/* ============================================================
+   auth-fix.css — paste these overrides at the END of layout.css
+   or add as a separate <link> after layout.css in index.html
+   ============================================================ */
+
+/* Auth screen — always on top, always interactive */
+#authScreen {
+  position:        fixed;
+  inset:           0;
+  z-index:         9000;
+  pointer-events:  all;
+  display:         flex;          /* flex when visible */
+  align-items:     center;
+  justify-content: center;
+  background:      var(--pri-2);
+  padding:         24px 16px;
+}
+
+/* When hidden attribute is set, override display */
+#authScreen[hidden] {
+  display: none !important;
+}
+
+/* Auth panels — hidden by default, shown when .active */
+.auth-panel {
+  display: none;
+}
+
+.auth-panel.active {
+  display: block;
+}
+
+/* Auth tabs — active state */
+.auth-tab.active {
+  color:      #ecfdf5;
+  background: rgba(255, 255, 255, .08);
+  border-bottom: 2px solid #6ee7b7;
+}
+
+/* Inputs — ensure clickable, visible, full width */
+.auth-panel input {
+  display:       block;
+  width:         100%;
+  background:    rgba(255, 255, 255, .10);
+  border:        1px solid rgba(255, 255, 255, .18);
+  border-radius: 8px;
+  padding:       11px 14px;
+  color:         #ecfdf5;
+  font-size:     0.9rem;
+  margin-bottom: 11px;
+  outline:       none;
+  pointer-events: all;
+  cursor:        text;
+  transition:    border-color .15s ease, box-shadow .15s ease;
+  -webkit-appearance: none;
+}
+
+.auth-panel input::placeholder {
+  color: rgba(209, 250, 229, .45);
+}
+
+.auth-panel input:focus {
+  border-color: #6ee7b7;
+  box-shadow:   0 0 0 3px rgba(110, 231, 183, .2);
+}
+
+/* Buttons inside auth */
+.auth-panel button {
+  display:        block;
+  width:          100%;
+  padding:        11px;
+  border-radius:  8px;
+  font-size:      0.78rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor:         pointer;
+  margin-bottom:  10px;
+  transition:     opacity .15s ease, transform .15s ease;
+}
+
+.auth-panel button:hover {
+  opacity:   .9;
+  transform: translateY(-1px);
+}
+
+/* Primary sign in / sign up button */
+#btnSignIn,
+#btnSignUp {
+  background: #6ee7b7;
+  color:      #064e3b;
+  border:     none;
+}
+
+/* Google buttons */
+#btnGoogle,
+#btnGoogle2 {
+  background: #ffffff;
+  color:      #1f2937;
+  border:     none;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Error text */
+.auth-err {
+  font-size:  0.72rem;
+  color:      #fca5a5;
+  min-height: 18px;
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+/* Auth card */
+.auth-card {
+  background:    rgba(255, 255, 255, .08);
+  border:        1px solid rgba(255, 255, 255, .12);
+  border-radius: 16px;
+  overflow:      hidden;
+  width:         100%;
+}
+
+/* Auth tabs row */
+.auth-tabs {
+  display:       flex;
+  border-bottom: 1px solid rgba(255, 255, 255, .10);
+}
+
+.auth-tab {
+  flex:           1;
+  padding:        13px 0;
+  font-size:      0.7rem;
+  font-weight:    700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color:          rgba(209, 250, 229, .5);
+  background:     none;
+  border:         none;
+  border-bottom:  2px solid transparent;
+  cursor:         pointer;
+  transition:     color .15s ease, background .15s ease;
+}
+
+/* Panel padding */
+.auth-panel {
+  padding: 22px;
+}
+
+/* Loading screen — on top until dismissed */
+#loadingScreen {
+  z-index: 8999;
+}
+
+#loadingScreen[hidden] {
+  display: none !important;
+}
+
+/* App shell */
+#appShell[hidden] {
+  display: none !important;
+}
