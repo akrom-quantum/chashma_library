@@ -16,7 +16,7 @@ window.auth = firebase.auth();
 window.db   = firebase.firestore();
 
 // Offline persistence — silent fail (multiple tabs or private mode)
-db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+db.settings({ cache: { kind: 'persistent' } });
 
 // Keep auth session across browser restarts
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
