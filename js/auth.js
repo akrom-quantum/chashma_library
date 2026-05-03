@@ -31,11 +31,11 @@
 
   /* ── 2. SIGN IN ──────────────────────────────────────────── */
   const SIGNIN_ERRORS = {
-    'auth/user-not-found':    'No account found with this email.',
-    'auth/wrong-password':    'Incorrect password. Please try again.',
-    'auth/invalid-email':     'Please enter a valid email address.',
-    'auth/too-many-requests': 'Too many attempts. Try again later or reset your password.',
-    'auth/invalid-credential':'Incorrect email or password.',
+    'auth/user-not-found':     'No account found with this email.',
+    'auth/wrong-password':     'Incorrect password. Please try again.',
+    'auth/invalid-email':      'Please enter a valid email address.',
+    'auth/too-many-requests':  'Too many attempts. Try again later or reset your password.',
+    'auth/invalid-credential': 'Incorrect email or password.',
   };
 
   $('btnSignIn')?.addEventListener('click', async () => {
@@ -63,10 +63,11 @@
     const errEl = $('suErr');
     if (errEl) errEl.textContent = '';
 
-    if (!name)              { if (errEl) errEl.textContent = 'Display name is required.'; return; }
-    if (!email)             { if (errEl) errEl.textContent = 'Email is required.'; return; }
+    if (!name)               { if (errEl) errEl.textContent = 'Display name is required.'; return; }
+    if (!email)              { if (errEl) errEl.textContent = 'Email is required.'; return; }
     if (!pass || pass.length < 6) {
-      if (errEl) errEl.textContent = 'Password must be at least 6 characters.'; return;
+      if (errEl) errEl.textContent = 'Password must be at least 6 characters.';
+      return;
     }
 
     try {
@@ -113,11 +114,10 @@
 
   /* ── 6. DETERMINE ROLE ───────────────────────────────────── */
   async function determineRole(user) {
-    // Fetch OWNER email from config if not set
     let ownerEmail = window.OWNER;
     if (!ownerEmail) {
       try {
-        const configDoc = await window.db.doc('config/app').get();
+        const configDoc = await window.db.collection('config').doc('app').get();
         ownerEmail = configDoc.data()?.ownerEmail || '';
         window.OWNER = ownerEmail;
       } catch (_) {}
@@ -129,12 +129,9 @@
       return 'owner';
     }
 
-    // Check admins collection — keyed by EMAIL (not uid)
+    // Check admins collection — keyed by email
     try {
-      const adminDoc = await window.db
-        .collection('admins')
-        .doc(user.email)
-        .get();
+      const adminDoc = await window.db.collection('admins').doc(user.email).get();
       if (adminDoc.exists) {
         window.userRole = 'admin';
         return 'admin';
@@ -160,7 +157,7 @@
 
     // Fetch OWNER email from config
     try {
-      const configDoc = await window.db.doc('config/app').get();
+      const configDoc = await window.db.collection('config').doc('app').get();
       if (configDoc.exists && configDoc.data()?.ownerEmail) {
         window.OWNER = configDoc.data().ownerEmail;
       }
@@ -168,7 +165,7 @@
 
     const role = await determineRole(user);
 
-    // Users doc keyed by EMAIL KEY (dots → underscores) to match Firestore rules
+    // Users doc keyed by email (dots → underscores) to match Firestore rules
     const ek      = emailKey(user.email);
     const userRef = window.db.collection('users').doc(ek);
 
@@ -185,14 +182,13 @@
           photoURL: user.photoURL    || '',
           role,
         });
-        // Re-fetch to get real timestamp
         const fresh = await userRef.get();
         window.userJoinDate = fresh.data()?.joinedAt?.toDate?.() || new Date();
       } else {
         await userRef.update({
           lastSeen: now,
-          name:     user.displayName || userDoc.data().name    || '',
-          email:    user.email       || userDoc.data().email   || '',
+          name:     user.displayName || userDoc.data().name     || '',
+          email:    user.email       || userDoc.data().email    || '',
           photoURL: user.photoURL    || userDoc.data().photoURL || '',
         });
         window.userJoinDate = userDoc.data()?.joinedAt?.toDate?.() || new Date();
@@ -239,7 +235,6 @@
     $('loadingScreen')?.classList.add('hidden');
     $('appShell')?.classList.add('visible');
 
-    // Avatars
     const PERSON_ICON = `<span class="material-symbols-outlined">person</span>`;
     [$('profileAv'), $('ddAv')].forEach(el => {
       if (!el) return;
@@ -248,19 +243,16 @@
         : PERSON_ICON;
     });
 
-    // Name & role
     const ddName = $('ddName');
     if (ddName) ddName.textContent = user.displayName || user.email || 'User';
     const ddRole = $('ddRole');
     if (ddRole) ddRole.textContent = window.userRole || 'reader';
 
-    // Editable-only elements
     const canEdit = window.userRole === 'owner' || window.userRole === 'admin';
     document.querySelectorAll('.editable-only').forEach(el =>
       el.classList.toggle('hidden', !canEdit)
     );
 
-    // Settings panels
     $('ownerSet')?.classList.toggle('hidden', window.userRole !== 'owner');
     $('readerSet')?.classList.toggle('hidden', window.userRole !== 'reader');
     if (window.userRole === 'reader') window.setupReaderSettings?.();
