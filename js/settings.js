@@ -400,13 +400,187 @@
     if (U.isOwner()) {
       if (ownerSet)  ownerSet.style.display  = '';
       if (readerSet) readerSet.style.display = 'none';
+      _ensureOwnerHtml();
+      _renderAllUsers();
       _renderPendingRequests();
       _renderAdmins();
-      _renderReaders();
       _bindResetReads();
     } else {
       if (ownerSet)  ownerSet.style.display  = 'none';
       if (readerSet) readerSet.style.display = 'none';
+    }
+  }
+
+  function _ensureOwnerHtml() {
+    const el = document.getElementById('ownerSet');
+    if (!el || el.dataset.built) return;
+    el.dataset.built = '1';
+    el.innerHTML = `
+      <h2 class="set-heading">User Management</h2>
+      <div id="allUsersTbl" class="users-tbl-wrap"></div>
+
+      <h2 class="set-heading" style="margin-top:32px">Pending Access Requests (<span id="pendCnt">0</span>)</h2>
+      <div id="pendList"></div>
+
+      <h2 class="set-heading" style="margin-top:32px">Admins</h2>
+      <div id="adminList"></div>
+
+      <div class="set-danger">
+        <h2 class="set-heading">Danger Zone</h2>
+        <button id="btnResetReads" class="btn-danger">Reset all read counts</button>
+        <span id="resetSt" style="font-size:.8rem;color:var(--ink-3);margin-left:8px;"></span>
+      </div>`;
+  }
+
+  /* ── Encoded email key (commas — matches library.js readCounts) */
+  function _ek(email) { return (email || '').replace(/\./g, ','); }
+
+  /* ── Per-user stats ─────────────────────────────────────────── */
+  function _userStats(email) {
+    const ek = _ek(email);
+
+    const textsByS = {};
+    (window.texts ?? []).forEach(t => {
+      if ((t.readCounts?.[ek] ?? 0) > 0) {
+        const s = t.series || '(standalone)';
+        textsByS[s] = (textsByS[s] ?? 0) + 1;
+      }
+    });
+
+    const vidsByS = {};
+    (window.videos ?? []).forEach(v => {
+      if ((v.readCounts?.[ek] ?? 0) > 0) {
+        const s = v.series || '(standalone)';
+        vidsByS[s] = (vidsByS[s] ?? 0) + 1;
+      }
+    });
+
+    const modelsRead = (window.models ?? []).filter(m => (m.readCounts?.[ek] ?? 0) > 0).length;
+
+    return { textsByS, vidsByS, modelsRead };
+  }
+
+  function _seriesHtml(map) {
+    const entries = Object.entries(map);
+    if (!entries.length) return '<span class="stat-zero">0</span>';
+    const total = entries.reduce((s, [, n]) => s + n, 0);
+    const rows  = entries.map(([s, n]) => `<li>${U.esc(s)}: <strong>${n}</strong></li>`).join('');
+    return `<details class="series-det"><summary>${total}</summary><ul>${rows}</ul></details>`;
+  }
+
+  /* ── All users table ────────────────────────────────────────── */
+  function _renderAllUsers() {
+    const el = document.getElementById('allUsersTbl');
+    if (!el) return;
+
+    const users      = window.allUsers ?? [];
+    const ownerEmail = window.OWNER || '';
+    const adminEmails = new Set((window.admins ?? []).map(a => a.email));
+
+    if (!users.length) {
+      el.innerHTML = '<p class="set-empty">No users yet.</p>';
+      return;
+    }
+
+    const rows = users.map(u => {
+      const email = u.email || '';
+      const name  = u.displayName || u.name || '—';
+      const role  = email === ownerEmail ? 'owner'
+                  : adminEmails.has(email) ? 'admin'
+                  : 'reader';
+
+      const { textsByS, vidsByS, modelsRead } = _userStats(email);
+      const isMe = email === (window.currentUser?.email || '');
+
+      return `
+        <tr data-email="${U.esc(email)}">
+          <td class="ut-name">${U.esc(name)}</td>
+          <td class="ut-email">${U.esc(email)}</td>
+          <td class="ut-role">
+            ${role === 'owner'
+              ? `<span class="role-badge role-owner">Owner</span>`
+              : `<select class="role-sel" data-email="${U.esc(email)}" data-cur="${role}">
+                  <option value="reader"  ${role==='reader' ?'selected':''}>Reader</option>
+                  <option value="admin"   ${role==='admin'  ?'selected':''}>Admin</option>
+                </select>`}
+          </td>
+          <td class="ut-stat">${_seriesHtml(textsByS)}</td>
+          <td class="ut-stat">${_seriesHtml(vidsByS)}</td>
+          <td class="ut-stat">${modelsRead || '<span class="stat-zero">0</span>'}</td>
+          <td class="ut-act">
+            ${!isMe && role !== 'owner'
+              ? `<button class="btn-remove-user" data-email="${U.esc(email)}" title="Remove user">
+                  <span class="material-symbols-outlined">person_remove</span>
+                 </button>`
+              : ''}
+          </td>
+        </tr>`;
+    }).join('');
+
+    el.innerHTML = `
+      <table class="users-tbl">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Role</th>
+            <th>Texts read</th><th>Videos watched</th><th>Models read</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+    /* role change */
+    el.querySelectorAll('.role-sel').forEach(sel => {
+      sel.addEventListener('change', () => _changeRole(sel.dataset.email, sel.value, sel.dataset.cur));
+    });
+
+    /* remove */
+    el.querySelectorAll('.btn-remove-user').forEach(btn => {
+      btn.addEventListener('click', () => _removeUser(btn.dataset.email));
+    });
+  }
+
+  async function _changeRole(email, newRole, oldRole) {
+    if (newRole === oldRole) return;
+    const db = window.db;
+    try {
+      if (newRole === 'admin' && oldRole === 'reader') {
+        await db.collection('admins').doc(email).set({
+          email, approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          approvedBy: window.currentUser?.email || '',
+        });
+      } else if (newRole === 'reader' && oldRole === 'admin') {
+        await db.collection('admins').doc(email).delete();
+      }
+      const ek = email.replace(/\./g, '_');
+      await db.collection('users').doc(ek).update({ role: newRole }).catch(() => {});
+      if (newRole === 'admin') {
+        window.admins = window.admins ?? [];
+        window.admins.push({ email });
+      } else {
+        window.admins = (window.admins ?? []).filter(a => a.email !== email);
+      }
+      showToast(`${email} is now ${newRole}.`);
+      renderSettings();
+    } catch (err) {
+      console.error('_changeRole:', err);
+      showToast('Failed to change role.', 'err');
+    }
+  }
+
+  async function _removeUser(email) {
+    if (!confirm(`Remove ${email}? This deletes their account data.`)) return;
+    const db = window.db;
+    const ek = email.replace(/\./g, '_');
+    try {
+      await db.collection('users').doc(ek).delete().catch(() => {});
+      await db.collection('admins').doc(email).delete().catch(() => {});
+      window.allUsers = (window.allUsers ?? []).filter(u => u.email !== email);
+      window.admins   = (window.admins   ?? []).filter(a => a.email !== email);
+      showToast(`${email} removed.`);
+      renderSettings();
+    } catch (err) {
+      console.error('_removeUser:', err);
+      showToast('Failed to remove user.', 'err');
     }
   }
 

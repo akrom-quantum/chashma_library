@@ -1858,3 +1858,160 @@
   color:     var(--ink-3);
   white-space: nowrap;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   AUTH — REDESIGN
+───────────────────────────────────────────────────────────── */
+
+.btn-google {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             10px;
+  width:           100%;
+  padding:         11px 16px;
+  border:          1px solid var(--rule);
+  border-radius:   8px;
+  background:      var(--bg);
+  color:           var(--ink);
+  font-size:       0.9rem;
+  font-weight:     500;
+  cursor:          pointer;
+  transition:      background .15s, border-color .15s;
+}
+.btn-google:hover { background: var(--bg-1); border-color: var(--ink-3); }
+
+.auth-divider {
+  display:     flex;
+  align-items: center;
+  gap:         12px;
+  margin:      18px 0;
+  color:       var(--ink-3);
+  font-size:   0.78rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex:    1;
+  height:  1px;
+  background: var(--rule);
+}
+
+.auth-switch {
+  text-align:  center;
+  font-size:   0.8rem;
+  color:       var(--ink-3);
+  margin-top:  12px;
+  margin-bottom: 0;
+}
+.auth-link {
+  background: none;
+  border:     none;
+  color:      var(--pri);
+  cursor:     pointer;
+  font-size:  inherit;
+  padding:    0;
+  text-decoration: underline;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   OWNER SETTINGS — USER TABLE
+───────────────────────────────────────────────────────────── */
+
+.set-heading {
+  font-size:   1rem;
+  font-weight: 600;
+  margin:      0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.users-tbl-wrap { overflow-x: auto; }
+
+.users-tbl {
+  width:           100%;
+  border-collapse: collapse;
+  font-size:       0.82rem;
+}
+.users-tbl th {
+  text-align:    left;
+  padding:       8px 10px;
+  font-weight:   600;
+  color:         var(--ink-2);
+  border-bottom: 2px solid var(--rule);
+  white-space:   nowrap;
+}
+.users-tbl td {
+  padding:       9px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+.users-tbl tr:last-child td { border-bottom: none; }
+.users-tbl tr:hover td      { background: var(--bg-1); }
+
+.ut-name  { font-weight: 500; min-width: 100px; }
+.ut-email { color: var(--ink-2); min-width: 160px; font-size: 0.78rem; }
+.ut-stat  { text-align: center; }
+
+.role-badge {
+  display:       inline-block;
+  padding:       2px 8px;
+  border-radius: 20px;
+  font-size:     0.75rem;
+  font-weight:   600;
+}
+.role-owner  { background: var(--pri); color: #fff; }
+
+.role-sel {
+  font-size:     0.8rem;
+  padding:       3px 6px;
+  border:        1px solid var(--rule);
+  border-radius: 6px;
+  background:    var(--bg);
+  color:         var(--ink);
+}
+
+.btn-remove-user {
+  background: none;
+  border:     none;
+  color:      var(--err, #d33);
+  cursor:     pointer;
+  padding:    4px;
+  display:    flex;
+  align-items: center;
+  border-radius: 6px;
+}
+.btn-remove-user:hover { background: var(--err-bg, #ffeaea); }
+.btn-remove-user .material-symbols-outlined { font-size: 18px; }
+
+.stat-zero { color: var(--ink-4); }
+
+.series-det summary {
+  cursor:      pointer;
+  font-weight: 600;
+  color:       var(--pri);
+}
+.series-det ul {
+  margin:   6px 0 0;
+  padding:  0 0 0 12px;
+  color:    var(--ink-2);
+  font-size: 0.78rem;
+  list-style: disc;
+}
+
+.set-danger {
+  margin-top:    32px;
+  padding-top:   20px;
+  border-top:    1px solid var(--rule);
+}
+
+.btn-danger {
+  padding:       8px 16px;
+  border:        1px solid var(--err, #d33);
+  border-radius: 8px;
+  background:    none;
+  color:         var(--err, #d33);
+  cursor:        pointer;
+  font-size:     0.85rem;
+}
+.btn-danger:hover { background: var(--err-bg, #ffeaea); }

@@ -16,9 +16,6 @@
 
   /* ── Tab switching ───────────────────────────────────────── */
   function setTab(tab) {
-    document.querySelectorAll('[data-auth]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.auth === tab);
-    });
     $('panelSignin')?.classList.toggle('active', tab === 'signin');
     $('panelSignup')?.classList.toggle('active', tab === 'signup');
   }
@@ -75,20 +72,23 @@
     } catch (err) { showErr('suErr', err.code); }
   });
 
-  /* ── Google — REDIRECT (no popup, works everywhere) ─────── */
+  /* ── Google — popup (works on file:// and https://) ─────── */
   async function googleSignIn() {
+    clearErr('siErr');
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
-      await window.auth.signInWithRedirect(provider);
-    } catch (err) { console.error('Google redirect:', err); }
+      await window.auth.signInWithPopup(provider);
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showErr('siErr', err.code);
+        console.error('Google sign-in:', err);
+      }
+    }
   }
 
   $('btnGoogle')?.addEventListener('click',  googleSignIn);
   $('btnGoogle2')?.addEventListener('click', googleSignIn);
   window.googleSignIn = googleSignIn;
-
-  // Handle return from Google redirect
-  window.auth.getRedirectResult().catch(err => console.error('Redirect result:', err));
 
   /* ── Sign Out ────────────────────────────────────────────── */
   $('btnSignOut')?.addEventListener('click', async () => {
