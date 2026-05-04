@@ -473,8 +473,15 @@
     const el = document.getElementById('allUsersTbl');
     if (!el) return;
 
-    const users      = window.allUsers ?? [];
-    const ownerEmail = window.OWNER || '';
+    /* deduplicate by email — keep first occurrence */
+    const seen  = new Set();
+    const users = (window.allUsers ?? []).filter(u => {
+      if (!u.email || seen.has(u.email)) return false;
+      seen.add(u.email);
+      return true;
+    });
+
+    const ownerEmail  = window.OWNER || '';
     const adminEmails = new Set((window.admins ?? []).map(a => a.email));
 
     if (!users.length) {
@@ -484,6 +491,7 @@
 
     const rows = users.map(u => {
       const email = u.email || '';
+      const docId = u.id   || '';          /* actual Firestore document ID */
       const name  = u.displayName || u.name || '—';
       const role  = email === ownerEmail ? 'owner'
                   : adminEmails.has(email) ? 'admin'
@@ -493,7 +501,7 @@
       const isMe = email === (window.currentUser?.email || '');
 
       return `
-        <tr data-email="${U.esc(email)}">
+        <tr>
           <td class="ut-name">${U.esc(name)}</td>
           <td class="ut-email">${U.esc(email)}</td>
           <td class="ut-role">
@@ -509,7 +517,10 @@
           <td class="ut-stat">${modelsRead || '<span class="stat-zero">0</span>'}</td>
           <td class="ut-act">
             ${!isMe && role !== 'owner'
-              ? `<button class="btn-remove-user" data-email="${U.esc(email)}" title="Remove user">
+              ? `<button class="btn-remove-user"
+                   data-email="${U.esc(email)}"
+                   data-docid="${U.esc(docId)}"
+                   title="Remove user">
                   <span class="material-symbols-outlined">person_remove</span>
                  </button>`
               : ''}
@@ -535,7 +546,7 @@
 
     /* remove */
     el.querySelectorAll('.btn-remove-user').forEach(btn => {
-      btn.addEventListener('click', () => _removeUser(btn.dataset.email));
+      btn.addEventListener('click', () => _removeUser(btn.dataset.email, btn.dataset.docid));
     });
   }
 
@@ -567,24 +578,41 @@
     }
   }
 
-  async function _removeUser(email) {
+  async function _removeUser(email, docId) {
     if (!confirm(`Remove ${email}? They will no longer appear in the app.`)) return;
     const db = window.db;
-    const ek = email.replace(/\./g, '_');
-    try {
-      await db.collection('users').doc(ek).update({
-        status:    'removed',
-        removedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        removedBy: window.currentUser?.email || '',
-      });
-      await db.collection('admins').doc(email).delete().catch(() => {});
+    const payload = {
+      status:    'removed',
+      removedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      removedBy: window.currentUser?.email || '',
+    };
+    let ok = false;
+    /* try with the actual doc ID first, then fallback to computed keys */
+    const candidates = [...new Set([
+      docId,
+      email.replace(/\./g, '_'),
+      email.replace(/\./g, ','),
+    ])].filter(Boolean);
+
+    for (const id of candidates) {
+      try {
+        await db.collection('users').doc(id).set(payload, { merge: true });
+        ok = true;
+        break;
+      } catch (err) {
+        console.warn('_removeUser attempt', id, err.code);
+      }
+    }
+
+    await db.collection('admins').doc(email).delete().catch(() => {});
+
+    if (ok) {
       window.allUsers = (window.allUsers ?? []).filter(u => u.email !== email);
       window.admins   = (window.admins   ?? []).filter(a => a.email !== email);
       showToast(`${email} removed.`);
       renderSettings();
-    } catch (err) {
-      console.error('_removeUser:', err.code, err.message);
-      showToast('Failed to remove user: ' + (err.code || err.message), 'err');
+    } else {
+      showToast('Failed to remove user. Check Firestore rules.', 'err');
     }
   }
 
