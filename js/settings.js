@@ -392,6 +392,8 @@
   // ═══════════════════════════════════════════════════════════
 
   function renderSettings() {
+    _renderProfile();
+
     const ownerSet  = document.getElementById('ownerSet');
     const readerSet = document.getElementById('readerSet');
 
@@ -404,9 +406,44 @@
       _bindResetReads();
     } else {
       if (ownerSet)  ownerSet.style.display  = 'none';
-      if (readerSet) readerSet.style.display = '';
-      setupReaderSettings();
+      if (readerSet) readerSet.style.display = 'none';
     }
+  }
+
+  function _renderProfile() {
+    const el = document.getElementById('profileSection');
+    if (!el) return;
+
+    const user  = window.currentUser;
+    const name  = user?.displayName || user?.email?.split('@')[0] || '—';
+    const email = user?.email || '—';
+    const ek    = U.ek();
+
+    const textsRead = (window.texts ?? []).filter(t => (t.readCounts?.[ek] ?? 0) > 0).length;
+    const vidsWatch = (window.videos ?? []).filter(v => (v.readCounts?.[ek] ?? 0) > 0).length;
+    const joinDate  = window.userJoinDate
+      ? window.userJoinDate.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })
+      : '—';
+
+    el.innerHTML = `
+      <div class="profile-card">
+        <div class="profile-av-lg">${U.esc(name.charAt(0).toUpperCase())}</div>
+        <div class="profile-info">
+          <h2 class="profile-name">${U.esc(name)}</h2>
+          <p class="profile-email">${U.esc(email)}</p>
+          <p class="profile-joined">Member since ${U.esc(joinDate)}</p>
+        </div>
+        <div class="profile-stats">
+          <div class="pstat">
+            <span class="pstat-val">${textsRead}</span>
+            <span class="pstat-lbl">Texts read</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val">${vidsWatch}</span>
+            <span class="pstat-lbl">Videos watched</span>
+          </div>
+        </div>
+      </div>`;
   }
 
   function _renderPendingRequests() {

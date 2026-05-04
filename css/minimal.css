@@ -1797,3 +1797,64 @@
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .vid-grid, .lib-grid { grid-template-columns: 1fr; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PROFILE SECTION
+───────────────────────────────────────────────────────────── */
+
+.profile-card {
+  display:       flex;
+  align-items:   center;
+  gap:           24px;
+  background:    var(--bg-1);
+  border:        1px solid var(--rule);
+  border-radius: 12px;
+  padding:       28px 32px;
+  margin-bottom: 32px;
+  flex-wrap:     wrap;
+}
+
+.profile-av-lg {
+  width:           64px;
+  height:          64px;
+  border-radius:   50%;
+  background:      var(--pri);
+  color:           #fff;
+  font-size:       1.6rem;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+}
+
+.profile-info { flex: 1; min-width: 160px; }
+
+.profile-name   { font-size: 1.2rem; font-weight: 700; margin: 0 0 4px; }
+.profile-email  { font-size: 0.82rem; color: var(--ink-2); margin: 0 0 4px; }
+.profile-joined { font-size: 0.78rem; color: var(--ink-3); margin: 0; }
+
+.profile-stats {
+  display: flex;
+  gap:     24px;
+}
+
+.pstat {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            2px;
+}
+
+.pstat-val {
+  font-size:   1.6rem;
+  font-weight: 700;
+  color:       var(--pri);
+  line-height: 1;
+}
+
+.pstat-lbl {
+  font-size: 0.72rem;
+  color:     var(--ink-3);
+  white-space: nowrap;
+}

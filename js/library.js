@@ -402,7 +402,7 @@ ${mdHtmlCache}
      VIDEOS
      ══════════════════════════════════════════════════════════ */
 
-  let vSort='date', vDir=1, vTagA=null;
+  let vSort='date', vDir=1, vTagA=null, vPersonF='';
   let editVidId=null;
 
   function renderVideos() {
@@ -411,15 +411,17 @@ ${mdHtmlCache}
 
     let items = (window.videos??[]).filter(v => {
       if (v.hidden && !isOwner()) return false;
-      if (vTagA && !(v.tags??[]).includes(vTagA)) return false;
+      if (vTagA    && !(v.tags??[]).includes(vTagA)) return false;
+      if (vPersonF && !(v.persons??[]).includes(vPersonF)) return false;
       const q = ($('vidSearch')?.value ?? '').toLowerCase();
-      if (q && !`${v.title} ${v.channel}`.toLowerCase().includes(q)) return false;
+      if (q && !`${v.title} ${v.channel} ${(v.persons??[]).join(' ')}`.toLowerCase().includes(q)) return false;
       return true;
     });
 
     items = _sortItems(items, vSort, vDir);
     buildTagStrip('vidTagStrip', window.videos??[], vTagA,
       v => { vTagA = v; }, renderVideos);
+    updatePersonFilter();
     renderUB('vidUB', items, 'videos');
 
     el.innerHTML = '';
@@ -448,7 +450,7 @@ ${mdHtmlCache}
           ${(v.persons??[]).map(p=>`<span class="vid-person">${esc(p)}</span>`).join('')}
         </div>
         <div class="card-actions">
-          <button class="act-btn ${v.notes?'':'dim'}" title="Notes" data-act="notes">
+          <button class="act-btn" title="Notes" data-act="notes">
             <span class="material-symbols-outlined">description</span></button>
           <button class="act-btn read-toggle" title="${read?'Mark unread':'Mark read'}" data-act="read">
             <span class="material-symbols-outlined">${read?'check_circle':'radio_button_unchecked'}</span>
@@ -472,7 +474,7 @@ ${mdHtmlCache}
       if (!btn) return;
       e.stopPropagation();
       const act = btn.dataset.act;
-      if (act==='notes') { if (v.notes) openMdViewer(v.id, 'videos'); }
+      if (act==='notes') { v.notes ? openMdViewer(v.id, 'videos') : window.showToast?.('No notes yet. Edit the video to add notes.'); }
       if (act==='read') toggleRead(v.id,'videos');
       if (act==='rate') openRateModal(v.id,'videos');
       if (act==='edit') openEditVid(v.id);
@@ -502,7 +504,8 @@ ${mdHtmlCache}
     _v('vPersons', (v.persons??[]).join(', '));
     _v('vSeries',  v.series  ?? '');
     _v('vSummary', v.summary ?? '');
-    _v('vNotes',   v.notes   ?? '');
+    _v('vNotes',      v.notes      ?? '');
+    _v('vUploadDate', v.uploadDate ?? '');
     _v('vTags',    (v.tags??[]).join(', '));
     _v('vThumb', v.thumbnailUrl ?? '');
   }
@@ -523,7 +526,8 @@ ${mdHtmlCache}
       persons:      ($('vPersons')?.value??'').split(',').map(s=>s.trim()).filter(Boolean),
       series:       $('vSeries')?.value.trim()  || '',
       summary:      $('vSummary')?.value        || '',
-      notes:        $('vNotes')?.value          || '',
+      notes:        $('vNotes')?.value       || '',
+      uploadDate:   $('vUploadDate')?.value  || '',
       tags:         ($('vTags')?.value??'').split(',').map(s=>s.trim()).filter(Boolean),
       thumbnailUrl: $('vThumb')?.value.trim()   || ytThumb($('vLink')?.value.trim()),
     };
@@ -541,6 +545,15 @@ ${mdHtmlCache}
       window.closeModal?.('ov-video');
       renderVideos();
     } catch(e) { window.showToast?.('Save failed.'); }
+  }
+
+  function updatePersonFilter() {
+    const sel = $('vidPersonF');
+    if (!sel) return;
+    const cur     = sel.value;
+    const persons = [...new Set((window.videos??[]).flatMap(v=>v.persons??[]).filter(Boolean))].sort();
+    sel.innerHTML = `<option value="">All persons</option>`
+      + persons.map(p=>`<option ${p===cur?'selected':''} value="${esc(p)}">${esc(p)}</option>`).join('');
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -884,8 +897,10 @@ ${mdHtmlCache}
       if (sortKey==='order') { av=a.order??Infinity; bv=b.order??Infinity; }
       else if (sortKey==='date') { av=toDate(a.createdAt)??0; bv=toDate(b.createdAt)??0; }
       else if (sortKey==='title') { av=(a.title??'').toLowerCase(); bv=(b.title??'').toLowerCase(); }
-      else if (sortKey==='reads') { av=myRC(a); bv=myRC(b); }
-      else if (sortKey==='rating') { av=myRating(a); bv=myRating(b); }
+      else if (sortKey==='reads')      { av=myRC(a);    bv=myRC(b); }
+      else if (sortKey==='rating')     { av=myRating(a); bv=myRating(b); }
+      else if (sortKey==='persons')    { av=(a.persons??[])[0]?.toLowerCase()??''; bv=(b.persons??[])[0]?.toLowerCase()??''; }
+      else if (sortKey==='uploadDate') { av=a.uploadDate??''; bv=b.uploadDate??''; }
       else { av=0; bv=0; }
       if (av<bv) return -dir;
       if (av>bv) return dir;
@@ -922,8 +937,9 @@ ${mdHtmlCache}
     });
 
     // Sort selects
-    $('txtSort')?.addEventListener('change', e => { tSort=e.target.value; renderTexts(); });
-    $('vidSort')?.addEventListener('change', e => { vSort=e.target.value; renderVideos(); });
+    $('txtSort')?.addEventListener('change',    e => { tSort=e.target.value;    renderTexts(); });
+    $('vidSort')?.addEventListener('change',    e => { vSort=e.target.value;    renderVideos(); });
+    $('vidPersonF')?.addEventListener('change', e => { vPersonF=e.target.value; renderVideos(); });
     $('modelSort')?.addEventListener('change', e => { mSort=e.target.value; renderModels(); });
 
     // Sort direction toggles

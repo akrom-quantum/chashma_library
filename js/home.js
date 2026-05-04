@@ -79,15 +79,15 @@
     memory: { label: 'Memory', icon: 'auto_stories', color: 'badge-memory' },
   };
 
-  /* ── Open item (delegates to overlays) ───────────────────── */
+  /* ── Open item ───────────────────────────────────────────── */
   function openItem(item) {
     const t = item._type;
-    if (t === 'model') {
-      window.openModelViewer?.(item);
-    } else if (t === 'text' && item.notes) {
-      window.openMdViewer?.(item);
-    } else {
-      window.openDetail?.(item);
+    if (t === 'text') {
+      if (item.link) window.open(item.link, '_blank', 'noopener,noreferrer');
+    } else if (t === 'video') {
+      if (item.link) window.open(item.link, '_blank', 'noopener,noreferrer');
+    } else if (t === 'model') {
+      window.openModelViewer?.(item.id);
     }
   }
 
@@ -96,7 +96,6 @@
      ═══════════════════════════════════════════════════════════ */
   function renderHome() {
     _renderGreet();
-    _renderStats();
     renderContinueReading();
     renderRecentlyAdded();
     renderHeatmaps();

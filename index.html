@@ -165,13 +165,6 @@
         <h1 id="homeGreet"></h1>
         <p id="homeSub"></p>
 
-        <div class="stat-grid">
-          <div class="stat-card"></div>
-          <div class="stat-card"></div>
-          <div class="stat-card"></div>
-          <div class="stat-card"></div>
-        </div>
-
         <div id="continueReading"></div>
         <div id="recentlyAdded"></div>
 
@@ -245,11 +238,14 @@
               <span class="material-symbols-outlined">search</span>
               <input id="vidSearch" type="text" placeholder="Search videos…">
             </div>
+            <select id="vidPersonF" class="sort-sel"></select>
             <select id="vidSort" class="sort-sel">
               <option value="date">Date added</option>
               <option value="title">Title</option>
               <option value="reads">Watched</option>
               <option value="rating">Rating</option>
+              <option value="persons">Person</option>
+              <option value="uploadDate">Upload date</option>
             </select>
             <button class="sort-dir" id="vidDir" data-dir="1">↑</button>
           </div>
@@ -330,6 +326,7 @@
 
       <!-- ── Settings Page ── -->
       <section id="page-settings" class="page" aria-label="Settings" hidden>
+        <div id="profileSection"></div>
         <div id="ownerSet" hidden></div>
         <div id="readerSet" hidden></div>
         <div class="settings-section settings-appearance"></div>
@@ -476,7 +473,8 @@
         <input type="hidden" id="vThumb" />
         <input type="text" id="vTitle"   placeholder="Title" />
         <input type="text" id="vChannel" placeholder="Channel" />
-        <input type="text" id="vPersons" placeholder="Persons featured" />
+        <input type="text" id="vPersons" placeholder="Persons featured (comma-separated)" />
+        <input type="date" id="vUploadDate" />
         <input type="text" id="vSeries"  placeholder="Series" />
         <textarea id="vSummary" placeholder="Summary…"></textarea>
         <textarea id="vNotes"   placeholder="Notes (Obsidian Markdown)…"></textarea>
