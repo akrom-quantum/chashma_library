@@ -45,6 +45,7 @@ window.setupListeners = function () {
       updateCounts();
       refreshActivePage('library-texts');
       refreshActivePage('home');
+      window.updateMyStreak?.();
     }, err => console.warn('texts listener:', err));
 
   /* ── videos ── */

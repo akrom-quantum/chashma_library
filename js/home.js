@@ -102,6 +102,7 @@
     renderHeatmaps();
     renderHomeStreaks();
     renderLbPreview();
+    updateMyStreak();
   }
 
   /* ── Greeting ────────────────────────────────────────────── */
@@ -352,14 +353,13 @@
     renderHeatmap('globalHm', globalAct, false);
   }
 
-  // Produce synthetic per-date read events from readCounts
-  // If item has readDates map use it; else attribute all reads to createdAt date
+  // Produce synthetic per-date read events from readCounts.
+  // For heatmap use only (createdAt fallback is ok there).
   function _readDates(item) {
     const out = [];
     const rcs = item.readCounts ?? {};
 
     if (item.readDates && typeof item.readDates === 'object') {
-      // readDates: { encodedEmail: { 'YYYY-MM-DD': count } }
       Object.entries(item.readDates).forEach(([userEk, days]) => {
         Object.entries(days).forEach(([date, count]) => {
           out.push({ date, userEk, count });
@@ -368,12 +368,31 @@
       return out;
     }
 
-    // Fallback: attribute each user's reads to createdAt date
+    // Fallback for heatmap: attribute to item creation date
     const date = ymd(item.createdAt) || ymd(new Date());
     Object.entries(rcs).forEach(([userEk, count]) => {
       if (count > 0) out.push({ date, userEk, count });
     });
     return out;
+  }
+
+  // Per-user days Set used for streak computation.
+  // Uses readDates when available; for legacy items without readDates,
+  // marks TODAY so historical reads still produce a non-zero streak.
+  function _userReadDays(userEk) {
+    const days = new Set();
+    const today = ymd(new Date());
+
+    allItems().forEach(item => {
+      const rd = item.readDates?.[userEk];
+      if (rd && typeof rd === 'object') {
+        Object.keys(rd).forEach(d => days.add(d));
+      } else if ((item.readCounts?.[userEk] ?? 0) > 0) {
+        // Legacy read: we don't know the date — credit today so streak ≥ 1
+        days.add(today);
+      }
+    });
+    return days;
   }
 
   /* ═══════════════════════════════════════════════════════════
@@ -546,12 +565,15 @@
      computeLb(items) — exported
      ═══════════════════════════════════════════════════════════ */
   function computeLb(items) {
-    const users   = window.allUsers ?? [];
-    const totals  = {}; // encodedEmail → total
+    const users      = window.allUsers ?? [];
+    const knownEmails = new Set(users.map(u => u.email).filter(Boolean));
+    const totals     = {};
 
     items.forEach(item => {
       const rcs = item.readCounts ?? {};
       Object.entries(rcs).forEach(([ek, count]) => {
+        const email = ek.replace(/,/g, '.');
+        if (!knownEmails.has(email)) return; // skip removed / unknown users
         totals[ek] = (totals[ek] ?? 0) + (count || 0);
       });
     });
@@ -568,59 +590,53 @@
   /* ═══════════════════════════════════════════════════════════
      computeStreaks() — exported
      ═══════════════════════════════════════════════════════════ */
-  function computeStreaks() {
-    const users = window.allUsers ?? [];
-    const items = allItems();
-
-    // Build userDays: encodedEmail → Set of 'YYYY-MM-DD' strings with ≥1 read
-    const userDays = {};
-
-    items.forEach(item => {
-      const dates = _readDates(item);
-      dates.forEach(({ date, userEk, count }) => {
-        if (count > 0) {
-          if (!userDays[userEk]) userDays[userEk] = new Set();
-          userDays[userEk].add(date);
-        }
-      });
-    });
-
+  function _calcStreak(days) {
+    if (!days || !days.size) return 0;
     const todayStr     = ymd(new Date());
     const yesterdayStr = ymd(new Date(Date.now() - 86_400_000));
+    const sorted       = [...days].sort().reverse();
+    if (sorted[0] !== todayStr && sorted[0] !== yesterdayStr) return 0;
+    let streak = 1, cur = sorted[0];
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = ymd(new Date(new Date(cur).getTime() - 86_400_000));
+      if (sorted[i] === prev) { streak++; cur = sorted[i]; } else break;
+    }
+    return streak;
+  }
 
-    const result = users.map(u => {
-      const ek   = emailKey(u.email);
-      const days = userDays[ek];
+  function computeStreaks() {
+    const users = window.allUsers ?? [];
+    return users
+      .map(u => {
+        const ek     = emailKey(u.email);
+        const days   = _userReadDays(ek);
+        const streak = _calcStreak(days);
+        return { name: u.name ?? u.displayName ?? '', email: u.email, streak };
+      })
+      .sort((a, b) => b.streak - a.streak);
+  }
 
-      if (!days || !days.size) return { name: u.name ?? u.displayName ?? '', email: u.email, streak: 0 };
+  /* ═══════════════════════════════════════════════════════════
+     updateMyStreak — updates ddStreak in profile dropdown
+     Called after home data loads so streak reflects real reads.
+     ═══════════════════════════════════════════════════════════ */
+  function updateMyStreak() {
+    const ek     = emailKey();
+    const days   = _userReadDays(ek);
+    const streak = _calcStreak(days);
 
-      const sorted = [...days].sort().reverse(); // newest first
-      // Only count if active today or yesterday
-      if (sorted[0] !== todayStr && sorted[0] !== yesterdayStr) {
-        return { name: u.name ?? u.displayName ?? '', email: u.email, streak: 0 };
-      }
-
-      let streak  = 1;
-      let current = sorted[0];
-
-      for (let i = 1; i < sorted.length; i++) {
-        const prev = ymd(new Date(new Date(current).getTime() - 86_400_000));
-        if (sorted[i] === prev) {
-          streak++;
-          current = sorted[i];
-        } else {
-          break;
-        }
-      }
-
-      return { name: u.name ?? u.displayName ?? '', email: u.email, streak };
-    });
-
-    return result.sort((a, b) => b.streak - a.streak);
+    const ddStreak = document.getElementById('ddStreak');
+    if (ddStreak) {
+      ddStreak.innerHTML =
+        `<span class="material-symbols-outlined">local_fire_department</span>` +
+        `<span>${streak} day${streak !== 1 ? 's' : ''}</span>`;
+    }
+    return streak;
   }
 
   /* ── Exports ─────────────────────────────────────────────── */
   window.renderHome     = renderHome;
   window.computeLb      = computeLb;
   window.computeStreaks  = computeStreaks;
+  window.updateMyStreak = updateMyStreak;
 })();
