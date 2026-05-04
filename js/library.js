@@ -60,6 +60,36 @@
     return Object.values(item?.readCounts ?? {}).reduce((a,b)=>a+(b||0),0);
   }
 
+  /* ── Skeleton cards ─────────────────────────────────────── */
+  function _skelTxtCards(n = 5) {
+    return Array.from({ length: n }, () => `
+      <div class="skel-card">
+        <div class="skel skel-line" style="width:55%;margin-bottom:10px"></div>
+        <div class="skel skel-line" style="width:80%;margin-bottom:8px"></div>
+        <div class="skel skel-line" style="width:40%"></div>
+      </div>`).join('');
+  }
+
+  function _skelVidCards(n = 6) {
+    return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">` +
+      Array.from({ length: n }, () => `
+        <div class="skel-vid-card">
+          <div class="skel skel-thumb"></div>
+          <div class="skel-vid-body">
+            <div class="skel skel-line" style="width:90%;margin-bottom:8px"></div>
+            <div class="skel skel-line" style="width:55%"></div>
+          </div>
+        </div>`).join('') + `</div>`;
+  }
+
+  function _skelModelCards(n = 5) {
+    return Array.from({ length: n }, () => `
+      <div class="skel-card">
+        <div class="skel skel-line" style="width:30%;margin-bottom:10px"></div>
+        <div class="skel skel-line" style="width:70%"></div>
+      </div>`).join('');
+  }
+
   /* ── Toggle read (writes directly to Firestore) ──────────── */
   async function toggleRead(id, colName) {
     const arr  = window[colName] ?? [];
@@ -169,6 +199,11 @@
     const el = $('textsRow') ?? $('textsList');
     if (!el) return;
 
+    if (!window._dataReady?.texts) {
+      el.innerHTML = _skelTxtCards(5);
+      return;
+    }
+
     let items = (window.texts ?? []).filter(t => {
       if (t.hidden && !isOwner()) return false;
       if (tFilter !== 'all' && t.platform !== tFilter) return false;
@@ -212,6 +247,11 @@
 
     queue.forEach((entry, i) => {
       if (entry.type === 'series') {
+        const readInSeries  = entry.arr.filter(t => myRC(t) > 0).length;
+        const totalInSeries = entry.arr.length;
+        const allDone       = readInSeries === totalInSeries;
+        const pct           = totalInSeries ? Math.round((readInSeries / totalInSeries) * 100) : 0;
+
         const grp = document.createElement('div');
         grp.className = 'series-group';
         grp.innerHTML = `
@@ -219,6 +259,12 @@
             <span class="material-symbols-outlined series-chevron">expand_more</span>
             <span class="series-name">${esc(entry.series)}</span>
             <span class="series-count">${entry.arr.length}</span>
+            <span class="series-prog-bar" title="${readInSeries}/${totalInSeries} read">
+              <div class="series-prog-track">
+                <div class="series-prog-fill" style="width:${pct}%"></div>
+              </div>
+              <span class="series-progress ${allDone ? 'done' : ''}">${readInSeries}/${totalInSeries}</span>
+            </span>
           </div>
           <div class="series-body"></div>`;
         const body = qs('.series-body', grp);
@@ -409,6 +455,11 @@ ${mdHtmlCache}
     const el = $('videosGrid') ?? $('videosList');
     if (!el) return;
 
+    if (!window._dataReady?.videos) {
+      el.innerHTML = _skelVidCards(6);
+      return;
+    }
+
     let items = (window.videos??[]).filter(v => {
       if (v.hidden && !isOwner()) return false;
       if (vTagA    && !(v.tags??[]).includes(vTagA)) return false;
@@ -567,6 +618,11 @@ ${mdHtmlCache}
   function renderModels() {
     const el = $('modelsList');
     if (!el) return;
+
+    if (!window._dataReady?.models) {
+      el.innerHTML = _skelModelCards(5);
+      return;
+    }
 
     let items = (window.models??[]).filter(m => {
       if (mFilter !== 'all' && m.type !== mFilter) return false;

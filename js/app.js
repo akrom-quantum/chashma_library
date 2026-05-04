@@ -18,6 +18,7 @@ window.userJoinDate   = null;
 window.notifications  = [];
 window.currentUser    = null;
 window.userRole       = 'reader';
+window._dataReady     = { texts: false, videos: false, models: false, memories: false };
 
 /* ----------------------------------------------------------
    SAFE HELPERS — never call Utils at module parse time
@@ -39,6 +40,7 @@ window.setupListeners = function () {
   window.unsubs.texts = db.collection('texts')
     .orderBy('createdAt', 'desc')
     .onSnapshot(snap => {
+      window._dataReady.texts = true;
       window.texts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateCounts();
       refreshActivePage('library-texts');
@@ -49,6 +51,7 @@ window.setupListeners = function () {
   window.unsubs.videos = db.collection('videos')
     .orderBy('createdAt', 'desc')
     .onSnapshot(snap => {
+      window._dataReady.videos = true;
       window.videos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateCounts();
       refreshActivePage('library-videos');
@@ -59,6 +62,7 @@ window.setupListeners = function () {
   window.unsubs.models = db.collection('models')
     .orderBy('order', 'asc')
     .onSnapshot(snap => {
+      window._dataReady.models = true;
       window.models = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateCounts();
       refreshActivePage('library-models');
@@ -69,6 +73,7 @@ window.setupListeners = function () {
   window.unsubs.memories = db.collection('memories')
     .orderBy('createdAt', 'desc')
     .onSnapshot(snap => {
+      window._dataReady.memories = true;
       window.memories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateCounts();
       refreshActivePage('memories');

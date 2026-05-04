@@ -150,6 +150,109 @@
   }
 
   // ═══════════════════════════════════════════════════════════
+  // GLOBAL SEARCH
+  // ═══════════════════════════════════════════════════════════
+
+  const GS_ICONS = {
+    texts:    'article',
+    videos:   'play_circle',
+    models:   'psychology',
+    memories: 'auto_stories',
+  };
+
+  function _bindGlobalSearch() {
+    const btn = document.getElementById('globalSearchBtn');
+    const ov  = document.getElementById('globalSearch');
+    const inp = document.getElementById('gsInput');
+    if (!btn || !ov || !inp) return;
+
+    const open  = () => { ov.classList.add('open'); inp.value = ''; _gsRender('', document.getElementById('gsResults')); requestAnimationFrame(() => inp.focus()); };
+    const close = () => ov.classList.remove('open');
+
+    btn.addEventListener('click', e => { e.stopPropagation(); open(); });
+    document.getElementById('gsClose')?.addEventListener('click', close);
+    ov.addEventListener('click', e => { if (e.target === ov) close(); });
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); ov.classList.contains('open') ? close() : open(); }
+      if (e.key === 'Escape' && ov.classList.contains('open')) close();
+    });
+
+    inp.addEventListener('input', () => {
+      const res = document.getElementById('gsResults');
+      if (res) _gsRender(inp.value.trim(), res);
+    });
+  }
+
+  function _gsRender(q, res) {
+    if (!res) return;
+    if (!q || q.length < 2) { res.innerHTML = ''; return; }
+
+    const ql = q.toLowerCase();
+    const U  = window.Utils;
+
+    const colls = [
+      { key: 'texts',    label: 'Texts',    items: window.texts    || [] },
+      { key: 'videos',   label: 'Videos',   items: window.videos   || [] },
+      { key: 'models',   label: 'Models',   items: window.models   || [] },
+      { key: 'memories', label: 'Memories', items: window.memories || [] },
+    ];
+
+    let html = '';
+    let anyResults = false;
+
+    colls.forEach(({ key, label, items }) => {
+      const matches = items.filter(item => {
+        return [item.title, item.author, item.channel, item.series,
+                item.field, item.description, (item.tags||[]).join(' ')]
+          .join(' ').toLowerCase().includes(ql);
+      }).slice(0, 4);
+
+      if (!matches.length) return;
+      anyResults = true;
+
+      html += `<div class="gs-group-label">${U.esc(label)}</div>`;
+      matches.forEach(item => {
+        const sub  = item.author || item.channel || item.field || '';
+        const icon = GS_ICONS[key] || 'description';
+        html += `
+          <div class="gs-result" data-col="${key}" data-id="${U.esc(item.id)}">
+            <span class="gs-result-icon material-symbols-outlined">${icon}</span>
+            <div class="gs-result-body">
+              <div class="gs-result-title">${U.highlightText(item.title || 'Untitled', q)}</div>
+              ${sub ? `<div class="gs-result-sub">${U.esc(sub)}</div>` : ''}
+            </div>
+          </div>`;
+      });
+    });
+
+    if (!anyResults) {
+      res.innerHTML = `<p class="gs-empty">No results for "<strong>${U.esc(q)}</strong>"</p>`;
+      return;
+    }
+
+    res.innerHTML = html;
+
+    res.querySelectorAll('.gs-result').forEach(el => {
+      el.addEventListener('click', () => {
+        const col = el.dataset.col;
+        const id  = el.dataset.id;
+        document.getElementById('globalSearch')?.classList.remove('open');
+
+        if (col === 'models') {
+          window.openModelViewer?.(id);
+        } else if (col === 'texts' || col === 'videos') {
+          const libMap = { texts: 'texts', videos: 'videos' };
+          window.switchTab?.('library');
+          setTimeout(() => { window.renderLibSub?.(libMap[col]); }, 50);
+        } else if (col === 'memories') {
+          window.switchTab?.('memories');
+        }
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
   // NOTIFICATIONS
   // ═══════════════════════════════════════════════════════════
 
@@ -687,10 +790,63 @@
           </div>
         </div>
         <p id="acctMsg" class="acct-msg"></p>
+      </div>
+
+      <div class="account-edit" style="margin-top:8px">
+        <h3 class="set-heading">Data Export</h3>
+        <p style="font-size:.82rem;color:var(--ink-3);margin-bottom:10px">
+          Download your personal reading history as a spreadsheet.
+        </p>
+        <button id="btnExportHistory" class="btn-export">
+          <span class="material-symbols-outlined" style="font-size:16px">download</span>
+          Export reading history (.tsv)
+        </button>
       </div>`;
 
     document.getElementById('btnSaveName')?.addEventListener('click', _saveName);
     document.getElementById('btnSavePass')?.addEventListener('click', _savePassword);
+    document.getElementById('btnExportHistory')?.addEventListener('click', _exportReadingHistory);
+  }
+
+  function _exportReadingHistory() {
+    const ek = (window.currentUser?.email || '').replace(/\./g, ',');
+    if (!ek) { showToast('Not signed in.', 'err'); return; }
+
+    const rows = [];
+    const colls = [
+      { name: 'texts',  type: 'Text'  },
+      { name: 'videos', type: 'Video' },
+      { name: 'models', type: 'Model' },
+    ];
+
+    colls.forEach(({ name, type }) => {
+      (window[name] || []).forEach(item => {
+        const rc = item.readCounts?.[ek] || 0;
+        if (rc < 1) return;
+        rows.push({
+          type,
+          title:    item.title  || '',
+          author:   item.author || item.channel || '',
+          series:   item.series || '',
+          field:    item.field  || '',
+          reads:    rc,
+          rating:   (item.ratings || {})[ek] || '',
+          tags:     (item.tags || []).join(', '),
+        });
+      });
+    });
+
+    if (!rows.length) { showToast('Nothing to export — mark some items as read first.', 'err'); return; }
+
+    const tsv  = window.Utils.toTsv(rows);
+    const blob = new Blob([tsv], { type: 'text/tab-separated-values' });
+    const a    = Object.assign(document.createElement('a'), {
+      href:     URL.createObjectURL(blob),
+      download: 'chashma-reading-history.tsv',
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(`Exported ${rows.length} items.`);
   }
 
   async function _saveName() {
@@ -1004,6 +1160,7 @@
   function _init() {
     _bindModals();
     _bindDropdowns();
+    _bindGlobalSearch();
     _bindNotifs();
     _bindReadAgain();
     _bindRateModal();

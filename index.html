@@ -127,6 +127,11 @@
           <span class="dn" id="dayNum"></span>
         </div>
 
+        <!-- Global Search -->
+        <button id="globalSearchBtn" aria-label="Search (Ctrl+K)">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+
         <!-- Theme Toggle -->
         <button id="themeBtn" aria-label="Toggle theme">
           <span class="material-symbols-outlined">dark_mode</span>
@@ -182,6 +187,7 @@
         <p id="homeSub"></p>
 
         <div id="continueReading"></div>
+        <div id="homeGoal"></div>
         <div id="recentlyAdded"></div>
 
         <div id="homeHeatmaps">
@@ -374,6 +380,26 @@
   <!-- ═══════════════════════════════════════════
        OVERLAYS
   ════════════════════════════════════════════ -->
+
+  <!-- Global Search -->
+  <div id="globalSearch" class="global-search-ov" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="gs-wrap">
+      <div class="gs-input-row">
+        <span class="material-symbols-outlined">search</span>
+        <input id="gsInput" type="text" placeholder="Search everything…" autocomplete="off" spellcheck="false">
+        <button id="gsClose" aria-label="Close search">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div id="gsResults"></div>
+      <div class="gs-hint">
+        <span><kbd>↑↓</kbd> navigate</span>
+        <span><kbd>Enter</kbd> open</span>
+        <span><kbd>Esc</kbd> close</span>
+        <span><kbd>Ctrl K</kbd> toggle</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Memory Writer Overlay -->
   <div id="memWriter" class="mem-writer-ov" aria-label="Memory writer" role="dialog" aria-modal="true">

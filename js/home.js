@@ -97,6 +97,7 @@
   function renderHome() {
     _renderGreet();
     renderContinueReading();
+    renderWeeklyGoal();
     renderRecentlyAdded();
     renderHeatmaps();
     renderHomeStreaks();
@@ -142,6 +143,87 @@
       const pctEl  = $(`stat-${key}-pct`);
       if (barEl) barEl.style.width = `${pct}%`;
       if (pctEl) pctEl.textContent = `${pct}%`;
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     WEEKLY GOAL
+     ═══════════════════════════════════════════════════════════ */
+
+  function _weekStart() {
+    const today = new Date();
+    const day   = today.getDay();
+    const diff  = day === 0 ? -6 : 1 - day;
+    const mon   = new Date(today);
+    mon.setDate(today.getDate() + diff);
+    return mon.toISOString().slice(0, 10);
+  }
+
+  function _readsThisWeek() {
+    const ek  = emailKey();
+    const ws  = _weekStart();
+    let total = 0;
+    [...(window.texts||[]), ...(window.videos||[]), ...(window.models||[])].forEach(item => {
+      const rd = item.readDates?.[ek];
+      if (rd) {
+        Object.entries(rd).forEach(([date, n]) => { if (date >= ws) total += (n || 0); });
+      } else if ((item.readCounts?.[ek] ?? 0) > 0) {
+        // Fallback: no per-day data; count item as 1 read if ever read
+        // Only count if createdAt is this week (proxy for "recent")
+        const d = ymd(item.createdAt);
+        if (d && d >= ws) total += 1;
+      }
+    });
+    return total;
+  }
+
+  function renderWeeklyGoal() {
+    const el = $('homeGoal');
+    if (!el) return;
+
+    const GOAL_KEY = 'ch_weeklyGoal';
+    const goal     = parseInt(localStorage.getItem(GOAL_KEY) || '0', 10);
+
+    if (!goal) {
+      el.innerHTML = `
+        <div class="goal-widget">
+          <span class="goal-icon">🎯</span>
+          <div class="goal-info">
+            <div class="goal-title">Set a weekly reading goal</div>
+            <p class="goal-meta">Track how many items you read each week.</p>
+          </div>
+          <button class="goal-edit-btn" id="btnSetGoal">Set goal</button>
+        </div>`;
+      $('btnSetGoal')?.addEventListener('click', () => {
+        const n = parseInt(prompt('Weekly reading goal (number of items):', '5') || '0', 10);
+        if (n > 0) { localStorage.setItem(GOAL_KEY, n); renderWeeklyGoal(); }
+      });
+      return;
+    }
+
+    const done = _readsThisWeek();
+    const pct  = Math.min(100, Math.round((done / goal) * 100));
+    const met  = done >= goal;
+
+    el.innerHTML = `
+      <div class="goal-widget${met ? ' goal-done' : ''}">
+        <span class="goal-icon">${met ? '🏆' : '🎯'}</span>
+        <div class="goal-info">
+          <div class="goal-title">${met ? 'Weekly goal reached!' : 'Weekly goal'}</div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar" style="width:${pct}%"></div>
+          </div>
+          <p class="goal-meta">${done} / ${goal} reads this week (${pct}%)</p>
+        </div>
+        <button class="goal-edit-btn" id="btnEditGoal">Edit</button>
+      </div>`;
+
+    $('btnEditGoal')?.addEventListener('click', () => {
+      const raw = prompt('Weekly reading goal (0 to remove):', goal);
+      if (raw === null) return;
+      const n = parseInt(raw, 10);
+      if (n > 0) { localStorage.setItem(GOAL_KEY, n); renderWeeklyGoal(); }
+      else       { localStorage.removeItem(GOAL_KEY); renderWeeklyGoal(); }
     });
   }
 
