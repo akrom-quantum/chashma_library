@@ -118,8 +118,6 @@
         <button class="nav-tab" data-tab="home">Home</button>
         <button class="nav-tab" data-tab="library">Library</button>
         <button class="nav-tab" data-tab="memories">Memories</button>
-        <button class="nav-tab" data-tab="insights">Insights</button>
-        <button class="nav-tab" data-tab="settings">Settings</button>
       </nav>
 
       <div class="topbar-right">
@@ -150,10 +148,24 @@
         <div class="profile-wrap">
           <button id="profileAv" aria-label="Profile menu"></button>
           <div id="profileDd" hidden>
-            <div id="ddAv"></div>
-            <span id="ddName"></span>
-            <span id="ddRole"></span>
-            <span id="ddStreak"></span>
+            <div class="dd-user-row">
+              <div id="ddAv" class="dd-av"></div>
+              <div class="dd-user-info">
+                <span id="ddName" class="dd-name"></span>
+                <span id="ddRole" class="dd-role"></span>
+              </div>
+            </div>
+            <div class="dd-divider"></div>
+            <button class="dd-item" data-goto="insights">
+              <span class="material-symbols-outlined">insights</span>Insights
+            </button>
+            <button class="dd-item" data-goto="settings">
+              <span class="material-symbols-outlined">manage_accounts</span>Settings
+            </button>
+            <div class="dd-divider"></div>
+            <button class="dd-item dd-signout" id="btnSignOut">
+              <span class="material-symbols-outlined">logout</span>Sign Out
+            </button>
           </div>
         </div>
 
@@ -353,14 +365,6 @@
       <button class="mn-item" data-tab="memories">
         <span class="material-symbols-outlined">psychology</span>
         <span>Memories</span>
-      </button>
-      <button class="mn-item" data-tab="insights">
-        <span class="material-symbols-outlined">insights</span>
-        <span>Insights</span>
-      </button>
-      <button class="mn-item" data-tab="settings">
-        <span class="material-symbols-outlined">settings</span>
-        <span>Settings</span>
       </button>
     </nav><!-- /.mobile-nav -->
 

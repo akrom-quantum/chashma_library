@@ -571,16 +571,23 @@
     if (!confirm(`Remove ${email}? This deletes their account data.`)) return;
     const db = window.db;
     const ek = email.replace(/\./g, '_');
+    let deleted = false;
     try {
-      await db.collection('users').doc(ek).delete().catch(() => {});
-      await db.collection('admins').doc(email).delete().catch(() => {});
+      await db.collection('users').doc(ek).delete();
+      deleted = true;
+    } catch (err) {
+      console.warn('_removeUser users delete:', err.code, err.message);
+    }
+    try {
+      await db.collection('admins').doc(email).delete();
+    } catch (_) {}
+    if (deleted) {
       window.allUsers = (window.allUsers ?? []).filter(u => u.email !== email);
       window.admins   = (window.admins   ?? []).filter(a => a.email !== email);
       showToast(`${email} removed.`);
       renderSettings();
-    } catch (err) {
-      console.error('_removeUser:', err);
-      showToast('Failed to remove user.', 'err');
+    } else {
+      showToast('Remove failed — check Firestore rules allow owner to delete users.', 'err');
     }
   }
 
@@ -617,7 +624,72 @@
             <span class="pstat-lbl">Videos watched</span>
           </div>
         </div>
+      </div>
+
+      <div class="account-edit">
+        <h3 class="set-heading">Account</h3>
+        <div class="acct-field">
+          <label class="acct-label">Full Name</label>
+          <div class="acct-row">
+            <input id="acctName" class="acct-input" type="text" value="${U.esc(name)}" />
+            <button id="btnSaveName" class="btn-save-acct">Save</button>
+          </div>
+        </div>
+        <div class="acct-field">
+          <label class="acct-label">Email</label>
+          <input class="acct-input acct-disabled" type="email" value="${U.esc(email)}" disabled />
+        </div>
+        <div class="acct-field">
+          <label class="acct-label">New Password</label>
+          <div class="acct-row">
+            <input id="acctPass" class="acct-input" type="password" placeholder="Min 6 characters" />
+            <button id="btnSavePass" class="btn-save-acct">Save</button>
+          </div>
+        </div>
+        <p id="acctMsg" class="acct-msg"></p>
       </div>`;
+
+    document.getElementById('btnSaveName')?.addEventListener('click', _saveName);
+    document.getElementById('btnSavePass')?.addEventListener('click', _savePassword);
+  }
+
+  async function _saveName() {
+    const name = document.getElementById('acctName')?.value.trim();
+    if (!name) { _acctMsg('Name cannot be empty.', true); return; }
+    try {
+      await window.auth.currentUser.updateProfile({ displayName: name });
+      const ek = (window.currentUser?.email || '').replace(/\./g, '_');
+      await window.db.collection('users').doc(ek).update({ name, displayName: name }).catch(() => {});
+      window.currentUser = window.auth.currentUser;
+      _acctMsg('Name updated.');
+      renderSettings();
+    } catch (err) {
+      _acctMsg('Failed: ' + (err.message || err.code), true);
+    }
+  }
+
+  async function _savePassword() {
+    const pass = document.getElementById('acctPass')?.value;
+    if (!pass || pass.length < 6) { _acctMsg('Password must be at least 6 characters.', true); return; }
+    try {
+      await window.auth.currentUser.updatePassword(pass);
+      document.getElementById('acctPass').value = '';
+      _acctMsg('Password updated.');
+    } catch (err) {
+      if (err.code === 'auth/requires-recent-login') {
+        _acctMsg('Sign out and sign back in first, then change password.', true);
+      } else {
+        _acctMsg('Failed: ' + (err.message || err.code), true);
+      }
+    }
+  }
+
+  function _acctMsg(msg, isErr = false) {
+    const el = document.getElementById('acctMsg');
+    if (!el) return;
+    el.textContent  = msg;
+    el.className    = 'acct-msg' + (isErr ? ' acct-err' : ' acct-ok');
+    setTimeout(() => { el.textContent = ''; el.className = 'acct-msg'; }, 4000);
   }
 
   function _renderPendingRequests() {
