@@ -65,7 +65,7 @@
 }
 
 /* Buttons inside auth */
-.auth-panel button {
+.auth-panel button:not(.auth-link) {
   display:        block;
   width:          100%;
   padding:        11px;
@@ -79,7 +79,7 @@
   transition:     opacity .15s ease, transform .15s ease;
 }
 
-.auth-panel button:hover {
+.auth-panel button:not(.auth-link):hover {
   opacity:   .9;
   transform: translateY(-1px);
 }

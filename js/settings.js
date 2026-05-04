@@ -398,16 +398,16 @@
     const readerSet = document.getElementById('readerSet');
 
     if (U.isOwner()) {
-      if (ownerSet)  ownerSet.style.display  = '';
-      if (readerSet) readerSet.style.display = 'none';
+      if (ownerSet)  { ownerSet.removeAttribute('hidden');  ownerSet.style.display  = ''; }
+      if (readerSet) { readerSet.setAttribute('hidden',''); readerSet.style.display = 'none'; }
       _ensureOwnerHtml();
       _renderAllUsers();
       _renderPendingRequests();
       _renderAdmins();
       _bindResetReads();
     } else {
-      if (ownerSet)  ownerSet.style.display  = 'none';
-      if (readerSet) readerSet.style.display = 'none';
+      if (ownerSet)  { ownerSet.setAttribute('hidden','');  ownerSet.style.display  = 'none'; }
+      if (readerSet) { readerSet.setAttribute('hidden',''); readerSet.style.display = 'none'; }
     }
   }
 
