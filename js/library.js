@@ -362,8 +362,9 @@
   /* ── MD Viewer ───────────────────────────────────────────── */
   let mdHtmlCache='', mdTitleCache='';
 
-  function openMdViewer(id) {
-    const t = (window.texts??[]).find(x=>x.id===id);
+  function openMdViewer(id, colName = 'texts') {
+    const arr = window[colName] ?? [];
+    const t   = arr.find(x => x.id === id);
     if (!t) return;
     const html = window.Utils?.parseMd(t.notes ?? '') ?? `<pre>${esc(t.notes??'')}</pre>`;
     mdHtmlCache  = html;
@@ -447,6 +448,8 @@ ${mdHtmlCache}
           ${(v.persons??[]).map(p=>`<span class="vid-person">${esc(p)}</span>`).join('')}
         </div>
         <div class="card-actions">
+          <button class="act-btn ${v.notes?'':'dim'}" title="Notes" data-act="notes">
+            <span class="material-symbols-outlined">description</span></button>
           <button class="act-btn read-toggle" title="${read?'Mark unread':'Mark read'}" data-act="read">
             <span class="material-symbols-outlined">${read?'check_circle':'radio_button_unchecked'}</span>
           </button>
@@ -469,6 +472,7 @@ ${mdHtmlCache}
       if (!btn) return;
       e.stopPropagation();
       const act = btn.dataset.act;
+      if (act==='notes') { if (v.notes) openMdViewer(v.id, 'videos'); }
       if (act==='read') toggleRead(v.id,'videos');
       if (act==='rate') openRateModal(v.id,'videos');
       if (act==='edit') openEditVid(v.id);
@@ -498,6 +502,7 @@ ${mdHtmlCache}
     _v('vPersons', (v.persons??[]).join(', '));
     _v('vSeries',  v.series  ?? '');
     _v('vSummary', v.summary ?? '');
+    _v('vNotes',   v.notes   ?? '');
     _v('vTags',    (v.tags??[]).join(', '));
     _v('vThumb', v.thumbnailUrl ?? '');
   }
@@ -518,6 +523,7 @@ ${mdHtmlCache}
       persons:      ($('vPersons')?.value??'').split(',').map(s=>s.trim()).filter(Boolean),
       series:       $('vSeries')?.value.trim()  || '',
       summary:      $('vSummary')?.value        || '',
+      notes:        $('vNotes')?.value          || '',
       tags:         ($('vTags')?.value??'').split(',').map(s=>s.trim()).filter(Boolean),
       thumbnailUrl: $('vThumb')?.value.trim()   || ytThumb($('vLink')?.value.trim()),
     };
