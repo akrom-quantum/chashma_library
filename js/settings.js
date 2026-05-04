@@ -568,26 +568,23 @@
   }
 
   async function _removeUser(email) {
-    if (!confirm(`Remove ${email}? This deletes their account data.`)) return;
+    if (!confirm(`Remove ${email}? They will no longer appear in the app.`)) return;
     const db = window.db;
     const ek = email.replace(/\./g, '_');
-    let deleted = false;
     try {
-      await db.collection('users').doc(ek).delete();
-      deleted = true;
-    } catch (err) {
-      console.warn('_removeUser users delete:', err.code, err.message);
-    }
-    try {
-      await db.collection('admins').doc(email).delete();
-    } catch (_) {}
-    if (deleted) {
+      await db.collection('users').doc(ek).update({
+        status:    'removed',
+        removedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        removedBy: window.currentUser?.email || '',
+      });
+      await db.collection('admins').doc(email).delete().catch(() => {});
       window.allUsers = (window.allUsers ?? []).filter(u => u.email !== email);
       window.admins   = (window.admins   ?? []).filter(a => a.email !== email);
       showToast(`${email} removed.`);
       renderSettings();
-    } else {
-      showToast('Remove failed — check Firestore rules allow owner to delete users.', 'err');
+    } catch (err) {
+      console.error('_removeUser:', err.code, err.message);
+      showToast('Failed to remove user: ' + (err.code || err.message), 'err');
     }
   }
 

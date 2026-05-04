@@ -92,7 +92,9 @@ window.setupListeners = function () {
 
     window.unsubs.allUsers = db.collection('users')
       .onSnapshot(snap => {
-        window.allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        window.allUsers = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(u => u.status !== 'removed');
         refreshActivePage('settings');
         refreshActivePage('insights');
         refreshActivePage('home');
@@ -102,7 +104,9 @@ window.setupListeners = function () {
     /* readers: one-time get for users list */
     db.collection('users').get()
       .then(snap => {
-        window.allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        window.allUsers = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(u => u.status !== 'removed');
       })
       .catch(err => console.warn('allUsers get (reader):', err));
   }
