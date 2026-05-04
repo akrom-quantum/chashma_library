@@ -28,19 +28,22 @@
 
   /* ── Errors ──────────────────────────────────────────────── */
   const ERRORS = {
-    'auth/user-not-found':       'No account with this email.',
-    'auth/wrong-password':       'Wrong password.',
-    'auth/invalid-email':        'Invalid email.',
-    'auth/too-many-requests':    'Too many attempts. Try again later.',
-    'auth/invalid-credential':   'Incorrect email or password.',
-    'auth/email-already-in-use': 'Account already exists.',
-    'auth/weak-password':        'Password must be at least 6 characters.',
-    'fill':                      'Please fill in all fields.',
+    'auth/user-not-found':          'No account with this email.',
+    'auth/wrong-password':          'Wrong password.',
+    'auth/invalid-email':           'Invalid email address.',
+    'auth/too-many-requests':       'Too many attempts. Try again later.',
+    'auth/invalid-credential':      'Incorrect email or password.',
+    'auth/email-already-in-use':    'An account with this email already exists.',
+    'auth/weak-password':           'Password must be at least 6 characters.',
+    'auth/operation-not-allowed':   'Email/password sign-in is not enabled. Enable it in the Firebase console → Authentication → Sign-in methods.',
+    'auth/network-request-failed':  'Network error. Check your connection.',
+    'auth/popup-blocked':           'Popup blocked. Allow popups for this site.',
+    'fill':                         'Please fill in all fields.',
   };
 
   function showErr(elId, code) {
     const el = $(elId);
-    if (el) el.textContent = ERRORS[code] || 'Something went wrong.';
+    if (el) el.textContent = ERRORS[code] || ('Error: ' + (code || 'unknown'));
   }
   function clearErr(elId) {
     const el = $(elId); if (el) el.textContent = '';
