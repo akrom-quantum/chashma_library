@@ -401,7 +401,22 @@
       if (ownerSet)  { ownerSet.removeAttribute('hidden');  ownerSet.style.display  = ''; }
       if (readerSet) { readerSet.setAttribute('hidden',''); readerSet.style.display = 'none'; }
       _ensureOwnerHtml();
-      _renderAllUsers();
+
+      // Always do a fresh fetch so newly registered users appear immediately
+      window.db.collection('users').get().then(snap => {
+        const fresh = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(u => u.status !== 'removed');
+        // Merge: keep live-listener entries that aren't in fresh (edge case)
+        const freshEmails = new Set(fresh.map(u => u.email));
+        const merged = [
+          ...fresh,
+          ...(window.allUsers || []).filter(u => !freshEmails.has(u.email)),
+        ];
+        window.allUsers = merged;
+        _renderAllUsers();
+      }).catch(() => _renderAllUsers());
+
       _renderPendingRequests();
       _renderAdmins();
       _bindResetReads();
